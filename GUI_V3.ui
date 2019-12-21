@@ -156,13 +156,6 @@
          </property>
         </widget>
        </item>
-       <item row="9" column="1">
-        <widget class="Line" name="line_103">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
        <item row="0" column="2">
         <widget class="Line" name="line_3">
          <property name="orientation">
@@ -205,17 +198,10 @@
          </property>
         </widget>
        </item>
-       <item row="10" column="1" colspan="4">
-        <widget class="QPushButton" name="lockinParameterButton">
-         <property name="font">
-          <font>
-           <pointsize>12</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>Update</string>
+       <item row="2" column="2">
+        <widget class="Line" name="line_6">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
          </property>
         </widget>
        </item>
@@ -226,10 +212,17 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="2">
-        <widget class="Line" name="line_6">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
+       <item row="8" column="1" colspan="4">
+        <widget class="QPushButton" name="lockinParameterButton">
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Update</string>
          </property>
         </widget>
        </item>
@@ -254,20 +247,6 @@
          </property>
         </widget>
        </item>
-       <item row="9" column="3">
-        <widget class="Line" name="line_104">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="9" column="4">
-        <widget class="Line" name="line_105">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
        <item row="3" column="3">
         <widget class="Line" name="line_102">
          <property name="orientation">
@@ -279,6 +258,20 @@
         <widget class="Line" name="line_107">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="Line" name="line_101">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="2">
+        <widget class="Line" name="line_108">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
          </property>
         </widget>
        </item>
@@ -298,20 +291,6 @@
          </property>
          <property name="value">
           <double>224.900000000000006</double>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1">
-        <widget class="Line" name="line_101">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="2">
-        <widget class="Line" name="line_108">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
          </property>
         </widget>
        </item>
@@ -340,43 +319,6 @@
          </property>
          <property name="value">
           <double>4.000000000000000</double>
-         </property>
-        </widget>
-       </item>
-       <item row="8" column="4">
-        <widget class="QCheckBox" name="diffButton">
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Diff</string>
-         </property>
-        </widget>
-       </item>
-       <item row="8" column="3">
-        <widget class="QCheckBox" name="imp50Button">
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>50 Ohm</string>
-         </property>
-        </widget>
-       </item>
-       <item row="8" column="1">
-        <widget class="QCheckBox" name="acButton">
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <italic>false</italic>
-          </font>
-         </property>
-         <property name="text">
-          <string>AC</string>
          </property>
         </widget>
        </item>
@@ -2111,7 +2053,7 @@
           <double>1000.000000000000000</double>
          </property>
          <property name="value">
-          <double>100000.000000000000000</double>
+          <double>10000.000000000000000</double>
          </property>
         </widget>
        </item>
@@ -2244,7 +2186,7 @@
           <double>1000.000000000000000</double>
          </property>
          <property name="value">
-          <double>100000.000000000000000</double>
+          <double>10000.000000000000000</double>
          </property>
         </widget>
        </item>

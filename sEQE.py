@@ -265,12 +265,12 @@ class MainWindow(QtWidgets.QMainWindow):
             self.imp50 = 0 # 50 Ohm off
             self.imp50_2 = 1 # Turn on 50 Ohm on channel 2 to attenuate signal from chopper controller as reference signal
             self.diff = 0 # Diff off
-            if self.ui.acButton.isChecked(): # AC on if button is checked
-                self.ac = 1
-            if self.ui.imp50Button.isChecked(): # 50 Ohm on if button is checked
-                self.imp50 = 1
-            if self.ui.diffButton.isChecked(): # Diff on if button is checked
-                self.diff = 1                
+#            if self.ui.acButton.isChecked(): # AC on if button is checked
+#                self.ac = 1
+#            if self.ui.imp50Button.isChecked(): # 50 Ohm on if button is checked
+#                self.imp50 = 1
+#            if self.ui.diffButton.isChecked(): # Diff on if button is checked
+#                self.diff = 1                
 #            self.frequency = self.ui.pickFreq.value() # For manual frequency control. The frequency tab is currently not implemented in the GUI
             
             self.setParameters()
