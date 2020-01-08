@@ -51,7 +51,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.c = str(self.channel-1) 
         self.c6 = str(6)
 
-        self.do_plot = True 
+        self.do_plot = True
+
+        self.complete_scan = False
+
+        self.filter_addition = 'None' ####################################################################################
         
         # Handle Monochromator Buttons
         
@@ -122,7 +126,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.mono_connected = self.waitForOK()
 
         if self.mono_connected:
-            print('Connection to Monochromator was establised.')
+            print('Connection to Monochromator was established.')
             self.ui.imageConnect_mono.setPixmap(QtGui.QPixmap("Button_on.png"))           
     
     # Check Monochromator response
@@ -154,6 +158,8 @@ class MainWindow(QtWidgets.QMainWindow):
         # Detect device
         self.device = zhinst.utils.autoDetect(daq)
 #        print(self.device)
+
+        print('Connection to Lock-In was established.')
         
         self.lockin_connected = True       
         self.ui.imageConnect_lockin.setPixmap(QtGui.QPixmap("Button_on.png"))
@@ -179,6 +185,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self._sio = io.TextIOWrapper(io.BufferedRWPair(self._fw, self._fw, 1),
                                      newline=None, encoding='ascii')
+
+        print("Connection to filter wheel was established.")
 
         self._sio.write('*idn?\r')
         self.devInfo = self._sio.readlines(2048)[1][:-1]
@@ -507,8 +515,7 @@ class MainWindow(QtWidgets.QMainWindow):
         #ans = 'ERROR'
 
         self._sio.flush()
-        res = self._sio.write('pos=' + str(pos) + '\r')
-        res = self._sio.write('pos=' + str(pos) + '\r')
+        self._sio.write('pos=' + str(pos) + '\r')
 
         #filter_pos = self._sio.write('pos?') ########################################################################################################
         #filter_pos = self._sio.readlines(2048)[1][:-1] ##############################################################################################
@@ -629,125 +636,154 @@ class MainWindow(QtWidgets.QMainWindow):
     # Set parameters for complete scan and measure sample
 
     def MonoHandleCompleteScanButton(self):  ##################################################################################################################
+
+        self.complete_scan = True
+
         if self.ui.scan_noFilter.isChecked():
+
+            self.changeFilter(1)
 
             if self.changeFilter(1):
 
                 print('Moving to filter position 1')
-                time.sleep(2)
+                time.sleep(1)
 
-                # start_f1 = self.ui.scan_startNM_1.value()
-                # stop_f1 = self.ui.scan_stopNM_1.value()
-                # step_f1 = self.ui.scan_stepNM_1.value()
-                # amp_f1 = self.ui.scan_pickAmp_1.value()
-                #
-                # self.amplification = amp_f1
-                # self.LockinUpdateParameters()
-                # self.MonoHandleSpeedButton()
-                #
-                # scan_list = self.createScanJob(start_f1, stop_f1, step_f1)
-                # self.HandleMeasurement(scan_list, start_f1, stop_f1, step_f1, amp_f1, 3)
-                # self.ui.imageCompleteScan_start.setPixmap(QtGui.QPixmap("Button_on.png"))
+                start_f1 = self.ui.scan_startNM_1.value()
+                stop_f1 = self.ui.scan_stopNM_1.value()
+                step_f1 = self.ui.scan_stepNM_1.value()
+                amp_f1 = self.ui.scan_pickAmp_1.value()
+
+                self.amplification = amp_f1
+                self.LockinUpdateParameters()
+                self.MonoHandleSpeedButton()
+
+                self.filter_addition = 'noFilter' ######################################################################
+
+                scan_list = self.createScanJob(start_f1, stop_f1, step_f1)
+                self.HandleMeasurement(scan_list, start_f1, stop_f1, step_f1, amp_f1, 3)
+                self.ui.imageCompleteScan_start.setPixmap(QtGui.QPixmap("Button_on.png"))
 
         if self.ui.scan_Filter2.isChecked():
+
+            self.changeFilter(2)
 
             if self.changeFilter(2):
 
                 print('Moving to filter position 2')
-                time.sleep(2)
+                time.sleep(1)
 
-                # start_f2 = self.ui.scan_startNM_2.value()
-                # stop_f2 = self.ui.scan_stopNM_2.value()
-                # step_f2 = self.ui.scan_stepNM_2.value()
-                # amp_f2 = self.ui.scan_pickAmp_2.value()
-                #
-                # self.amplification = amp_f2
-                # self.LockinUpdateParameters()
-                # self.MonoHandleSpeedButton()
-                #
-                # scan_list = self.createScanJob(start_f2, stop_f2, step_f2)
-                # self.HandleMeasurement(scan_list, start_f2, stop_f2, step_f2, amp_f2, 3)
-                # self.ui.imageCompleteScan_start.setPixmap(QtGui.QPixmap("Button_on.png"))
+                start_f2 = self.ui.scan_startNM_2.value()
+                stop_f2 = self.ui.scan_stopNM_2.value()
+                step_f2 = self.ui.scan_stepNM_2.value()
+                amp_f2 = self.ui.scan_pickAmp_2.value()
+
+                self.amplification = amp_f2
+                self.LockinUpdateParameters()
+                self.MonoHandleSpeedButton()
+
+                self.filter_addition = str(self.ui.cuton_filter_2.value())
+
+                scan_list = self.createScanJob(start_f2, stop_f2, step_f2)
+                self.HandleMeasurement(scan_list, start_f2, stop_f2, step_f2, amp_f2, 3)
+                self.ui.imageCompleteScan_start.setPixmap(QtGui.QPixmap("Button_on.png"))
 
         if self.ui.scan_Filter3.isChecked():
+
+            self.changeFilter(3)
 
             if self.changeFilter(3):
 
                 print('Moving to filter position 3')
-                time.sleep(2)
+                time.sleep(1)
 
-                # start_f3 = self.ui.scan_startNM_3.value()
-                # stop_f3 = self.ui.scan_stopNM_3.value()
-                # step_f3 = self.ui.scan_stepNM_3.value()
-                # amp_f3 = self.ui.scan_pickAmp_3.value()
-                #
-                # self.amplification = amp_f3
-                # self.LockinUpdateParameters()
-                # self.MonoHandleSpeedButton()
-                #
-                # scan_list = self.createScanJob(start_f3, stop_f3, step_f3)
-                # self.HandleMeasurement(scan_list, start_f3, stop_f3, step_f3, amp_f3, 3)
-                # self.ui.imageCompleteScan_start.setPixmap(QtGui.QPixmap("Button_on.png"))
+                start_f3 = self.ui.scan_startNM_3.value()
+                stop_f3 = self.ui.scan_stopNM_3.value()
+                step_f3 = self.ui.scan_stepNM_3.value()
+                amp_f3 = self.ui.scan_pickAmp_3.value()
+
+                self.amplification = amp_f3
+                self.LockinUpdateParameters()
+                self.MonoHandleSpeedButton()
+
+                self.filter_addition = str(self.ui.cuton_filter_3.value())
+
+                scan_list = self.createScanJob(start_f3, stop_f3, step_f3)
+                self.HandleMeasurement(scan_list, start_f3, stop_f3, step_f3, amp_f3, 3)
+                self.ui.imageCompleteScan_start.setPixmap(QtGui.QPixmap("Button_on.png"))
 
         if self.ui.scan_Filter4.isChecked():
+
+            self.changeFilter(4)
 
             if self.changeFilter(4):
 
                 print('Moving to filter position 4')
-                time.sleep(2)
+                time.sleep(1)
 
-                # start_f4 = self.ui.scan_startNM_4.value()
-                # stop_f4 = self.ui.scan_stopNM_4.value()
-                # step_f4 = self.ui.scan_stepNM_4.value()
-                # amp_f4 = self.ui.scan_pickAmp_4.value()
-                #
-                # self.amplification = amp_f4
-                # self.LockinUpdateParameters()
-                # self.MonoHandleSpeedButton()
-                #
-                # scan_list = self.createScanJob(start_f4, stop_f4, step_f4)
-                # self.HandleMeasurement(scan_list, start_f4, stop_f4, step_f4, amp_f4, 3)
-                # self.ui.imageCompleteScan_start.setPixmap(QtGui.QPixmap("Button_on.png"))
+                start_f4 = self.ui.scan_startNM_4.value()
+                stop_f4 = self.ui.scan_stopNM_4.value()
+                step_f4 = self.ui.scan_stepNM_4.value()
+                amp_f4 = self.ui.scan_pickAmp_4.value()
+
+                self.amplification = amp_f4
+                self.LockinUpdateParameters()
+                self.MonoHandleSpeedButton()
+
+                self.filter_addition = str(self.ui.cuton_filter_4.value())
+
+                scan_list = self.createScanJob(start_f4, stop_f4, step_f4)
+                self.HandleMeasurement(scan_list, start_f4, stop_f4, step_f4, amp_f4, 3)
+                self.ui.imageCompleteScan_start.setPixmap(QtGui.QPixmap("Button_on.png"))
 
         if self.ui.scan_Filter5.isChecked():
+
+            self.changeFilter(5)
 
             if self.changeFilter(5):
 
                 print('Moving to filter position 5')
-                time.sleep(2)
+                time.sleep(1)
 
-                # start_f5 = self.ui.scan_startNM_5.value()
-                # stop_f5 = self.ui.scan_stopNM_5.value()
-                # step_f5 = self.ui.scan_stepNM_5.value()
-                # amp_f5 = self.ui.scan_pickAmp_5.value()
-                #
-                # self.amplification = amp_f5
-                # self.LockinUpdateParameters()
-                # self.MonoHandleSpeedButton()
-                #
-                # scan_list = self.createScanJob(start_f5, stop_f5, step_f5)
-                # self.HandleMeasurement(scan_list, start_f5, stop_f5, step_f5, amp_f5, 3)
-                # self.ui.imageCompleteScan_start.setPixmap(QtGui.QPixmap("Button_on.png"))
+                start_f5 = self.ui.scan_startNM_5.value()
+                stop_f5 = self.ui.scan_stopNM_5.value()
+                step_f5 = self.ui.scan_stepNM_5.value()
+                amp_f5 = self.ui.scan_pickAmp_5.value()
+
+                self.amplification = amp_f5
+                self.LockinUpdateParameters()
+                self.MonoHandleSpeedButton()
+
+                self.filter_addition = str(self.ui.cuton_filter_5.value())
+
+                scan_list = self.createScanJob(start_f5, stop_f5, step_f5)
+                self.HandleMeasurement(scan_list, start_f5, stop_f5, step_f5, amp_f5, 3)
+                self.ui.imageCompleteScan_start.setPixmap(QtGui.QPixmap("Button_on.png"))
 
         if self.ui.scan_Filter6.isChecked():
+
+            self.changeFilter(6)
 
             if self.changeFilter(6):
 
                 print('Moving to filter position 6')
-                time.sleep(2)
+                time.sleep(1)
 
-                # start_f6 = self.ui.scan_startNM_6.value()
-                # stop_f6 = self.ui.scan_stopNM_6.value()
-                # step_f6 = self.ui.scan_stepNM_6.value()
-                # amp_f6 = self.ui.scan_pickAmp_6.value()
-                #
-                # self.amplification = amp_f6
-                # self.LockinUpdateParameters()
-                # self.MonoHandleSpeedButton()
-                #
-                # scan_list = self.createScanJob(start_f6, stop_f6, step_f6)
-                # self.HandleMeasurement(scan_list, start_f6, stop_f6, step_f6, amp_f6, 3)
-                # self.ui.imageCompleteScan_start.setPixmap(QtGui.QPixmap("Button_on.png"))
+                start_f6 = self.ui.scan_startNM_6.value()
+                stop_f6 = self.ui.scan_stopNM_6.value()
+                step_f6 = self.ui.scan_stepNM_6.value()
+                amp_f6 = self.ui.scan_pickAmp_6.value()
+
+                self.amplification = amp_f6
+                self.LockinUpdateParameters()
+                self.MonoHandleSpeedButton()
+
+                self.filter_addition = str(self.ui.cuton_filter_6.value())
+
+                scan_list = self.createScanJob(start_f6, stop_f6, step_f6)
+                self.HandleMeasurement(scan_list, start_f6, stop_f6, step_f6, amp_f6, 3)
+                self.ui.imageCompleteScan_start.setPixmap(QtGui.QPixmap("Button_on.png"))
+
+        self.complete_scan = False
 
     # General function to create scanning list
         
@@ -804,8 +840,13 @@ class MainWindow(QtWidgets.QMainWindow):
 #                name = 'InGaAs_ref_diode'
                 name = self.ui.file.text()  
             if number == 3:
-                name = self.ui.file.text()               
-            fileName = name + '_(' + start_no + '-' + stop_no + 'nm_' + step_no + 'nm_' + amp_no + 'x)'
+                name = self.ui.file.text()
+
+            if not self.complete_scan: # If not a complete scan is taken
+                fileName = name + '_(' + start_no + '-' + stop_no + 'nm_' + step_no + 'nm_' + amp_no + 'x)'
+            elif self.complete_scan:
+                fileName = name + '_' + self.filter_addition + 'F' + '_(' + start_no + '-' + stop_no + 'nm_' + step_no + 'nm_' + amp_no + 'x)' ########################################################
+
         
             #Set up path to save data
             self.path ='/home/jungbluth/Desktop/EQE Control Software/sEQE Data/%s/%s' % (userName, experimentName) ### UPDATE THIS LATER!!!
