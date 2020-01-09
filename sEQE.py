@@ -169,7 +169,7 @@ class MainWindow(QtWidgets.QMainWindow):
     # Establish connection to Filterwheel
 
     def connectToFilter(self):
-        port = '/dev/ttyUSB0'   #############################################################################################################################################
+        port = '/dev/ttyUSB1'   #############################################################################################################################################
         try:
             self._fw = serial.Serial(port=port, baudrate=115200,
                                      bytesize=8, parity='N', stopbits=1,
@@ -783,6 +783,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.HandleMeasurement(scan_list, start_f6, stop_f6, step_f6, amp_f6, 3)
                 self.ui.imageCompleteScan_start.setPixmap(QtGui.QPixmap("Button_on.png"))
 
+        self.changeFilter(1)
         self.complete_scan = False
 
     # General function to create scanning list
