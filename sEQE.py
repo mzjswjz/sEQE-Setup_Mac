@@ -13,6 +13,8 @@ import os
 import re
 import sys
 import time
+import logging
+import warnings
 
 import GUI_template
 import matplotlib
@@ -33,6 +35,10 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         
         QtWidgets.QMainWindow.__init__(self)
+        
+        warnings.filterwarnings("ignore")
+        
+        self.logger = self.get_logger()
         
         # Set up the user interface from Designer
         
@@ -116,17 +122,17 @@ class MainWindow(QtWidgets.QMainWindow):
     # Establish serial connection to Monochromator
     
     def connectToMono(self):
-        self.p = serial.Serial('/dev/ttyUSB0', 9600, timeout=0)    
+        self.p = serial.Serial('/dev/ttyUSB1', 9600, timeout=0)    
         
-#        self.p.write('HELLO\r'.encode())   # "Hello" initializes the Monochromator
-#        time.sleep(25)   # Sleep function makes window time out. This is to avoid that the user sends signals while the Monochromator is still initializing
-#        self.mono_connected = self.waitForOK()   # Checks for OK response of Monochromator
+        self.p.write('HELLO\r'.encode())   # "Hello" initializes the Monochromator
+        time.sleep(25)   # Sleep function makes window time out. This is to avoid that the user sends signals while the Monochromator is still initializing
+        self.mono_connected = self.waitForOK()   # Checks for OK response of Monochromator
 
-        self.p.write('{:.2f} GOTO\r'.format(350).encode())
-        self.mono_connected = self.waitForOK()
+#        self.p.write('{:.2f} GOTO\r'.format(350).encode())
+#        self.mono_connected = self.waitForOK()
 
         if self.mono_connected:
-            print('Connection to Monochromator was established.')
+            self.logger.info('Connection to Monochromator Established')
             self.ui.imageConnect_mono.setPixmap(QtGui.QPixmap("Button_on.png"))           
     
     # Check Monochromator response
@@ -138,10 +144,8 @@ class MainWindow(QtWidgets.QMainWindow):
         
         if (shouldbEOk == ' ok\r\n'.encode()) or (shouldbEOk == '  ok\r\n'.encode()):
             ret = True
-#            if self.mono_connected:
-#                print('Ready')
         else:
-            print('Connection to Monochromator could not be established.')   
+            self.logger.error('Connection to Monochromator Could Not Be Established')   
             
         self.p.timeout = 0
         return ret        
@@ -157,9 +161,8 @@ class MainWindow(QtWidgets.QMainWindow):
         
         # Detect device
         self.device = zhinst.utils.autoDetect(daq)
-#        print(self.device)
 
-        print('Connection to Lock-In was established.')
+        self.logger.info('Connection to Lock-In Established')
         
         self.lockin_connected = True       
         self.ui.imageConnect_lockin.setPixmap(QtGui.QPixmap("Button_on.png"))
@@ -169,28 +172,28 @@ class MainWindow(QtWidgets.QMainWindow):
     # Establish connection to Filterwheel
 
     def connectToFilter(self):
-        port = '/dev/ttyUSB1'   #############################################################################################################################################
+        port = '/dev/ttyUSB0'   #############################################################################################################################################
         try:
             self._fw = serial.Serial(port=port, baudrate=115200,
                                      bytesize=8, parity='N', stopbits=1,
                                      timeout=1, xonxoff=0, rtscts=0)
         except  serial.SerialException as ex:
-            print('Port {0} is unavailable: {1}'.format(port, ex))
+            self.logger.error('Port {0} is unavailable: {1}'.format(port, ex))
             self.filter_connected = False
             return
         except  OSError as ex:
-            print('Port {0} is unavailable: {1}'.format(port, ex))
+            self.logger.error('Port {0} is unavailable: {1}'.format(port, ex))
             self.filter_connected = False
             return
 
         self._sio = io.TextIOWrapper(io.BufferedRWPair(self._fw, self._fw, 1),
                                      newline=None, encoding='ascii')
 
-        print("Connection to filter wheel was established.")
+        self.logger.info("Connection to External Filter Wheel Established")
 
-        self._sio.write('*idn?\r')
-        self.devInfo = self._sio.readlines(2048)[1][:-1]
-        print(self.devInfo)
+#        self._sio.write('*idn?\r')
+#        devInfo = self._sio.readlines(2048)[1][:-1]
+#        print(devInfo)
 
         self._sio.flush()
         self.filter_connected = True
@@ -223,12 +226,12 @@ class MainWindow(QtWidgets.QMainWindow):
       
     def chooseWavelength(self, wavelength):   # Function to send GOTO command to monochromator
         if self.mono_connected:
-            print('Moving to %d nm.' % wavelength)
+            print('%d nm' % wavelength)
             self.p.write('{:.2f} GOTO\r'.format(wavelength).encode())
             self.waitForOK()
                 
         else:
-            print('Not connected to Monochromator.')
+            self.logger.error('Monochromator Not Connected')
             
     # Update the scan speed
             
@@ -238,11 +241,11 @@ class MainWindow(QtWidgets.QMainWindow):
         
     def chooseScanSpeed(self, speed):   # Function to send scan speed command to monochromator
         if self.mono_connected:
-#            print('Updating Scan Speed to %d nm/min.' % speed)
+#            self.logger.info('Updating Scan Speed to %d nm/min.' % speed)
             self.p.write('{:.2f} NM/MIN\r'.format(speed).encode())
             self.waitForOK()
         else:
-            print('Not connected to Monochromator.')   
+            self.logger.error('Monochromator Not Connected')   
 
     # Set and move to grating 
     
@@ -257,11 +260,11 @@ class MainWindow(QtWidgets.QMainWindow):
       
     def chooseGrating(self, gratingNo):   # Function to send grating command to monochromator
         if self.mono_connected:
-            print('Moving to Grating %d.' % gratingNo)
+            self.logger.info('Moving to Grating %d' % gratingNo)
             self.p.write('{:d} grating\r'.format(gratingNo).encode())
             self.waitForOK()
         else:
-            print('Not connected to Monochromator.')
+            self.logger.error('Monochromator Not Connected')
             
     # Update filter number
             
@@ -271,11 +274,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def chooseFilter(self, filterNo):
         if self.mono_connected:
-            print('Moving to Filter %d.' % filterNo)
+#            self.logger.info('Moving to Monochromator Filter %d' % filterNo)
             self.p.write('{:d} FILTER\r'.format(filterNo).encode())
             self.waitForOK()
         else:
-            print('Not connected to Monochromator.')  
+            self.logger.error('Monochromator Not Connected')  
 
     # Initialize filter 
 
@@ -286,13 +289,13 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def initializeFilter(self, filterDiff):
         if self.mono_connected:
-            print('Initializing filter wheel.')
+            self.logger.info('Initializing Monochromator Filter Wheel')
             self.p.write('{:d} FILTER\r'.format(filterDiff).encode())
             self.p.write('FHOME\r'.encode())
             self.waitForOK()
             self.ui.imageInit_filterwheel.setPixmap(QtGui.QPixmap("Button_on.png"))
         else:
-            print('Not connected to Monochromator.') 
+            self.logger.error('Monochromator Not Connected') 
     
 # -----------------------------------------------------------------------------------------------------------        
     
@@ -325,10 +328,10 @@ class MainWindow(QtWidgets.QMainWindow):
 #            self.frequency = self.ui.pickFreq.value() # For manual frequency control. The frequency tab is currently not implemented in the GUI
             
             self.setParameters()
-            print('Updating Lock-in Settings.')
+            self.logger.info('Updating Lock-In Settings')
             
         else:
-            print("Not connected to Lock-in.")
+            self.logger.error("Lock-In Not Connected")
              
     def setParameters(self):       
  #       c = str(0)      
@@ -384,7 +387,7 @@ class MainWindow(QtWidgets.QMainWindow):
         time.sleep(1)  # wait 1s to get a settled lowpass filter
         self.daq.flush()   # clean queue
         
-#        print("Lock-in settings have been updated.")
+#        self.logger.info("Lock-in settings have been updated")
         
 # -----------------------------------------------------------------------------------------------------------        
     
@@ -398,7 +401,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self.p.write('?filter\r'.encode())
             self.p.timeout = 30000
             response = self.p.readline() 
-#            print(response)
             
             if (response == '1  ok\r\n'.encode()) or (response == ' 1  ok\r\n'.encode()):
                 filterNo = 1
@@ -413,7 +415,7 @@ class MainWindow(QtWidgets.QMainWindow):
             elif (response == '6  ok\r\n'.encode()) or (response == ' 6  ok\r\n'.encode()):
                 filterNo = 6
             else:   # Do I need this?
-                print('Error code 1.1')
+                self.logger.error('Error: Filter Response')
 
             startNM_F2 = int(self.ui.startNM_F2.value())
             stopNM_F2 = int(self.ui.stopNM_F2.value())                
@@ -434,7 +436,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 shouldbeFilterNo = 5
             else:   
 #                shouldbeFilterNo = 2
-                print('Error code 1.2')
+                self.logger.error('Error: Filter Out Of Range')
                 
             if shouldbeFilterNo != filterNo:
                 self.chooseFilter(shouldbeFilterNo)    
@@ -448,7 +450,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 pass
                 
         else:
-            print('Not connected to Monochromator.') 
+            self.logger.error('Monochromator Not Connected') 
     
     
     def monoCheckGrating(self, wavelength):   # Grating switching points from GUI
@@ -464,7 +466,7 @@ class MainWindow(QtWidgets.QMainWindow):
             elif (response == '3  ok\r\n'.encode()) or (response == ' 3  ok\r\n'.encode()):
                 gratingNo = 3
             else:   # Do I need this?
-                print('Error code 2.1')
+                self.logger.error('Error: Grating Response')
                 
             startNM_G1 = int(self.ui.startNM_G1.value())
             stopNM_G1 = int(self.ui.stopNM_G1.value())
@@ -480,7 +482,7 @@ class MainWindow(QtWidgets.QMainWindow):
             elif startNM_G3 <= wavelength <= stopNM_G3: # Grating 3: from 1300 - 1800  -- including start, including end
                 shouldbeGratingNo = 3
             else:   # Do I need this?
-                print('Error code 2.2')
+                self.logger.error('Error: Grating Out Of Range')
                 
             if shouldbeGratingNo != gratingNo:
                 self.chooseGrating(shouldbeGratingNo)
@@ -493,7 +495,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 pass
                 
         else:
-            print('Not connected to Monochromator.')
+            self.logger.error('Monochromator Not Connected')
 
 # -----------------------------------------------------------------------------------------------------------
 
@@ -509,17 +511,13 @@ class MainWindow(QtWidgets.QMainWindow):
            pos = integer between 1 and 6
         """
         if not self.filter_connected:
-            print("Filterwheel not connected")
+            self.logger.error("External Filter Wheel Not Connected")
             return False
 
         #ans = 'ERROR'
 
         self._sio.flush()
         self._sio.write('pos=' + str(pos) + '\r')
-
-        #filter_pos = self._sio.write('pos?') ########################################################################################################
-        #filter_pos = self._sio.readlines(2048)[1][:-1] ##############################################################################################
-        #print('Moved to filter position ', filter_pos)
 
         # ans = self._sio.readlines(2048)
         # regerr = re.compile("Command error.*")
@@ -529,7 +527,7 @@ class MainWindow(QtWidgets.QMainWindow):
         #     print(errors[0])
         #     return False
         # ans = self.query(cmd + '?')
-        # # print 'ans=',repr(ans),cmd+'?'
+        # print 'ans=',repr(ans),cmd+'?'
         # print(ans)
 
         return True
@@ -554,7 +552,10 @@ class MainWindow(QtWidgets.QMainWindow):
         
         scan_list = self.createScanJob(start_si, stop_si, step_si)
         self.HandleMeasurement(scan_list, start_si, stop_si, step_si, amp_si, 1)
-        self.ui.imageRef_Si.setPixmap(QtGui.QPixmap("Button_on.png")) 
+        
+        self.chooseFilter(1)        
+        self.ui.imageRef_Si.setPixmap(QtGui.QPixmap("Button_on.png"))      
+        self.logger.info('Finished Measurement')        
     
         
     # Set parameters and measure InGaAs reference diode
@@ -571,7 +572,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
         scan_list = self.createScanJob(start_ga, stop_ga, step_ga)
         self.HandleMeasurement(scan_list, start_ga, stop_ga, step_ga, amp_ga, 2)
-        self.ui.imageRef_GA.setPixmap(QtGui.QPixmap("Button_on.png")) 
+        
+        self.chooseFilter(1)              
+        self.ui.imageRef_GA.setPixmap(QtGui.QPixmap("Button_on.png"))       
+        self.logger.info('Finished Measurement')  
         
         
     # Set parameters and measure sample
@@ -589,7 +593,6 @@ class MainWindow(QtWidgets.QMainWindow):
                         
             scan_list = self.createScanJob(start_r1, stop_r1, step_r1)
             self.HandleMeasurement(scan_list, start_r1, stop_r1, step_r1, amp_r1, 3)
-            self.ui.imageMeasure.setPixmap(QtGui.QPixmap("Button_on.png")) 
         
         if self.ui.Range2.isChecked():         
             start_r2 = self.ui.startNM_R2.value()
@@ -603,7 +606,6 @@ class MainWindow(QtWidgets.QMainWindow):
             
             scan_list = self.createScanJob(start_r2, stop_r2, step_r2)
             self.HandleMeasurement(scan_list, start_r2, stop_r2, step_r2, amp_r2, 3)
-            self.ui.imageMeasure.setPixmap(QtGui.QPixmap("Button_on.png")) 
             
         if self.ui.Range3.isChecked():   
             start_r3 = self.ui.startNM_R3.value()
@@ -616,8 +618,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.MonoHandleSpeedButton()
             
             scan_list = self.createScanJob(start_r3, stop_r3, step_r3)
-            self.HandleMeasurement(scan_list, start_r3, stop_r3, step_r3, amp_r3, 3)
-            self.ui.imageMeasure.setPixmap(QtGui.QPixmap("Button_on.png"))        
+            self.HandleMeasurement(scan_list, start_r3, stop_r3, step_r3, amp_r3, 3)       
         
         if self.ui.Range4.isChecked():   
             start_r4 = self.ui.startNM_R4.value()
@@ -631,7 +632,11 @@ class MainWindow(QtWidgets.QMainWindow):
             
             scan_list = self.createScanJob(start_r4, stop_r4, step_r4)
             self.HandleMeasurement(scan_list, start_r4, stop_r4, step_r4, amp_r4, 3)
-            self.ui.imageMeasure.setPixmap(QtGui.QPixmap("Button_on.png"))
+            
+        self.chooseFilter(1)
+        self.ui.imageMeasure.setPixmap(QtGui.QPixmap("Button_on.png"))
+        self.logger.info('Finished Measurement')
+
 
     # Set parameters for complete scan and measure sample
 
@@ -645,8 +650,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
             if self.changeFilter(1):
 
-                print('Moving to filter position 1')
-                time.sleep(1)
+                self.filter_addition = 'no'
+
+                self.logger.info('Moving to Open Filter Position')
 
                 start_f1 = self.ui.scan_startNM_1.value()
                 stop_f1 = self.ui.scan_stopNM_1.value()
@@ -655,22 +661,20 @@ class MainWindow(QtWidgets.QMainWindow):
 
                 self.amplification = amp_f1
                 self.LockinUpdateParameters()
-                self.MonoHandleSpeedButton()
-
-                self.filter_addition = 'noFilter' ######################################################################
-
+                self.MonoHandleSpeedButton() 
+                
                 scan_list = self.createScanJob(start_f1, stop_f1, step_f1)
                 self.HandleMeasurement(scan_list, start_f1, stop_f1, step_f1, amp_f1, 3)
-                self.ui.imageCompleteScan_start.setPixmap(QtGui.QPixmap("Button_on.png"))
-
+                
         if self.ui.scan_Filter2.isChecked():
 
             self.changeFilter(2)
 
             if self.changeFilter(2):
+                
+                self.filter_addition = str(int(self.ui.cuton_filter_2.value()))
 
-                print('Moving to filter position 2')
-                time.sleep(1)
+                self.logger.info('Moving to %s nm Filter' % self.filter_addition)
 
                 start_f2 = self.ui.scan_startNM_2.value()
                 stop_f2 = self.ui.scan_stopNM_2.value()
@@ -681,20 +685,18 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.LockinUpdateParameters()
                 self.MonoHandleSpeedButton()
 
-                self.filter_addition = str(self.ui.cuton_filter_2.value())
-
                 scan_list = self.createScanJob(start_f2, stop_f2, step_f2)
                 self.HandleMeasurement(scan_list, start_f2, stop_f2, step_f2, amp_f2, 3)
-                self.ui.imageCompleteScan_start.setPixmap(QtGui.QPixmap("Button_on.png"))
 
         if self.ui.scan_Filter3.isChecked():
 
             self.changeFilter(3)
 
             if self.changeFilter(3):
+                
+                self.filter_addition = str(int(self.ui.cuton_filter_3.value()))
 
-                print('Moving to filter position 3')
-                time.sleep(1)
+                self.logger.info('Moving to %s nm Filter' % self.filter_addition)
 
                 start_f3 = self.ui.scan_startNM_3.value()
                 stop_f3 = self.ui.scan_stopNM_3.value()
@@ -705,20 +707,18 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.LockinUpdateParameters()
                 self.MonoHandleSpeedButton()
 
-                self.filter_addition = str(self.ui.cuton_filter_3.value())
-
                 scan_list = self.createScanJob(start_f3, stop_f3, step_f3)
                 self.HandleMeasurement(scan_list, start_f3, stop_f3, step_f3, amp_f3, 3)
-                self.ui.imageCompleteScan_start.setPixmap(QtGui.QPixmap("Button_on.png"))
 
         if self.ui.scan_Filter4.isChecked():
 
             self.changeFilter(4)
 
             if self.changeFilter(4):
+                
+                self.filter_addition = str(int(self.ui.cuton_filter_4.value()))
 
-                print('Moving to filter position 4')
-                time.sleep(1)
+                self.logger.info('Moving to %s nm Filter' % self.filter_addition)
 
                 start_f4 = self.ui.scan_startNM_4.value()
                 stop_f4 = self.ui.scan_stopNM_4.value()
@@ -729,11 +729,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.LockinUpdateParameters()
                 self.MonoHandleSpeedButton()
 
-                self.filter_addition = str(self.ui.cuton_filter_4.value())
-
                 scan_list = self.createScanJob(start_f4, stop_f4, step_f4)
                 self.HandleMeasurement(scan_list, start_f4, stop_f4, step_f4, amp_f4, 3)
-                self.ui.imageCompleteScan_start.setPixmap(QtGui.QPixmap("Button_on.png"))
 
         if self.ui.scan_Filter5.isChecked():
 
@@ -741,8 +738,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
             if self.changeFilter(5):
 
-                print('Moving to filter position 5')
-                time.sleep(1)
+                self.filter_addition = str(int(self.ui.cuton_filter_5.value()))
+
+                self.logger.info('Moving to %s nm Filter' % self.filter_addition)
 
                 start_f5 = self.ui.scan_startNM_5.value()
                 stop_f5 = self.ui.scan_stopNM_5.value()
@@ -753,11 +751,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.LockinUpdateParameters()
                 self.MonoHandleSpeedButton()
 
-                self.filter_addition = str(self.ui.cuton_filter_5.value())
-
                 scan_list = self.createScanJob(start_f5, stop_f5, step_f5)
                 self.HandleMeasurement(scan_list, start_f5, stop_f5, step_f5, amp_f5, 3)
-                self.ui.imageCompleteScan_start.setPixmap(QtGui.QPixmap("Button_on.png"))
 
         if self.ui.scan_Filter6.isChecked():
 
@@ -765,8 +760,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
             if self.changeFilter(6):
 
-                print('Moving to filter position 6')
-                time.sleep(1)
+                self.filter_addition = str(int(self.ui.cuton_filter_6.value()))
+
+                self.logger.info('Moving to %s nm Filter' % self.filter_addition)
 
                 start_f6 = self.ui.scan_startNM_6.value()
                 stop_f6 = self.ui.scan_stopNM_6.value()
@@ -777,29 +773,26 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.LockinUpdateParameters()
                 self.MonoHandleSpeedButton()
 
-                self.filter_addition = str(self.ui.cuton_filter_6.value())
-
                 scan_list = self.createScanJob(start_f6, stop_f6, step_f6)
                 self.HandleMeasurement(scan_list, start_f6, stop_f6, step_f6, amp_f6, 3)
-                self.ui.imageCompleteScan_start.setPixmap(QtGui.QPixmap("Button_on.png"))
 
-        self.changeFilter(1)
-        self.complete_scan = False
+        self.changeFilter(1) 
+        self.logger.info('Moving to open filter')               
+        self.chooseFilter(1)
+        self.complete_scan = False   
+        self.ui.imageCompleteScan_start.setPixmap(QtGui.QPixmap("Button_on.png"))     
+        self.logger.info('Finished Measurement') 
 
     # General function to create scanning list
         
     def createScanJob(self, start, stop, step):
-#        print(start, stop, step)
         scan_list = []       
         number = int((stop-start)/step)
-#        print(number)
         
         for n in range(-1, number + 1): # -1 to start from before the beginning, +1 to include the last iteration of 'number', [and +2 to go above stop (this can be changed later])
             wavelength = start + n*step
-#            print(wavelength)
             scan_list.append(wavelength)
             
-#        print(scan_list)
         return scan_list
            
     # Scan through wavelength range   ### Not being used currently
@@ -807,13 +800,12 @@ class MainWindow(QtWidgets.QMainWindow):
     def Scan(self, scan_list):
         if self.mono_connected:
             for element in scan_list:
-                print(element)
                 self.p.write('{:.2f} GOTO\r'.format(element).encode())
 #                self.p.write('{:.2f} NM\r'.format(stop).encode())
                 self.waitForOK()
                 
         else:
-            print('Not connected to Monochromator.')
+            self.logger.error('Monochromator Not Connected')
 
         
 # -----------------------------------------------------------------------------------------------------------        
@@ -825,7 +817,7 @@ class MainWindow(QtWidgets.QMainWindow):
     # Measure LOCKIN response    
      
     def HandleMeasurement(self, scan_list, start, stop, step, amp, number):        
-        if self.mono_connected and self.lockin_connected:   
+        if self.mono_connected and self.lockin_connected and self.filter_connected:   
             # Assign user, expriment and file name for current measurement
             userName = self.ui.user.text()
             experimentName = self.ui.experiment.text()
@@ -846,18 +838,16 @@ class MainWindow(QtWidgets.QMainWindow):
             if not self.complete_scan: # If not a complete scan is taken
                 fileName = name + '_(' + start_no + '-' + stop_no + 'nm_' + step_no + 'nm_' + amp_no + 'x)'
             elif self.complete_scan:
-                fileName = name + '_' + self.filter_addition + 'F' + '_(' + start_no + '-' + stop_no + 'nm_' + step_no + 'nm_' + amp_no + 'x)' ########################################################
-
+                fileName = name + '_' + self.filter_addition + 'Filter' + '_(' + start_no + '-' + stop_no + 'nm_' + step_no + 'nm_' + amp_no + 'x)' 
         
             #Set up path to save data
-            self.path ='/home/jungbluth/Desktop/EQE Control Software/sEQE Data/%s/%s' % (userName, experimentName) ### UPDATE THIS LATER!!!
-            print('Saving data to: ', self.path)
+            self.path ='/home/jungbluthl/Desktop/sEQE Data/%s/%s' % (userName, experimentName) ### UPDATE THIS LATER!!!
+            self.logger.info('Saving data to: /home/jungbluthl/Desktop/sEQE Data/%s/%s/%s' % (userName, experimentName, fileName)) #', self.path)
             if not os.path.exists(self.path):
                 os.makedirs(self.path)
             else:
                 pass       
             self.naming(fileName, self.path, 2)  # This function defines a variable called self.file_name
-#            print('File Name:', self.file_name)
             
             self.measure(scan_list, number)            
          
@@ -871,9 +861,12 @@ class MainWindow(QtWidgets.QMainWindow):
         
         # Set up plot style                
         if self.do_plot:
+#            plt.close()
             self.set_up_plot()
+            
+        time.sleep(1)
 
-        # Set up empty lists for measurments
+        # Set up empty lists for measurements
         plot_list_x = []
         plot_list_y = []
         plot_log_list_y = []
@@ -906,7 +899,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 # Recreate data
                 if self.device in dataDict:
                     if dataDict[self.device]['demods'][self.c]['sample']['time']['dataloss']:
-                        print ('Sample loss detected.')
+                        self.logger.info('Sample Loss Detected')
                     else:
                         if count>0: # Cut off the first measurement before the start to cut off the initial spike in the spectrum                         
 #                           if self.imp50==0:     #### FIX THIS TO HANDLE IMP 50
@@ -915,7 +908,6 @@ class MainWindow(QtWidgets.QMainWindow):
 #                                e = 0.5*amp_coeff*amplitude/sqrt(2) 
                             
                             data = dataDict[self.device]['demods'][self.c]['sample']
-#                            print(data) # Dictionary with ['timestamp']['x']['y']['frequency']['phase']['dio']['trigger']['auxin0']['auxin1']['time']                 
                             rdata = sqrt(data['x']**2+data['y']**2)
                             rms = sqrt(0.5*(data['x']**2+data['y']**2))
                             current = rdata/self.amplification
@@ -932,15 +924,13 @@ class MainWindow(QtWidgets.QMainWindow):
                             
 #                            scanValues = [wavelength, mean_curr, self.amplification, mean_r, log_mean_r, mean_rms, mean_x, mean_y, mean_freq, mean_phase]
                             scanValues = [wavelength, mean_curr, self.amplification, mean_r, mean_freq, mean_phase]
-#                            print('Scan values : ', scanValues)
-                            
+                           
                             plot_list_x.append(wavelength)
                             plot_list_y.append(mean_r)
                             plot_log_list_y.append(log_mean_r)
                             plot_list_phase.append(mean_phase)
         
                             data_list.append(scanValues)
-#                            print('Data list : ', data_list)
                             
                             data_df = pd.DataFrame(data_list, columns = columns)
                             
@@ -966,11 +956,6 @@ class MainWindow(QtWidgets.QMainWindow):
             else:
                 break
         
-        self.chooseFilter(1)
-#        self.chooseGrating(1)  
-        
-        print('The measurment is finished.')
-        
         # Unsubscribe to scope 
         self.daq.unsubscribe(self.path0)        
 
@@ -995,7 +980,6 @@ class MainWindow(QtWidgets.QMainWindow):
                 power.append(float(ref_df['Mean Current'][y]) / float(resp_int)) # Add power to the list                
                 
         ref_df['Power'] = power # Create new column in reference file
-#        print(ref_df['Power']) 
         
         return ref_df['Power']        
     
@@ -1019,8 +1003,8 @@ class MainWindow(QtWidgets.QMainWindow):
         plt.title('Demodulator data', fontsize=17, fontweight='medium')
         plt.tick_params(labelsize=14)
         plt.minorticks_on()
-        plt.rcParams['figure.facecolor']='xkcd:white'
-        plt.rcParams['figure.edgecolor']='xkcd:white'
+        plt.rcParams['figure.facecolor']='white'
+        plt.rcParams['figure.edgecolor']='white'
         plt.tick_params(labelsize=15, direction='in', axis='both', which='major', length=8, width=2)
         plt.tick_params(labelsize=15, direction='in', axis='both', which='minor', length=4, width=2)
 
@@ -1031,8 +1015,8 @@ class MainWindow(QtWidgets.QMainWindow):
 #        plt.box()
         plt.tick_params(labelsize=14)
         plt.minorticks_on()
-        plt.rcParams['figure.facecolor']='xkcd:white'
-        plt.rcParams['figure.edgecolor']='xkcd:white'
+        plt.rcParams['figure.facecolor']='white'
+        plt.rcParams['figure.edgecolor']='white'
         plt.tick_params(labelsize=15, direction='in', axis='both', which='major', length=8, width=2)
         plt.tick_params(labelsize=15, direction='in', axis='both', which='minor', length=4, width=2)
         
@@ -1044,38 +1028,30 @@ class MainWindow(QtWidgets.QMainWindow):
 #        plt.title('Demodulator data', fontsize=17, fontweight='medium')
         plt.tick_params(labelsize=14)
         plt.minorticks_on()
-        plt.rcParams['figure.facecolor']='xkcd:white'
-        plt.rcParams['figure.edgecolor']='xkcd:white'
+        plt.rcParams['figure.facecolor']='white'
+        plt.rcParams['figure.edgecolor']='white'
         plt.tick_params(labelsize=15, direction='in', axis='both', which='major', length=8, width=2)
         plt.tick_params(labelsize=15, direction='in', axis='both', which='minor', length=4, width=2)
         
 #        plt.rcParams['font.family']='sans-serif'
-#        plt.rcParams['font.sans-serif']='Times'
-#        plt.xlim(0,3)      
-#        plt.axis([tdata[0],tdata[-1],0.99*e,1.01*e]) 
+#        plt.rcParams['font.sans-serif']='Times'   
         
-        plt.show()
+#        plt.show()
 
 # -----------------------------------------------------------------------------------------------------------   
         
     def naming(self, file_name, path_name, num):        
         name = os.path.join(path_name, file_name)
-#        print('Naming: ', name)
         exists = os.path.exists(name)
         
         if exists:
-#            print('Exists: yes')
             if num ==2:
                 filename = file_name + '_%d' % num
             else:
                 filename = file_name[:-1] + str(num)
-#            print('New filename: ', filename)
             num += 1
-#            print(num)
             self.naming(filename, path_name, num)
         else:
-#            print('Exists: no')
-#            print('Final finalname: ', file_name)
             self.file_name = file_name
 
 # -----------------------------------------------------------------------------------------------------------   
@@ -1089,6 +1065,34 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.imageCompleteScan_stop.setPixmap(QtGui.QPixmap("Button_on.png"))
 
 # -----------------------------------------------------------------------------------------------------------
+
+    def get_logger(self):
+        """
+        Return a logger for current module
+        Returns
+        -------
+    
+        logger : logger instance
+    
+        """
+        logger = logging.getLogger()
+        logger.setLevel(logging.DEBUG)
+        formatter = logging.Formatter(fmt="%(asctime)s %(levelname)s %(name)s: %(message)s",
+                                      datefmt="%Y-%m-%d - %H:%M:%S")
+        console = logging.StreamHandler(sys.stdout)
+        console.setLevel(logging.DEBUG)
+        console.setFormatter(formatter)
+    
+#        logfile = logging.FileHandler('run.log', 'w')
+#        logfile.setLevel(logging.DEBUG)
+#        logfile.setFormatter(formatter)
+    
+        logger.addHandler(console)
+#        logger.addHandler(logfile)
+    
+        return logger
+
+# -----------------------------------------------------------------------------------------------------------
         
 def main():
 
@@ -1097,6 +1101,7 @@ def main():
   monoUI.show()
   sys.exit(app.exec_())
 
-if __name__ == "__main__":
+if __name__ == "__main__": 
   main()
+  
 

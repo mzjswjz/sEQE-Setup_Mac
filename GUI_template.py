@@ -2,11 +2,12 @@
 
 # Form implementation generated from reading ui file 'GUI_V3.ui'
 #
-# Created by: PyQt5 UI code generator 5.9.2
+# Created by: PyQt5 UI code generator 5.12.2
 #
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -2152,7 +2153,7 @@ class Ui_MainWindow(object):
         self.cuton_filter_4.setDecimals(0)
         self.cuton_filter_4.setMinimum(360.0)
         self.cuton_filter_4.setMaximum(1800.0)
-        self.cuton_filter_4.setProperty("value", 850.0)
+        self.cuton_filter_4.setProperty("value", 780.0)
         self.cuton_filter_4.setObjectName("cuton_filter_4")
         self.gridLayout_dev_3.addWidget(self.cuton_filter_4, 8, 2, 1, 1)
         self.stop_label_2 = QtWidgets.QLabel(self.gridLayoutWidget_12)
@@ -2290,28 +2291,28 @@ class Ui_MainWindow(object):
         self.cuton_filter_3.setDecimals(0)
         self.cuton_filter_3.setMinimum(360.0)
         self.cuton_filter_3.setMaximum(1800.0)
-        self.cuton_filter_3.setProperty("value", 780.0)
+        self.cuton_filter_3.setProperty("value", 715.0)
         self.cuton_filter_3.setObjectName("cuton_filter_3")
         self.gridLayout_dev_3.addWidget(self.cuton_filter_3, 6, 2, 1, 1)
         self.cuton_filter_2 = QtWidgets.QDoubleSpinBox(self.gridLayoutWidget_12)
         self.cuton_filter_2.setDecimals(0)
         self.cuton_filter_2.setMinimum(360.0)
         self.cuton_filter_2.setMaximum(1800.0)
-        self.cuton_filter_2.setProperty("value", 715.0)
+        self.cuton_filter_2.setProperty("value", 665.0)
         self.cuton_filter_2.setObjectName("cuton_filter_2")
         self.gridLayout_dev_3.addWidget(self.cuton_filter_2, 4, 2, 1, 1)
         self.cuton_filter_5 = QtWidgets.QDoubleSpinBox(self.gridLayoutWidget_12)
         self.cuton_filter_5.setDecimals(0)
         self.cuton_filter_5.setMinimum(360.0)
         self.cuton_filter_5.setMaximum(1800.0)
-        self.cuton_filter_5.setProperty("value", 1000.0)
+        self.cuton_filter_5.setProperty("value", 850.0)
         self.cuton_filter_5.setObjectName("cuton_filter_5")
         self.gridLayout_dev_3.addWidget(self.cuton_filter_5, 10, 2, 1, 1)
         self.cuton_filter_6 = QtWidgets.QDoubleSpinBox(self.gridLayoutWidget_12)
         self.cuton_filter_6.setDecimals(0)
         self.cuton_filter_6.setMinimum(360.0)
         self.cuton_filter_6.setMaximum(1800.0)
-        self.cuton_filter_6.setProperty("value", 1100.0)
+        self.cuton_filter_6.setProperty("value", 1000.0)
         self.cuton_filter_6.setObjectName("cuton_filter_6")
         self.gridLayout_dev_3.addWidget(self.cuton_filter_6, 12, 2, 1, 1)
         self.line_166 = QtWidgets.QFrame(self.gridLayoutWidget_12)
@@ -2469,6 +2470,8 @@ class Ui_MainWindow(object):
         self.menu.setTitle(_translate("MainWindow", "sEQE Control Software"))
 
 
+
+
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
@@ -2477,4 +2480,3 @@ if __name__ == "__main__":
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
-
