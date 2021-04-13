@@ -318,7 +318,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ac = 0 # AC off
             self.imp50 = 0 # 50 Ohm off
             self.imp50_2 = 1 # Turn on 50 Ohm on channel 2 to attenuate signal from chopper controller as reference signal
-            self.diff = 0 # Diff off
+            self.diff = 1 # Diff off
 #            if self.ui.acButton.isChecked(): # AC on if button is checked
 #                self.ac = 1
 #            if self.ui.imp50Button.isChecked(): # 50 Ohm on if button is checked
