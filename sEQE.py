@@ -524,7 +524,11 @@ class MainWindow(QtWidgets.QMainWindow):
   
         
     def monoCheckFilter(self, wavelength):   # Filter switching points from GUI
-        """Function to update position of first filter wheel from GUI defaults 
+        """
+        Function to update position of first filter wheel from GUI defaults.
+            
+            Parameters:
+                    wavelength:
         :param wavelength: Current wavelength position of monochromator
         :type wavelength: float, required
         ...
@@ -581,10 +585,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
                     # Take data and discard it, this is required to avoid kinks
                     # Poll data for 5 time constants, second parameter is poll timeout in [ms] (recomended value is 500ms) 
-                    dataDict = self.daq.poll(5*self.tc,500)  # Dictionary with ['timestamp']['x']['y']['frequency']['phase']['dio']['trigger']['auxin0']['auxin1']['time']
+                        dataDict = self.daq.poll(5*self.tc,500)  # Dictionary with ['timestamp']['x']['y']['frequency']['phase']['dio']['trigger']['auxin0']['auxin1']['time']
 
-                else:
-                    pass
+                    else:
+                        pass
                 
         else:
             self.logger.error('Monochromator Not Connected') 
