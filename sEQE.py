@@ -164,6 +164,7 @@ class MainWindow(QtWidgets.QMainWindow):
         ret = False
         self.p.timeout = 1
         shouldbEOk = ''.join([element.decode("utf-8") for element in self.p.readlines()])
+        print(shouldbEOk)
 
         if shouldbEOk.endswith('ok\r\n'):
             ret = True
@@ -338,11 +339,13 @@ class MainWindow(QtWidgets.QMainWindow):
             if self.p.is_open:
                 self.logger.info('Moving to Grating %d' % gratingNo)
                 self.p.write('{:d} grating\r'.format(gratingNo).encode())
+                print(self.p.readline())
                 self.waitForOK()
             else:
                 with serial.Serial(self.mono_usb, 9600, timeout=0) as self.p:
                     self.logger.info('Moving to Grating %d' % gratingNo)
                     self.p.write('{:d} grating\r'.format(gratingNo).encode())
+                    print(self.p.readline())
                     self.waitForOK()
         else:
             self.logger.error('Monochromator Not Connected')
@@ -371,6 +374,7 @@ class MainWindow(QtWidgets.QMainWindow):
             if self.p.is_open:
     #            self.logger.info('Moving to Monochromator Filter %d' % filterNo)
                 self.p.write('{:d} FILTER\r'.format(filterNo).encode())
+                self.p.readline()
                 self.waitForOK()
             
             else: 
@@ -378,6 +382,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     if self.mono_connected:
     #            self.logger.info('Moving to Monochromator Filter %d' % filterNo)
                         self.p.write('{:d} FILTER\r'.format(filterNo).encode())
+                        self.p.readline()
                         self.waitForOK()
             
         else:
@@ -607,7 +612,8 @@ class MainWindow(QtWidgets.QMainWindow):
             with serial.Serial(self.mono_usb, 9600, timeout=0) as self.p:
                 self.p.write('?grating\r'.encode())
                 self.p.timeout = 30000
-                response = self.p.readline() 
+                response = self.p.readline()
+                print(response)
 
                 if response.endswith('1  ok\r\n'.encode()) or response.endswith(' 1  ok\r\n'.encode()):
                     gratingNo = 1
