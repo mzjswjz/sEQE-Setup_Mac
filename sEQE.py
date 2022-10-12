@@ -139,8 +139,12 @@ class MainWindow(QtWidgets.QMainWindow):
     # Establish serial connection to Monochromator
     
     def connectToMono(self):
-        """Function to establish connection to monochromator
-        :return: None
+        """Function to establish connection to monochromator. 
+        
+        Returns
+        -------
+        None
+        
         """
         with serial.Serial(self.mono_usb, 9600, timeout=0) as self.p:
 
@@ -155,11 +159,18 @@ class MainWindow(QtWidgets.QMainWindow):
     # Check Monochromator response
     
     def waitForOK(self):
-        """Function to wait for acceptance signal from monochromator
-        :raises LoggerError: Raises error if monochromator connection failed
-        ...
-        :return: Returns True of connection successful, and False otherwise
-        :rtype: bool
+        """Function to wait for acceptance signal from monochromator.
+        
+        Returns
+        -------
+        bool 
+            True if connection successful, False otherwise
+        
+        Raises
+        ------
+        LoggerError
+            Raises error if monochromator connection failed
+        
         """
         ret = False
         self.p.timeout = 1
@@ -176,9 +187,13 @@ class MainWindow(QtWidgets.QMainWindow):
     # Establish connection to LOCKIN
     
     def connectToLockin(self):    
-        """Function to establish connection to Lockin
-        :return: Returns Zurich Instruments localhost name and device details
-        """    
+        """Function to establish connection to Lockin.
+        
+        Returns
+        -------
+        list
+            Zurich Instruments localhost name and device details
+        """
         self.lockin_connected = False
         
         # Find device and open connection to ziServer 
@@ -204,11 +219,19 @@ class MainWindow(QtWidgets.QMainWindow):
     # Establish connection to Filterwheel
 
     def connectToFilter(self):
-        """Function to establish connection to filter wheel
-        :raises SerialException: Raises exception if filter wheel USB port is inaccessible
-        :raises OSError: Raises exception if filter wheel USB port is inaccessible
-        ...
-        :return: None
+        """Function to establish connection to filter wheel.
+        
+        Returns
+        -------
+        None
+        
+        Raises
+        ------
+        SerialException
+            Raises exception if filter wheel USB port is inaccessible
+        OSError
+            Raises exception if filter wheel USB port is inaccessible
+        
         """ 
         with serial.Serial(port=self.filter_usb, baudrate=115200,
                                      bytesize=8, parity='N', stopbits=1,
@@ -242,8 +265,12 @@ class MainWindow(QtWidgets.QMainWindow):
     # Establish connection to both
         
     def connectToEquipment(self):
-        """Function to establish connection to monochromator, Lockin & filter wheel
-        :return: None
+        """Function to establish connection to monochromator, Lockin & filter wheel.
+        
+        Returns
+        -------
+        None
+        
         """
         self.connectToLockin()
         self.connectToMono()
@@ -262,20 +289,33 @@ class MainWindow(QtWidgets.QMainWindow):
     # Set and GOTO wavelength
     
     def MonoHandleWavelengthButton(self):   # Function sets desired wavelength and calls chooseWavelength function
-        """Function to read wavelength value from GUI
-        :return: None
+        """Function to read wavelength value from GUI.
+        
+        Returns
+        -------
+        None
+        
         """
         wavelength = self.ui.pickNM.value()
         self.chooseWavelength(wavelength)
       
     def chooseWavelength(self, wavelength):   # Function to send GOTO command to monochromator
-        """Function to send wavelength command to monochromator
-        :param wavelength: target wavelength
-        :type wavelength: float, required
-        ...
-        :raises LoggerError: Raises error if monochromator not connected
-        ...
-        :return: None
+        """Function to send wavelength command to monochromator.
+        
+        Parameters
+        ----------
+        wavelength: float, required
+            target wavelength
+        
+        Returns
+        -------
+        None
+        
+        Raises
+        ------
+        LoggerError
+            Raises error if monochromator not connected
+
         """
         if self.mono_connected:
             with serial.Serial(self.mono_usb, 9600, timeout=0) as self.p:
@@ -289,20 +329,33 @@ class MainWindow(QtWidgets.QMainWindow):
     # Update the scan speed
             
     def MonoHandleSpeedButton(self):   # Function sets desired scan speed and calls chooseScanSpeed function
-        """Function to read monochromator speed from GUI
-        :return: None
+        """Function to read monochromator speed from GUI.
+        
+        Returns
+        -------
+        None
+        
         """
         speed = self.ui.pickScanSpeed.value()
         self.chooseScanSpeed(speed)
         
     def chooseScanSpeed(self, speed):   # Function to send scan speed command to monochromator
-        """Function to send scan speed command to monochromator
-        :param speed: monochromator grating scan speed
-        :type speed: float, required
-        ...
-        :raises LoggerError: Raises error if monochromator not connected
-        ...
-        :return: None
+        """Function to send scan speed command to monochromator.
+        
+        Parameters
+        ----------
+        speed: float, required
+            monochromator grating scan speed
+            
+        Returns
+        -------
+        None 
+        
+        Raises
+        ------
+        LoggerError
+            Raises error if monochromator not connected
+
         """
         if self.mono_connected:
             with serial.Serial(self.mono_usb, 9600, timeout=0) as self.p:
@@ -315,8 +368,12 @@ class MainWindow(QtWidgets.QMainWindow):
     # Set and move to grating 
     
     def MonoHandleGratingButtons(self):   # Function sets desired grating number and calls chooseGrating function
-        """Function to read grating number from monochromator
-        :return: None
+        """Function to read grating number from monochromator.
+        
+        Returns
+        -------
+        None
+        
         """
         if self.ui.Blaze_300.isChecked():
             gratingNo = 1
@@ -327,13 +384,22 @@ class MainWindow(QtWidgets.QMainWindow):
         self.chooseGrating(gratingNo)
       
     def chooseGrating(self, gratingNo):   # Function to send grating command to monochromator
-        """Function to send grating command to monochromator
-        :param gratingNo: Monochromator grating number
-        :type gratingNo: float, required
-        ...
-        :raises LoggerError: Raises error if monochromator not connected
-        ...
-        :return: None
+        """Function to send grating command to monochromator.
+        
+        Parameters
+        ----------
+        gratingNo: float, required
+            Monochromator grating number
+            
+        Returns
+        -------
+        None
+        
+        Raises
+        -------
+        LoggerError
+            Raises error if monochromator not connected
+
         """
         if self.mono_connected:
             if self.p.is_open:
@@ -354,20 +420,33 @@ class MainWindow(QtWidgets.QMainWindow):
     # Update filter number
             
     def MonoHandleFilterButton(self):
-        """Function to read filter position from GUI
-        :return: None
+        """Function to read filter position from GUI.
+        
+        Returns
+        -------
+        None
+        
         """
         filterNo = int(self.ui.pickFilter.value())
         self.chooseFilter(filterNo)
 
     def chooseFilter(self, filterNo):
-        """Function to send filter selection command to filter wheel
-        :param filterNo: Filter position
-        :type filterNo: float, required
-        ...
-        :raises LoggerError: Raises error if monochromator not connected
-        ...
-        :return: None
+        """Function to send filter selection command to filter wheel.
+        
+        Parameters
+        ----------
+        filterNo: float, required
+            Filter position
+            
+        Returns
+        -------
+        None
+        
+        Raises
+        ------
+        LoggerError
+            Raises error if monochromator not connected
+
         """
         if self.mono_connected:
             
@@ -391,21 +470,34 @@ class MainWindow(QtWidgets.QMainWindow):
     # Initialize filter 
 
     def MonoHandleFilterInitButton(self):
-        """Function to read filter initialization position from GUI
-        :return: None
+        """Function to read filter initialization position from GUI.
+        
+        Returns
+        -------
+        None
+        
         """
         filterStart = self.ui.pickFilterInitStart.value()
         filterDiff = int(8-filterStart)
         self.initializeFilter(filterDiff)                
 
     def initializeFilter(self, filterDiff):
-        """Function to initialize filter wheel
-        :param filterDiff: Difference between filter position and initialization position
-        :type filterDiff: int, required
-        ...
-        :raises LoggerError: Raises error if monochromator not connected
-        ...
-        :return: None
+        """Function to initialize filter wheel.
+        
+        Parameters
+        ----------
+        filterDiff: int, required
+            Difference between filter position and initialization position
+
+        Returns
+        -------
+        None
+        
+        Raises
+        ------
+        LoggerError:
+            Raises error if monochromator not connected
+
         """
         if self.mono_connected:
             with serial.Serial(self.mono_usb, 9600, timeout=0) as self.p:
@@ -425,19 +517,30 @@ class MainWindow(QtWidgets.QMainWindow):
     # Define and set Lock-in parameters
     
     def LockinHandleParameterButton(self):
-        """Function to read Lockin amplification value from GUI
-        :return: None
+        """Function to read Lockin amplification value from GUI.
+        
+        Returns
+        -------
+        None
+        
         """
         if self.lockin_connected:
             self.amplification = self.ui.pickAmp.value()
             self.LockinUpdateParameters()
         
     def LockinUpdateParameters(self):   # Function sets desired Lock-in parameters and calls setParameter function 
-        """Function to update Lockin parameters
-        :raises LoggerError: Raises error if Lockin not connected
-        ...
-        :return: None
-        """        
+        """Function to update Lockin parameters.
+        
+        Returns
+        -------
+        None
+        
+        Raises
+        ------
+        LoggerError
+            Raises error if Lockin not connected
+
+        """     
         if self.lockin_connected:  
             self.c_2 = str(self.channel) # Channel 2, with value 1, for the reference input
             self.tc = self.ui.pickTC.value() # Import value for time constant
@@ -463,8 +566,12 @@ class MainWindow(QtWidgets.QMainWindow):
             self.logger.error("Lock-In Not Connected")
              
     def setParameters(self):       
-        """Function to set default Lockin parameters
-        :return: None
+        """Function to set default Lockin parameters.
+        
+        Returns
+        -------
+        None
+        
         """
  #       c = str(0)      
  #       print(self.amplification)
@@ -532,14 +639,20 @@ class MainWindow(QtWidgets.QMainWindow):
         """
         Function to update position of first filter wheel from GUI defaults.
             
-            Parameters:
-                    wavelength:
-        :param wavelength: Current wavelength position of monochromator
-        :type wavelength: float, required
-        ...
-        :raises LoggerError: Raises error if filter wheel commands are invalid or monochromator not connected
-        ...
-        :return: None
+        Parameters
+        ----------
+        wavelength: float, required
+            Current wavelength position of monochromator
+
+        Returns
+        -------
+        None
+        
+        Raises
+        ------
+        LoggerError
+            Raises error if filter wheel commands are invalid or monochromator not connected
+
         """
         if self.mono_connected:
             with serial.Serial(self.mono_usb, 9600, timeout=0) as self.p:
@@ -600,14 +713,23 @@ class MainWindow(QtWidgets.QMainWindow):
     
     
     def monoCheckGrating(self, wavelength):   # Grating switching points from GUI
-        """Function to update monochromator grating position from GUI defaults 
-        :param wavelength: Current wavelength position of monochromator
-        :type wavelength: float, required
-        ...
-        :raises LoggerError: Raises error if grating commands are invalid or monochromator not connected
-        ...
-        :return: None
-        """   
+        """Function to update monochromator grating position from GUI defaults.
+        
+        Parameters
+        ----------
+        wavelength: float, required
+            Current wavelength position of monochromator
+
+        Returns
+        --------
+        None
+        
+        Raises
+        ------
+        LoggerError
+            Raises error if grating commands are invalid or monochromator not connected
+
+        """
         if self.mono_connected:
             with serial.Serial(self.mono_usb, 9600, timeout=0) as self.p:
                 self.p.write('?grating\r'.encode())
@@ -660,13 +782,23 @@ class MainWindow(QtWidgets.QMainWindow):
 # -----------------------------------------------------------------------------------------------------------
 
     def changeFilter(self, pos):
-        """Function to update position of second filter wheel 
-        :param pos: Target filter position, between 1-6
-        :type pos: int, required
-        ...
-        :raises LoggerError: Raises error if second filter wheel not connected
-        ...
-        :return: Returns True if connection to second filter wheel is successful, False otherwise
+        """Function to update position of second filter wheel.
+        
+        Parameters
+        ----------
+        pos: int, required
+            Target filter position, between 1-6
+            
+        Returns
+        -------
+        bool
+            True if connection to second filter wheel is successful, False otherwise
+            
+        Raises
+        ------
+        LoggerError
+            Raises error if second filter wheel not connected
+       
         """
         with serial.Serial(port=self.filter_usb, baudrate=115200,
                                      bytesize=8, parity='N', stopbits=1,
@@ -703,8 +835,12 @@ class MainWindow(QtWidgets.QMainWindow):
     # Set parameters and measure Silicon reference diode
 
     def MonoHandleSiRefButton(self):
-        """Function to meausure silicon reference photodiode
-        :return: None
+        """Function to meausure silicon reference photodiode.
+        
+        Returns
+        -------
+        None 
+
         """
         start_si = self.ui.startNM_Si.value()
         stop_si = self.ui.stopNM_Si.value()
@@ -726,8 +862,12 @@ class MainWindow(QtWidgets.QMainWindow):
     # Set parameters and measure InGaAs reference diode
                
     def MonoHandleGARefButton(self):
-        """Function to meausure silicon reference photodiode
-        :return: None
+        """Function to meausure silicon reference photodiode.
+        
+        Returns
+        -------
+        None 
+
         """
         start_ga = self.ui.startNM_GA.value()
         stop_ga = self.ui.stopNM_GA.value()
@@ -749,8 +889,12 @@ class MainWindow(QtWidgets.QMainWindow):
     # Set parameters and measure sample
         
     def MonoHandleMeasureButton(self):
-        """Function to meausure samples with different wavelength ranges
-        :return: None
+        """Function to meausure samples with different wavelength ranges.
+        
+        Returns
+        -------
+        None
+
         """
         if self.ui.Range1.isChecked():    
             start_r1 = self.ui.startNM_R1.value()
@@ -812,8 +956,12 @@ class MainWindow(QtWidgets.QMainWindow):
     # Set parameters for complete scan and measure sample
 
     def MonoHandleCompleteScanButton(self):
-        """Function to meausure samples with different filters
-        :return: None
+        """Function to meausure samples with different filters.
+        
+        Returns
+        -------
+        None
+        
         """
         self.complete_scan = True
 
@@ -959,15 +1107,22 @@ class MainWindow(QtWidgets.QMainWindow):
     # General function to create scanning list
         
     def createScanJob(self, start, stop, step):
-        """Function to compile scan parameters 
-        :param start: Wavelength start value
-        :type start: float, required
-        :param stop: Wavelength stop value
-        :type stop: float, required
-        :param step: Wavelength step value
-        :type step: float, required
-        ...
-        :return: List of integer wavelength values
+        """Function to compile scan parameters.
+        
+        Parameters
+        ----------
+        start: float, required
+            Wavelength start value
+        stop: float, required
+            Wavelength stop value
+        step: float, required
+            Wavelength step value
+            
+        Returns
+        -------
+        List
+            List of integer wavelength values
+
         """
         scan_list = []       
         number = int((stop-start)/step)
@@ -981,13 +1136,22 @@ class MainWindow(QtWidgets.QMainWindow):
     # Scan through wavelength range   ### Not being used currently
            
     def Scan(self, scan_list):
-        """Function to send commmands to monochromator and move through wavelength list
-        :param scan_list: List of wavelength values to scan
-        :type scan_list: list of ints, required
-        ...
-        :raises LoggerError: Raises error if second filter wheel not connected
-        ...
-        :return: None
+        """Function to send commmands to monochromator and move through wavelength list.
+        
+        Parameters
+        ----------
+        scan_list: list of ints, required
+            List of wavelength values to scan
+            
+        Returns
+        -------
+        None
+        
+        Raises
+        ------
+        LoggerError
+            Raises error if second filter wheel not connected
+
         """
         if self.mono_connected:
             for element in scan_list:
@@ -1008,21 +1172,27 @@ class MainWindow(QtWidgets.QMainWindow):
     # Measure LOCKIN response    
      
     def HandleMeasurement(self, scan_list, start, stop, step, amp, number):  
-        """Function to prepare sample measurement
-        :param scan_list: List of wavelength values to scan
-        :type scan_list: list of ints, required
-        :param start: Wavelength start value
-        :type start: float, required
-        :param stop: Wavelength stop value
-        :type stop: float, required
-        :param step: Wavelength step value
-        :type step: float, required
-        :param amp: Pre-amplifier amplification value
-        :type amp: float, required
-        :param number: Specifier to decide if power value is calculated (1) or not (0)
-        :type number: int, required
-        ...
-        :return: None
+        """Function to prepare sample measurement.
+        
+        Parameters
+        ----------
+        scan_list: list of ints, required
+            List of wavelength values to scan
+        start: float, required
+            Wavelength start value
+        stop: float, required
+            Wavelength stop value
+        step: float, required
+            Wavelength step value
+        amp: float, required
+            Pre-amplifier amplification value
+        number: int, required
+            Specifier to decide if power value is calculated (1) or not (0)
+
+        Returns
+        -------
+        None
+        
         """      
         if self.mono_connected and self.lockin_connected and self.filter_connected:   
             # Assign user, expriment and file name for current measurement
@@ -1060,13 +1230,19 @@ class MainWindow(QtWidgets.QMainWindow):
          
          
     def measure(self, scan_list, number):     
-        """Function to perform sample measurement
-        :param scan_list: List of wavelength values to scan
-        :type scan_list: list of ints, required
-        :param number: Specifier to decide if power value is calculated (1) or not (0)
-        :type number: int, required
-        ...
-        :return: None
+        """Function to perform sample measurement.
+        
+        Parameters
+        ----------
+        scan_list: list of ints, required
+            List of wavelength values to scan
+        number: int, required
+            Specifier to decide if power value is calculated (1) or not (0)
+
+        Returns
+        -------
+        None
+
         """
 #        columns = ['Wavelength', 'Mean Current', 'Amplification', 'Mean R', 'Log Mean R', 'Mean RMS', 'Mean X', 'Mean Y', 'Mean Frequency', 'Mean Phase']
         columns = ['Wavelength', 'Mean Current', 'Amplification', 'Mean R', 'Mean Frequency', 'Mean Phase']    
@@ -1179,14 +1355,20 @@ class MainWindow(QtWidgets.QMainWindow):
     # Function to calculate the reference power
 
     def calculatePower(self, ref_df, cal_df):
-        """Function to calculate power
-        :param ref_df: DataFrame of reference measurements
-        :type ref_df: DataFrame, required
-        :param cal_df: DataFrame of reference calibration measurements
-        :type cal_df: DataFrame, required
-        ...
-        :return: DataFrame of reference diode measurements incl. power
-        :rtype: DataFrame
+        """Function to calculate power.
+        
+        Parameters
+        ----------
+        ref_df: DataFrame, required
+            DataFrame of reference measurements
+        cal_df: DataFrame, required
+            DataFrame of reference calibration measurements
+        
+        Returns
+        -------
+        DataFrame
+            DataFrame of reference diode measurements incl. power
+
         """        
         cal_wave_dict = {} # Create an empty dictionary
         power = [] # Create an empty list
@@ -1216,8 +1398,12 @@ class MainWindow(QtWidgets.QMainWindow):
 # -----------------------------------------------------------------------------------------------------------   
             
     def set_up_plot(self): 
-        """Function to set up plot
-        :return: None
+        """Function to set up plot.
+        
+        Returns
+        -------
+        None
+
         """               
         style.use('ggplot')
         fig1 = plt.figure()
@@ -1268,15 +1454,21 @@ class MainWindow(QtWidgets.QMainWindow):
 # -----------------------------------------------------------------------------------------------------------   
         
     def naming(self, file_name, path_name, num):
-        """Function to compile filename
-        :param file_name: File name
-        :type file_name: str, required
-        :param path_name: Path name
-        :type path_name: str, required
-        :param num: Filter number
-        :type num: str, required
-        ...
-        :return: None
+        """Function to compile filename.
+        
+        Parameters
+        ----------
+        file_name: str, required
+            File name
+        path_name: str, required
+            Path name
+        num: str, required
+            Filter number
+        
+        Returns
+        -------
+        None
+
         """        
         name = os.path.join(path_name, file_name)
         exists = os.path.exists(name)
@@ -1294,15 +1486,23 @@ class MainWindow(QtWidgets.QMainWindow):
 # -----------------------------------------------------------------------------------------------------------   
         
     def HandleStopButton(self):
-        """Function to stop measurement
-        :return: None
+        """Function to stop measurement.
+        
+        Returns
+        -------
+        None
+
         """
         self.measuring = False
         self.ui.imageStop.setPixmap(QtGui.QPixmap("Button_on.png"))
 
     def HandleStopCompleteScanButton(self):
-        """Function to stop multi-filter measurement
-        :return: None
+        """Function to stop multi-filter measurement.
+        
+        Returns
+        -------
+        None
+
         """
         self.measuring = False
         self.ui.imageCompleteScan_stop.setPixmap(QtGui.QPixmap("Button_on.png"))
@@ -1310,8 +1510,12 @@ class MainWindow(QtWidgets.QMainWindow):
 # -----------------------------------------------------------------------------------------------------------
 
     def get_logger(self):
-        """Function to set up logger
-        :return: Returns logger
+        """Function to set up logger.
+        
+        Returns
+        -------
+        logger
+        
         """
         logger = logging.getLogger()
         logger.setLevel(logging.DEBUG)
