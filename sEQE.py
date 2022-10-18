@@ -451,17 +451,17 @@ class MainWindow(QtWidgets.QMainWindow):
         if self.mono_connected:
             
             if self.p.is_open:
-    #            self.logger.info('Moving to Monochromator Filter %d' % filterNo)
+                self.logger.info('Moving to Monochromator Filter %d' % filterNo)
                 self.p.write('{:d} FILTER\r'.format(filterNo).encode())
-                self.p.readline()
+                print(self.p.readline())
                 self.waitForOK()
             
             else: 
                 with serial.Serial(self.mono_usb, 9600, timeout=0) as self.p:
                     if self.mono_connected:
-    #            self.logger.info('Moving to Monochromator Filter %d' % filterNo)
+                        self.logger.info('Moving to Monochromator Filter %d' % filterNo)
                         self.p.write('{:d} FILTER\r'.format(filterNo).encode())
-                        self.p.readline()
+                        print(self.p.readline())
                         self.waitForOK()
             
         else:
@@ -673,8 +673,11 @@ class MainWindow(QtWidgets.QMainWindow):
                     filterNo = 5
                 elif response.endswith('6  ok\r\n'.encode()) or response.endswith(' 6  ok\r\n'.encode()):
                     filterNo = 6
+                elif response.endswith('ok\r\n'.encode()) or response.endswith(' ok\r\n'.encode()):
+                    filterNo = 0
+                
                 else:   # Do I need this?
-                    self.logger.error('Error: Filter Response')
+                    self.logger.error('Error: Monchromator Filter Response')
 
                 startNM_F2 = int(self.ui.startNM_F2.value())
                 stopNM_F2 = int(self.ui.stopNM_F2.value())                
@@ -697,16 +700,16 @@ class MainWindow(QtWidgets.QMainWindow):
     #                shouldbeFilterNo = 2
                     self.logger.error('Error: Filter Out Of Range')
 
-                    if shouldbeFilterNo != filterNo:
-                        self.chooseFilter(shouldbeFilterNo)    
+                if shouldbeFilterNo != filterNo:
+                    self.chooseFilter(shouldbeFilterNo)    
 
 
                     # Take data and discard it, this is required to avoid kinks
                     # Poll data for 5 time constants, second parameter is poll timeout in [ms] (recomended value is 500ms) 
-                        dataDict = self.daq.poll(5*self.tc,500)  # Dictionary with ['timestamp']['x']['y']['frequency']['phase']['dio']['trigger']['auxin0']['auxin1']['time']
+                    dataDict = self.daq.poll(5*self.tc,500)  # Dictionary with ['timestamp']['x']['y']['frequency']['phase']['dio']['trigger']['auxin0']['auxin1']['time']
 
-                    else:
-                        pass
+                else:
+                    pass
                 
         else:
             self.logger.error('Monochromator Not Connected') 
