@@ -32,9 +32,26 @@ from matplotlib import style
 from numpy import *
 from scipy.interpolate import interp1d
 
+from microscope.filterwheels.thorlabs import ThorlabsFilterWheel
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
+        
+         # Path to USB connections NOTE: Change these if necessary - this will be improved à la Grey
+        if platform.system() == 'Linux':
+            self.filter_usb = '/dev/ttyUSB0'
+            self.mono_usb = '/dev/ttyUSB1' 
+            self.save_path = '/home/jungbluthl/Desktop/sEQE Data'
+        elif platform.system() == 'Windows':
+            self.filter_usb = 'COM4'
+            self.mono_usb = 'COM1'
+            self.save_path = 'C:\\Users\\hanauske\\Desktop\\sEQE-Data'
+        else:
+            self.logger.error('Operating System is not known - defaulting to Linux system')
+            self.filter_usb = '/dev/ttyUSB0'
+            self.mono_usb = '/dev/ttyUSB1'
+            # Path to save data
+            self.save_path = '/home/jungbluthl/Desktop/sEQE Data'
         
         QtWidgets.QMainWindow.__init__(self)
         
@@ -53,6 +70,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.lockin_connected = False   # Set the Lock-in connection to False
         self.filter_connected = False  # Set the filterwheel connection to False
         
+        self.thorfilterwheel = ThorlabsFilterWheel(com=self.filter_usb) # Initialize Thorlabs filter wheel
+        
         # General Setup
          
         self.channel = 1
@@ -64,6 +83,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.complete_scan = False
 
         self.filter_addition = 'None' ####################################################################################
+        
         
         # Handle Monochromator Buttons
         
@@ -105,28 +125,14 @@ class MainWindow(QtWidgets.QMainWindow):
         
         InGaAs_file = pd.ExcelFile("FGA21-CAL.xlsx")
         self.InGaAs_cal = InGaAs_file.parse('Sheet1')     
-
-        # Path to USB connections NOTE: Change these if necessary - this will be improved à la Grey
-        if platform.system() == 'Linux':
-            self.filter_usb = '/dev/ttyUSB0'
-            self.mono_usb = '/dev/ttyUSB1' 
-            self.save_path = '/home/jungbluthl/Desktop/sEQE Data'
-        elif platform.system() == 'Windows':
-            self.filter_usb = 'COM4'
-            self.mono_usb = 'COM1'
-            self.save_path = 'C:\\Users\\hanauske\\Desktop\\sEQE-Data'
-        else:
-            self.logger.error('Operating System is not known - defaulting to Linux system')
-            self.filter_usb = '/dev/ttyUSB0'
-            self.mono_usb = '/dev/ttyUSB1'
-            # Path to save data
-            self.save_path = '/home/jungbluthl/Desktop/sEQE Data'
         
-    # Close connection to Monochromator when window is closed
+    # Close connection to Monochromator and Thorlabs filter wheel when window is closed
     
     def __del__(self):
         try:
-            self.p.close()
+            self.thorfilterwheel.close()
+            with serial.Serial(self.mono_usb, 9600, timeout=0) as self.p:
+                self.p.close()
         except:
             pass 
 
@@ -173,8 +179,8 @@ class MainWindow(QtWidgets.QMainWindow):
         
         """
         ret = False
-        self.p.timeout = 1
-        shouldbEOk = ''.join([element.decode("utf-8") for element in self.p.readlines()])
+        self.p.timeout = 0.05
+        shouldbEOk = ''.join([element.decode(encoding = "ascii" , errors = 'ignore') for element in self.p.readlines()])
         print(shouldbEOk)
 
         if shouldbEOk.endswith('ok\r\n'):
@@ -233,32 +239,37 @@ class MainWindow(QtWidgets.QMainWindow):
             Raises exception if filter wheel USB port is inaccessible
         
         """ 
-        with serial.Serial(port=self.filter_usb, baudrate=115200,
-                                     bytesize=8, parity='N', stopbits=1,
-                                     timeout=1, xonxoff=0, rtscts=0) as self._fw:
-            try: True
+#         with serial.Serial(port=self.filter_usb, baudrate=115200,
+#                                      bytesize=8, parity='N', stopbits=1,
+#                                      timeout=1, xonxoff=0, rtscts=0) as self._fw:
+#             try: True
             
-            except  serial.SerialException as ex:
-                self.logger.error('Port {0} is unavailable: {1}'.format(self.filter_usb, ex))
-                self.filter_connected = False
-                return
-            except  OSError as ex:
-                self.logger.error('Port {0} is unavailable: {1}'.format(self.filter_usb, ex))
-                self.filter_connected = False
-                return
+#             except  serial.SerialException as ex:
+#                 self.logger.error('Port {0} is unavailable: {1}'.format(self.filter_usb, ex))
+#                 self.filter_connected = False
+#                 return
+#             except  OSError as ex:
+#                 self.logger.error('Port {0} is unavailable: {1}'.format(self.filter_usb, ex))
+#                 self.filter_connected = False
+#                 return
 
-            self._sio = io.TextIOWrapper(io.BufferedRWPair(self._fw, self._fw, 1),
-                                     newline=None, encoding='ascii')
+#             self._sio = io.TextIOWrapper(io.BufferedRWPair(self._fw, self._fw, 1),
+#                                      newline=None, encoding='ascii')
 
-            self.logger.info("Connection to External Filter Wheel Established")
+#             self.logger.info("Connection to External Filter Wheel Established")
 
-#        self._sio.write('*idn?\r')
-#        devInfo = self._sio.readlines(2048)[1][:-1]
-#        print(devInfo)
+# #        self._sio.write('*idn?\r')
+# #        devInfo = self._sio.readlines(2048)[1][:-1]
+# #        print(devInfo)
 
-            self._sio.flush()
+#             self._sio.flush()
+        if self.thorfilterwheel.position == 0:
             self.filter_connected = True
+            self.logger.info("Connection to External Filter Wheel Established")
             self.ui.imageConnect_filter.setPixmap(QtGui.QPixmap("Button_on.png"))
+        else:
+            self.logger.error('Port {0} is unavailable: {1}'.format(self.filter_usb, ex))
+            self.filter_connected = False
 
 # -----------------------------------------------------------------------------------------------------------        
         
@@ -803,19 +814,26 @@ class MainWindow(QtWidgets.QMainWindow):
             Raises error if second filter wheel not connected
        
         """
-        with serial.Serial(port=self.filter_usb, baudrate=115200,
-                                     bytesize=8, parity='N', stopbits=1,
-                                     timeout=1, xonxoff=0, rtscts=0) as self._fw:
-            if not self.filter_connected:
-                self.logger.error("External Filter Wheel Not Connected")
-                return False
+#         with serial.Serial(port=self.filter_usb, baudrate=115200,
+#                                      bytesize=8, parity='N', stopbits=1,
+#                                      timeout=1, xonxoff=0, rtscts=0) as self._fw:
+#             if not self.filter_connected:
+#                 self.logger.error("External Filter Wheel Not Connected")
+#                 return False
 
-            #ans = 'ERROR'
-            self._sio = io.TextIOWrapper(io.BufferedRWPair(self._fw, self._fw, 1),
-                                     newline=None, encoding='ascii')
-            self._sio.flush()
-            self._sio.write('pos=' + str(pos) + '\r')
+#             #ans = 'ERROR'
+#             self._sio = io.TextIOWrapper(io.BufferedRWPair(self._fw, self._fw, 1),
+#                                      newline=None, encoding='ascii')
+#             self._sio.flush()
+#             self._sio.write('pos=' + str(pos) + '\r')
+        if not self.filter_connected:
+            self.logger.error("External Filter Wheel Not Connected")
+            return False
 
+        self.thorfilterwheel._do_set_position(pos-1)
+        self.logger.info('Thorlabs filterwheel updated')
+        
+    
         # ans = self._sio.readlines(2048)
         # regerr = re.compile("Command error.*")
         # errors = [m.group(0) for l in ans for m in [regerr.search(l)] if m]
@@ -959,7 +977,7 @@ class MainWindow(QtWidgets.QMainWindow):
     # Set parameters for complete scan and measure sample
 
     def MonoHandleCompleteScanButton(self):
-        """Function to meausure samples with different filters.
+        """Function to measure samples with different filters.
         
         Returns
         -------
