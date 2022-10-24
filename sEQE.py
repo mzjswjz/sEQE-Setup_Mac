@@ -20,7 +20,6 @@ import pathlib
 
 import GUI_template
 import matplotlib
-import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 import pandas as pd
 import serial
@@ -32,6 +31,7 @@ from matplotlib import style
 from numpy import *
 from scipy.interpolate import interp1d
 
+import threading
 from microscope.filterwheels.thorlabs import ThorlabsFilterWheel
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -179,7 +179,7 @@ class MainWindow(QtWidgets.QMainWindow):
         
         """
         ret = False
-        self.p.timeout = 0.05
+        self.p.timeout = 0.1 #0.05 is possible, but the monochromator sounds different - could we break it ?
         shouldbEOk = ''.join([element.decode(encoding = "ascii" , errors = 'ignore') for element in self.p.readlines()])
         print(shouldbEOk)
 
@@ -672,19 +672,21 @@ class MainWindow(QtWidgets.QMainWindow):
                 response = self.p.readline() 
                 print(response)
                 
-                if response.endswith('1  ok\r\n'.encode()) or response.endswith(' 1  ok\r\n'.encode()):
+                if response.endswith('1  ok\r\n'.encode(errors='ignore')) or response.endswith(' 1  ok\r\n'.encode()):
                     filterNo = 1
-                elif response.endswith('2  ok\r\n'.encode()) or response.endswith(' 2  ok\r\n'.encode()):
+                elif response.endswith('2  ok\r\n'.encode(errors='ignore')) or response.endswith(' 2  ok\r\n'.encode()):
                     filterNo = 2 
-                elif response.endswith('3  ok\r\n'.encode()) or response.endswith(' 3  ok\r\n'.encode()):
+                elif response.endswith('3  ok\r\n'.encode(errors='ignore')) or response.endswith(' 3  ok\r\n'.encode()):
                     filterNo = 3
-                elif response.endswith('4  ok\r\n'.encode()) or response.endswith(' 4  ok\r\n'.encode()):
+                elif response.endswith('4  ok\r\n'.encode(errors='ignore')) or response.endswith(' 4  ok\r\n'.encode()):
                     filterNo = 4 
-                elif response.endswith('5  ok\r\n'.encode()) or response.endswith(' 5  ok\r\n'.encode()):
+                elif response.endswith('5  ok\r\n'.encode(errors='ignore')) or response.endswith(' 5  ok\r\n'.encode()):
                     filterNo = 5
-                elif response.endswith('6  ok\r\n'.encode()) or response.endswith(' 6  ok\r\n'.encode()):
+                elif response.endswith('6  ok\r\n'.encode(errors='ignore')) or response.endswith(' 6  ok\r\n'.encode()):
                     filterNo = 6
-                elif response.endswith('ok\r\n'.encode()) or response.endswith(' ok\r\n'.encode()):
+                elif response.endswith('ok\r\n'.encode(errors='ignore')) or response.endswith(' ok\r\n'.encode()):
+                    filterNo = 0
+                elif response.endswith('\n'.encode(errors='ignore')):
                     filterNo = 0
                 
                 else:   # Do I need this?
@@ -1247,7 +1249,9 @@ class MainWindow(QtWidgets.QMainWindow):
                 pass       
             self.naming(fileName, self.path, 2)  # This function defines a variable called self.file_name
             
-            self.measure(scan_list, number)            
+            self.measure(scan_list, number)
+            
+            
          
          
     def measure(self, scan_list, number):     
@@ -1278,7 +1282,7 @@ class MainWindow(QtWidgets.QMainWindow):
             
         time.sleep(1)
 
-        # Set up empty lists for measurements
+    # Set up empty lists for measurements
         plot_list_x = []
         plot_list_y = []
         plot_log_list_y = []
@@ -1293,7 +1297,8 @@ class MainWindow(QtWidgets.QMainWindow):
         count = 0
         
 #        self.chooseFilter(2)
-        
+
+
         while len(scan_list)>0:            
             if self.measuring:                
                 wavelength = scan_list[0]
@@ -1355,12 +1360,13 @@ class MainWindow(QtWidgets.QMainWindow):
                             
                             data_file = data_df.to_csv(os.path.join(self.path, self.file_name))
                             
+                            
                             if self.do_plot:
                                 self.ax1.plot(plot_list_x, plot_list_y, color = '#000000')
                                 self.ax2.plot(plot_list_x, plot_log_list_y, color = '#000000')
                                 self.ax3.plot(plot_list_x, plot_list_phase, color = '#000000')
                                 plt.draw()
-                                plt.pause(0.0001)
+                                plt.pause(0.1)
                                     
                 del scan_list[0]
                 count+=1  
@@ -1368,9 +1374,9 @@ class MainWindow(QtWidgets.QMainWindow):
             else:
                 break
         
-        # Unsubscribe to scope 
-        self.daq.unsubscribe(self.path0)        
 
+        # Unsubscribe to scope 
+        self.daq.unsubscribe(self.path0)
 # -----------------------------------------------------------------------------------------------------------   
 
     # Function to calculate the reference power
@@ -1425,7 +1431,7 @@ class MainWindow(QtWidgets.QMainWindow):
         -------
         None
 
-        """               
+        """
         style.use('ggplot')
         fig1 = plt.figure()
                     
@@ -1559,12 +1565,12 @@ class MainWindow(QtWidgets.QMainWindow):
         
 def main():
 
-  app = QtWidgets.QApplication(sys.argv)
-  monoUI = MainWindow()
-  monoUI.show()
-  sys.exit(app.exec_())
+    app = QtWidgets.QApplication(sys.argv)
+    monoUI = MainWindow()
+    monoUI.show()
+    sys.exit(app.exec_())
 
 if __name__ == "__main__": 
-  main()
+    main()
   
 
