@@ -1365,9 +1365,8 @@ class MainWindow(QtWidgets.QMainWindow):
                                 self.ax1.plot(plot_list_x, plot_list_y, color = '#000000')
                                 self.ax2.plot(plot_list_x, plot_log_list_y, color = '#000000')
                                 self.ax3.plot(plot_list_x, plot_list_phase, color = '#000000')
-                                plt.draw()
-                                plt.pause(0.1)
-                                    
+                                self.pause(0.1)
+                                
                 del scan_list[0]
                 count+=1  
                 
@@ -1473,10 +1472,86 @@ class MainWindow(QtWidgets.QMainWindow):
         plt.tick_params(labelsize=15, direction='in', axis='both', which='major', length=8, width=2)
         plt.tick_params(labelsize=15, direction='in', axis='both', which='minor', length=4, width=2)
         
+        plt.show()
+        
+        return fig1
 #        plt.rcParams['font.family']='sans-serif'
 #        plt.rcParams['font.sans-serif']='Times'   
         
 #        plt.show()
+
+#     def pause_without_popup_plot(self,interval):
+#         """Function to pause matplotlib without plt.show()
+        
+#         Parameters
+#         ----------
+#         interval: int, required
+#             Pause time
+            
+#         Returns
+#         -------
+#         None
+        
+#         Notes
+#         -----
+#         This is a reimplementation of the matplotlib pause function, removing the final show() call.
+#         It prevents the matplotlib plot window to pop up after each measurement
+        
+#         Code was taken from a stack exchange answer by ImportanceOfBeingErnest
+        
+#         """
+#         # Matplotlib backend choice influences the plotting process:
+#         backend = plt.rcParams['backend'] 
+#         # Check whether current backend is in a list of interactive backends:
+#         if backend in matplotlib.rcsetup.interactive_bk: 
+#             figManager = matplotlib._pylab_helpers.Gcf.get_active() # Activate current figure
+#             if figManager is not None:                              # Check if figManager exists 
+#                 canvas = figManager.canvas                          # Assigns the matplotlib canvas
+#                 if canvas.figure.stale:                             # If stale=true, internal state of artist has changed
+#                     canvas.draw()                                   # Redraw canvas
+#                 canvas.start_event_loop(interval)                   # Blocks events until interval time is reached
+#                 return
+
+    def pause(self,interval):
+        """Function to pause matplotlib without plt.show()
+        
+        Parameters
+        ----------
+        interval: int, required
+            Pause time
+            
+        Returns
+        -------
+        None
+        
+        Notes
+        -----
+        This is a reimplementation of the matplotlib pause function, removing the final show() call.
+        It prevents the matplotlib plot window to pop up after each measurement.
+        
+        The matplotlib 3.6 docstring says: 
+        
+        "Run the GUI event loop for *interval* seconds.
+        If there is an active figure, it will be updated and displayed before the
+        pause, and the GUI event loop (if any) will run during the pause.
+        This can be used for crude animation.  For more complex animation use
+        :mod:`matplotlib.animation`.
+        If there is no active figure, sleep for *interval* seconds instead.
+        See Also
+        --------
+        matplotlib.animation : Proper animations
+        show : Show all figures and optional block until all figures are closed."
+        
+        """
+        manager = matplotlib._pylab_helpers.Gcf.get_active()
+        if manager is not None:
+            canvas = manager.canvas
+            if canvas.figure.stale:
+                canvas.draw_idle()
+            #show(block=False)
+            canvas.start_event_loop(interval)
+        else:
+            time.sleep(interval)
 
 # -----------------------------------------------------------------------------------------------------------   
         
