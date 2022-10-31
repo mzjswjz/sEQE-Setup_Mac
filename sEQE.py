@@ -31,6 +31,7 @@ from matplotlib import style
 from numpy import *
 from scipy.interpolate import interp1d
 
+import codecs
 import threading
 from microscope.filterwheels.thorlabs import ThorlabsFilterWheel
 
@@ -45,7 +46,8 @@ class MainWindow(QtWidgets.QMainWindow):
         elif platform.system() == 'Windows':
             self.filter_usb = 'COM4'
             self.mono_usb = 'COM1'
-            self.save_path = 'C:\\Users\\hanauske\\Desktop\\sEQE-Data'
+            #self.save_path = 'C:\\Users\\hanauske\\Desktop\\sEQE-Data'
+            self.save_path = 'C:\\Users\\Public\\Documents\\sEQE'
         else:
             self.logger.error('Operating System is not known - defaulting to Linux system')
             self.filter_usb = '/dev/ttyUSB0'
@@ -135,6 +137,17 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.p.close()
         except:
             pass 
+        
+        
+# -----------------------------------------------------------------------------------------------------------
+
+    #### Functions to import data into GUI
+    
+# -----------------------------------------------------------------------------------------------------------
+
+
+
+
 
 # -----------------------------------------------------------------------------------------------------------        
 
@@ -179,16 +192,38 @@ class MainWindow(QtWidgets.QMainWindow):
         
         """
         ret = False
-        self.p.timeout = 0.1 #0.05 is possible, but the monochromator sounds different - could we break it ?
-        shouldbEOk = ''.join([element.decode(encoding = "ascii" , errors = 'ignore') for element in self.p.readlines()])
-        print(shouldbEOk)
+        self.p.timeout = 40000
+        shouldbEOk = 'filler'
+        
+        try:
+            while shouldbEOk != 'ok\r\n':
+                shouldbEOk = self.p.readline()
+                shouldbEOk = codecs.decode(shouldbEOk)
+                #print(type(shouldbEOk))
+                #print ( shouldbEOk.endswith('ok\r\n') == True )
+                if shouldbEOk.endswith('ok\r\n'):
+                    ret = True
+                    return ret
+                else:
+                    print('Connection to Monochromator Could Not Be Established')
+           
+            self.p.timeout = 0
+            return ret
 
-        if shouldbEOk.endswith('ok\r\n'):
-            ret = True
-        else:
-            print('Connection to Monochromator Could Not Be Established')
-        self.p.timeout = 0
-        return ret
+            
+        except Exception as error:
+            self.logger.error('An exception occured within the waitForOk function - is the ok\r\n still detected ?:' + error)
+#         ret = False
+#         self.p.timeout = 10 #0.05 is possible, but the monochromator sounds different - could we break it ?
+#         shouldbEOk = ''.join([element.decode(encoding = 'utf-8' , errors = 'ignore') for element in self.p.readlines()])
+#         print(shouldbEOk)
+
+#         if shouldbEOk.endswith('ok\r\n'):
+#             ret = True
+#         else:
+#             print('Connection to Monochromator Could Not Be Established')
+#         self.p.timeout = 0
+#         return ret
         
     # Establish connection to LOCKIN
     
@@ -207,8 +242,10 @@ class MainWindow(QtWidgets.QMainWindow):
         d = zhinst.ziPython.ziDiscovery()
         props = d.get(d.find(dev))
         daq = zhinst.ziPython.ziDAQServer(props['serveraddress'],
-        props['serverport'], props['apilevel'])
-        daq.connectDevice(dev, props['interfaces'][0])
+                                          props['serverport'], 
+                                          props['apilevel'])
+        daq.connectDevice(dev, 
+                          props['interfaces'][0])
         
         self.daq = daq
         
@@ -416,13 +453,13 @@ class MainWindow(QtWidgets.QMainWindow):
             if self.p.is_open:
                 self.logger.info('Moving to Grating %d' % gratingNo)
                 self.p.write('{:d} grating\r'.format(gratingNo).encode())
-                print(self.p.readline())
+                #print(self.p.readline())
                 self.waitForOK()
             else:
                 with serial.Serial(self.mono_usb, 9600, timeout=0) as self.p:
                     self.logger.info('Moving to Grating %d' % gratingNo)
                     self.p.write('{:d} grating\r'.format(gratingNo).encode())
-                    print(self.p.readline())
+                    #print(self.p.readline())
                     self.waitForOK()
         else:
             self.logger.error('Monochromator Not Connected')
@@ -464,7 +501,7 @@ class MainWindow(QtWidgets.QMainWindow):
             if self.p.is_open:
                 self.logger.info('Moving to Monochromator Filter %d' % filterNo)
                 self.p.write('{:d} FILTER\r'.format(filterNo).encode())
-                print(self.p.readline())
+                #print(self.p.readline())
                 self.waitForOK()
             
             else: 
@@ -472,7 +509,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     if self.mono_connected:
                         self.logger.info('Moving to Monochromator Filter %d' % filterNo)
                         self.p.write('{:d} FILTER\r'.format(filterNo).encode())
-                        print(self.p.readline())
+                        #print(self.p.readline())
                         self.waitForOK()
             
         else:
