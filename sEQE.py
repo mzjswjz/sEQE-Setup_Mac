@@ -34,26 +34,53 @@ from scipy.interpolate import interp1d
 import codecs
 import threading
 from microscope.filterwheels.thorlabs import ThorlabsFilterWheel
+import LINK_automation
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         
-         # Path to USB connections NOTE: Change these if necessary - this will be improved à la Grey
-        if platform.system() == 'Linux':
-            self.filter_usb = '/dev/ttyUSB0'
-            self.mono_usb = '/dev/ttyUSB1' 
-            self.save_path = '/home/jungbluthl/Desktop/sEQE Data'
-        elif platform.system() == 'Windows':
-            self.filter_usb = 'COM4'
-            self.mono_usb = 'COM1'
-            #self.save_path = 'C:\\Users\\hanauske\\Desktop\\sEQE-Data'
-            self.save_path = 'C:\\Users\\Public\\Documents\\sEQE'
+         # Initialising ports, device names and save path
+        file = pathlib.Path('pathsNdevices_config.txt')
+        if file.exists():
+            pNpdata = file.read_text().split(',')
+            self.zurich_device = pNpdata[0]
+            self.filter_usb = pNpdata[1]
+            self.mono_usb =  pNpdata[2]
+            self.save_path = pNpdata[3]
+            #file.unlink() # to delete file        
         else:
-            self.logger.error('Operating System is not known - defaulting to Linux system')
-            self.filter_usb = '/dev/ttyUSB0'
-            self.mono_usb = '/dev/ttyUSB1'
-            # Path to save data
-            self.save_path = '/home/jungbluthl/Desktop/sEQE Data'
+            file.touch(exist_ok = False)
+            if platform.system() == 'Linux':
+                port_prefix = '/dev/ttyUSB'
+            elif platform.system() == 'Windows':
+                port_prefix = 'COM'
+            else:
+                self.logger.error('Operating System is not known - defaulting to Linux system')
+                port_prefix = '/dev/tty'
+            
+            self.zurich_device = str(input('Which zurich instrument device is used  ? - type device address string e.g. UHF-DEV2000.')) #'hf2-dev838'
+            self.filter_usb = port_prefix+str(input('Which port number is used by the second filter wheel ? - type a number'))#'COM4'
+            self.mono_usb =  port_prefix+str(input('Which port number is used by the monochromator ? - type a number'))#'COM1'
+            self.save_path = pathlib.Path(input('Where do you want to save your data ? - copy absolute path of folder'))#'C:\\Users\\Public\\Documents\\sEQE'
+            
+            file.write_text(f'{self.zurich_device},{self.filter_usb},{self.mono_usb},{self.save_path}')
+            print(file.read_text())
+            
+        # if platform.system() == 'Linux':
+        #     self.filter_usb = '/dev/ttyUSB0'
+        #     self.mono_usb = '/dev/ttyUSB1' 
+        #     self.save_path = '/home/jungbluthl/Desktop/sEQE Data'
+        # elif platform.system() == 'Windows':
+        #     self.filter_usb = 'COM4'
+        #     self.mono_usb = 'COM1'
+        #     #self.save_path = 'C:\\Users\\hanauske\\Desktop\\sEQE-Data'
+        #     self.save_path = 'C:\\Users\\Public\\Documents\\sEQE'
+        # else:
+        #     self.logger.error('Operating System is not known - defaulting to Linux system')
+        #     self.filter_usb = input('What is the filter wheel port ?') #'/dev/ttyUSB0'
+        #     self.mono_usb = '/dev/ttyUSB1'
+        #     # Path to save data
+        #     self.save_path = '/home/jungbluthl/Desktop/sEQE Data'
         
         QtWidgets.QMainWindow.__init__(self)
         
@@ -212,7 +239,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
             
         except Exception as error:
-            self.logger.error('An exception occured within the waitForOk function - is the ok\r\n still detected ?:' + error)
+            self.logger.error('An exception occured within the waitForOk function - is the ok\r\n still detected ?:')
+            print(error)
 #         ret = False
 #         self.p.timeout = 10 #0.05 is possible, but the monochromator sounds different - could we break it ?
 #         shouldbEOk = ''.join([element.decode(encoding = 'utf-8' , errors = 'ignore') for element in self.p.readlines()])
@@ -237,14 +265,13 @@ class MainWindow(QtWidgets.QMainWindow):
         """
         self.lockin_connected = False
         
-        # Find device and open connection to ziServer 
-        dev = 'hf2-dev838'
+        # Find device via Device Discovery and open connection to ziServer 
         d = zhinst.ziPython.ziDiscovery()
-        props = d.get(d.find(dev))
+        props = d.get(d.find(self.zurich_device))
         daq = zhinst.ziPython.ziDAQServer(props['serveraddress'],
                                           props['serverport'], 
                                           props['apilevel'])
-        daq.connectDevice(dev, 
+        daq.connectDevice(self.zurich_device, 
                           props['interfaces'][0])
         
         self.daq = daq
