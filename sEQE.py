@@ -34,7 +34,8 @@ from scipy.interpolate import interp1d
 import codecs
 import threading
 from microscope.filterwheels.thorlabs import ThorlabsFilterWheel
-import LINK_automation
+#import LINK_automation
+from tkinter import filedialog 
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
@@ -58,10 +59,10 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.logger.error('Operating System is not known - defaulting to Linux system')
                 port_prefix = '/dev/tty'
             
-            self.zurich_device = str(input('Which zurich instrument device is used  ? - type device address string e.g. UHF-DEV2000.')) #'hf2-dev838'
-            self.filter_usb = port_prefix+str(input('Which port number is used by the second filter wheel ? - type a number'))#'COM4'
-            self.mono_usb =  port_prefix+str(input('Which port number is used by the monochromator ? - type a number'))#'COM1'
-            self.save_path = pathlib.Path(input('Where do you want to save your data ? - copy absolute path of folder'))#'C:\\Users\\Public\\Documents\\sEQE'
+            self.zurich_device = str(input('Which zurich instrument device is used  ? - type device address string e.g. UHF-DEV2000.  ')) #'hf2-dev838'
+            self.filter_usb = port_prefix+str(input('Which port number is used by the second filter wheel ? - type a number  '))#'COM4'
+            self.mono_usb =  port_prefix+str(input('Which port number is used by the monochromator ? - type a number  '))#'COM1'
+            self.save_path = pathlib.Path(input('Where do you want to save your data ? - copy absolute path of folder  '))#'C:\\Users\\Public\\Documents\\sEQE'
             
             file.write_text(f'{self.zurich_device},{self.filter_usb},{self.mono_usb},{self.save_path}')
             print(file.read_text())
@@ -219,14 +220,14 @@ class MainWindow(QtWidgets.QMainWindow):
         
         """
         ret = False
-        self.p.timeout = 40000
+        self.p.timeout = 400
         shouldbEOk = 'filler'
         
         try:
             while shouldbEOk != 'ok\r\n':
                 shouldbEOk = self.p.readline()
                 shouldbEOk = codecs.decode(shouldbEOk)
-                #print(type(shouldbEOk))
+                print(shouldbEOk)
                 #print ( shouldbEOk.endswith('ok\r\n') == True )
                 if shouldbEOk.endswith('ok\r\n'):
                     ret = True
@@ -736,22 +737,22 @@ class MainWindow(QtWidgets.QMainWindow):
                 response = self.p.readline() 
                 print(response)
                 
-                if response.endswith('1  ok\r\n'.encode(errors='ignore')) or response.endswith(' 1  ok\r\n'.encode()):
+                if response.endswith('1  ok\r\n'.encode(errors='ignore')):
                     filterNo = 1
-                elif response.endswith('2  ok\r\n'.encode(errors='ignore')) or response.endswith(' 2  ok\r\n'.encode()):
+                elif response.endswith('2  ok\r\n'.encode(errors='ignore')):
                     filterNo = 2 
-                elif response.endswith('3  ok\r\n'.encode(errors='ignore')) or response.endswith(' 3  ok\r\n'.encode()):
+                elif response.endswith('3  ok\r\n'.encode(errors='ignore')):
                     filterNo = 3
-                elif response.endswith('4  ok\r\n'.encode(errors='ignore')) or response.endswith(' 4  ok\r\n'.encode()):
+                elif response.endswith('4  ok\r\n'.encode(errors='ignore')):
                     filterNo = 4 
-                elif response.endswith('5  ok\r\n'.encode(errors='ignore')) or response.endswith(' 5  ok\r\n'.encode()):
+                elif response.endswith('5  ok\r\n'.encode(errors='ignore')):
                     filterNo = 5
-                elif response.endswith('6  ok\r\n'.encode(errors='ignore')) or response.endswith(' 6  ok\r\n'.encode()):
+                elif response.endswith('6  ok\r\n'.encode(errors='ignore')):
                     filterNo = 6
-                elif response.endswith('ok\r\n'.encode(errors='ignore')) or response.endswith(' ok\r\n'.encode()):
+                elif response.endswith('ok\r\n'.encode(errors='ignore')):
                     filterNo = 0
-                elif response.endswith('\n'.encode(errors='ignore')):
-                    filterNo = 0
+                #elif response.endswith('\n'.encode(errors='ignore')):
+                    #filterNo = 0
                 
                 else:   # Do I need this?
                     self.logger.error('Error: Monchromator Filter Response')
@@ -817,11 +818,11 @@ class MainWindow(QtWidgets.QMainWindow):
                 response = self.p.readline()
                 print(response)
 
-                if response.endswith('1  ok\r\n'.encode()) or response.endswith(' 1  ok\r\n'.encode()):
+                if response.endswith('1  ok\r\n'.encode()):
                     gratingNo = 1
-                elif response.endswith('2  ok\r\n'.encode()) or response.endswith(' 2  ok\r\n'.encode()):
+                elif response.endswith('2  ok\r\n'.encode()):
                     gratingNo = 2 
-                elif response.endswith('3  ok\r\n'.encode()) or response.endswith(' 3  ok\r\n'.encode()):
+                elif response.endswith('3  ok\r\n'.encode()):
                     gratingNo = 3
                 else:   # Do I need this?
                     self.logger.error('Error: Grating Response')
@@ -1051,7 +1052,7 @@ class MainWindow(QtWidgets.QMainWindow):
         
         """
         self.complete_scan = True
-
+        measurment_values = {}
         if self.ui.scan_noFilter.isChecked():
 
             self.changeFilter(1)
@@ -1066,7 +1067,9 @@ class MainWindow(QtWidgets.QMainWindow):
                 stop_f1 = self.ui.scan_stopNM_1.value()
                 step_f1 = self.ui.scan_stepNM_1.value()
                 amp_f1 = self.ui.scan_pickAmp_1.value()
-
+                
+                measurment_values['f1']=[start_f1,stop_f1,step_f1,amp_f1]
+                
                 self.amplification = amp_f1
                 self.LockinUpdateParameters()
                 self.MonoHandleSpeedButton() 
@@ -1089,6 +1092,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 step_f2 = self.ui.scan_stepNM_2.value()
                 amp_f2 = self.ui.scan_pickAmp_2.value()
 
+                measurment_values['f2']=[start_f2,stop_f2,step_f2,amp_f2]
+                
                 self.amplification = amp_f2
                 self.LockinUpdateParameters()
                 self.MonoHandleSpeedButton()
@@ -1111,6 +1116,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 step_f3 = self.ui.scan_stepNM_3.value()
                 amp_f3 = self.ui.scan_pickAmp_3.value()
 
+                measurment_values['f3']=[start_f3,stop_f3,step_f3,amp_f3]
+                
                 self.amplification = amp_f3
                 self.LockinUpdateParameters()
                 self.MonoHandleSpeedButton()
@@ -1133,6 +1140,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 step_f4 = self.ui.scan_stepNM_4.value()
                 amp_f4 = self.ui.scan_pickAmp_4.value()
 
+                measurment_values['f4']=[start_f4,stop_f4,step_f4,amp_f4]
+                
                 self.amplification = amp_f4
                 self.LockinUpdateParameters()
                 self.MonoHandleSpeedButton()
@@ -1154,6 +1163,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 stop_f5 = self.ui.scan_stopNM_5.value()
                 step_f5 = self.ui.scan_stepNM_5.value()
                 amp_f5 = self.ui.scan_pickAmp_5.value()
+                
+                measurment_values['f5']=[start_f5,stop_f5,step_f5,amp_f5]
 
                 self.amplification = amp_f5
                 self.LockinUpdateParameters()
@@ -1176,6 +1187,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 stop_f6 = self.ui.scan_stopNM_6.value()
                 step_f6 = self.ui.scan_stepNM_6.value()
                 amp_f6 = self.ui.scan_pickAmp_6.value()
+                
+                measurment_values['f6']=[start_f6,stop_f6,step_f6,amp_f6]
 
                 self.amplification = amp_f6
                 self.LockinUpdateParameters()
@@ -1188,8 +1201,21 @@ class MainWindow(QtWidgets.QMainWindow):
         self.logger.info('Moving to open filter')               
         self.chooseFilter(1)
         self.complete_scan = False   
-        self.ui.imageCompleteScan_start.setPixmap(QtGui.QPixmap("Button_on.png"))     
+        self.ui.imageCompleteScan_start.setPixmap(QtGui.QPixmap("Button_off.png"))     
         self.logger.info('Finished Measurement') 
+        
+        self.save(measurment_values)
+    
+    def save(self,measurment_values):
+        
+        self.file2 = filedialog.asksaveasfile(mode='w',title='Where do you want your measurment values stored ?')
+        
+        for key in measurment_values:
+            print(key)
+            for value in measurment_values[key]:
+                self.file2.write(str(value)+',')
+                
+        self.file2.close()
 
     # General function to create scanning list
         
