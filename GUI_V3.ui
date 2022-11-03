@@ -21,7 +21,7 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>0</y>
+      <y>10</y>
       <width>1051</width>
       <height>901</height>
      </rect>
@@ -33,7 +33,7 @@
      <number>6</number>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>2</number>
     </property>
     <widget class="QWidget" name="settings">
      <attribute name="title">
@@ -4741,7 +4741,7 @@
        <bool>true</bool>
       </property>
      </widget>
-     <widget class="QPushButton" name="completeScanButton_start_2">
+     <widget class="QPushButton" name="import_from_file">
       <property name="geometry">
        <rect>
         <x>720</x>
@@ -4758,7 +4758,27 @@
        </font>
       </property>
       <property name="text">
-       <string># Import from file</string>
+       <string>Import parameter from file</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="save_to_file">
+      <property name="geometry">
+       <rect>
+        <x>720</x>
+        <y>510</y>
+        <width>281</width>
+        <height>61</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>14</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Save parameter to file</string>
       </property>
      </widget>
     </widget>

@@ -65,7 +65,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.save_path = pathlib.Path(input('Where do you want to save your data ? - copy absolute path of folder  '))#'C:\\Users\\Public\\Documents\\sEQE'
             
             file.write_text(f'{self.zurich_device},{self.filter_usb},{self.mono_usb},{self.save_path}')
-            print(file.read_text())
+            #print(file.read_text())
             
         # if platform.system() == 'Linux':
         #     self.filter_usb = '/dev/ttyUSB0'
@@ -145,6 +145,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.ui.completeScanButton_start.clicked.connect(self.MonoHandleCompleteScanButton)  #########################################################################################
         self.ui.completeScanButton_stop.clicked.connect(self.HandleStopCompleteScanButton)   #########################################################################################
+        
+        # Save and Import data from files
+        
+        self.ui.save_to_file.clicked.connect(self.save_parameter) # Save measurement parameter to file
+        self.ui.import_from_file.clicked.connect(self.load)
         
         # Import photodiode calibration files
 
@@ -1052,7 +1057,7 @@ class MainWindow(QtWidgets.QMainWindow):
         
         """
         self.complete_scan = True
-        measurment_values = {}
+        measurement_values = {}
         if self.ui.scan_noFilter.isChecked():
 
             self.changeFilter(1)
@@ -1068,7 +1073,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 step_f1 = self.ui.scan_stepNM_1.value()
                 amp_f1 = self.ui.scan_pickAmp_1.value()
                 
-                measurment_values['f1']=[start_f1,stop_f1,step_f1,amp_f1]
+                measurement_values['f1']=[start_f1,stop_f1,step_f1,amp_f1]
                 
                 self.amplification = amp_f1
                 self.LockinUpdateParameters()
@@ -1092,7 +1097,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 step_f2 = self.ui.scan_stepNM_2.value()
                 amp_f2 = self.ui.scan_pickAmp_2.value()
 
-                measurment_values['f2']=[start_f2,stop_f2,step_f2,amp_f2]
+                measurement_values['f2']=[start_f2,stop_f2,step_f2,amp_f2]
                 
                 self.amplification = amp_f2
                 self.LockinUpdateParameters()
@@ -1116,7 +1121,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 step_f3 = self.ui.scan_stepNM_3.value()
                 amp_f3 = self.ui.scan_pickAmp_3.value()
 
-                measurment_values['f3']=[start_f3,stop_f3,step_f3,amp_f3]
+                measurement_values['f3']=[start_f3,stop_f3,step_f3,amp_f3]
                 
                 self.amplification = amp_f3
                 self.LockinUpdateParameters()
@@ -1140,7 +1145,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 step_f4 = self.ui.scan_stepNM_4.value()
                 amp_f4 = self.ui.scan_pickAmp_4.value()
 
-                measurment_values['f4']=[start_f4,stop_f4,step_f4,amp_f4]
+                measurement_values['f4']=[start_f4,stop_f4,step_f4,amp_f4]
                 
                 self.amplification = amp_f4
                 self.LockinUpdateParameters()
@@ -1164,7 +1169,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 step_f5 = self.ui.scan_stepNM_5.value()
                 amp_f5 = self.ui.scan_pickAmp_5.value()
                 
-                measurment_values['f5']=[start_f5,stop_f5,step_f5,amp_f5]
+                measurement_values['f5']=[start_f5,stop_f5,step_f5,amp_f5]
 
                 self.amplification = amp_f5
                 self.LockinUpdateParameters()
@@ -1188,7 +1193,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 step_f6 = self.ui.scan_stepNM_6.value()
                 amp_f6 = self.ui.scan_pickAmp_6.value()
                 
-                measurment_values['f6']=[start_f6,stop_f6,step_f6,amp_f6]
+                measurement_values['f6']=[start_f6,stop_f6,step_f6,amp_f6]
 
                 self.amplification = amp_f6
                 self.LockinUpdateParameters()
@@ -1204,19 +1209,86 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.imageCompleteScan_start.setPixmap(QtGui.QPixmap("Button_off.png"))     
         self.logger.info('Finished Measurement') 
         
-        self.save(measurment_values)
+        measurement_parameter = pd.DataFrame.from_dict(measurement_values)
+                #self.save(measurement_values)
     
-    def save(self,measurment_values):
-        
-        self.file2 = filedialog.asksaveasfile(mode='w',title='Where do you want your measurment values stored ?')
-        
-        for key in measurment_values:
-            print(key)
-            for value in measurment_values[key]:
-                self.file2.write(str(value)+',')
-                
-        self.file2.close()
+    def save_parameter(self):
 
+        measurement_values = {}
+
+        if self.ui.scan_noFilter.isChecked():
+            print('banana')
+            start_f1 = self.ui.scan_startNM_1.value()
+            stop_f1 = self.ui.scan_stopNM_1.value()
+            step_f1 = self.ui.scan_stepNM_1.value()
+            amp_f1 = self.ui.scan_pickAmp_1.value()
+
+            measurement_values['f1']=[start_f1,stop_f1,step_f1,amp_f1]
+                
+        if self.ui.scan_Filter2.isChecked():
+            
+            start_f2 = self.ui.scan_startNM_2.value()
+            stop_f2 = self.ui.scan_stopNM_2.value()
+            step_f2 = self.ui.scan_stepNM_2.value()
+            amp_f2 = self.ui.scan_pickAmp_2.value()
+
+            measurement_values['f2']=[start_f2,stop_f2,step_f2,amp_f2]
+                
+
+        if self.ui.scan_Filter3.isChecked():
+
+            start_f3 = self.ui.scan_startNM_3.value()
+            stop_f3 = self.ui.scan_stopNM_3.value()
+            step_f3 = self.ui.scan_stepNM_3.value()
+            amp_f3 = self.ui.scan_pickAmp_3.value()
+
+            measurement_values['f3']=[start_f3,stop_f3,step_f3,amp_f3]
+
+        if self.ui.scan_Filter4.isChecked():
+
+            start_f4 = self.ui.scan_startNM_4.value()
+            stop_f4 = self.ui.scan_stopNM_4.value()
+            step_f4 = self.ui.scan_stepNM_4.value()
+            amp_f4 = self.ui.scan_pickAmp_4.value()
+
+            measurement_values['f4']=[start_f4,stop_f4,step_f4,amp_f4]
+
+        if self.ui.scan_Filter5.isChecked():
+
+            start_f5 = self.ui.scan_startNM_5.value()
+            stop_f5 = self.ui.scan_stopNM_5.value()
+            step_f5 = self.ui.scan_stepNM_5.value()
+            amp_f5 = self.ui.scan_pickAmp_5.value()
+
+            measurement_values['f5']=[start_f5,stop_f5,step_f5,amp_f5]
+  
+        if self.ui.scan_Filter6.isChecked():
+
+            start_f6 = self.ui.scan_startNM_6.value()
+            stop_f6 = self.ui.scan_stopNM_6.value()
+            step_f6 = self.ui.scan_stepNM_6.value()
+            amp_f6 = self.ui.scan_pickAmp_6.value()
+
+            measurement_values['f6']=[start_f6,stop_f6,step_f6,amp_f6]
+        
+        measurement_parameter = pd.DataFrame.from_dict(measurement_values)
+        
+        userName = self.ui.user.text()
+        experimentName = self.ui.experiment.text()
+        
+        self.path =f'{self.save_path}/{userName}/{experimentName}'
+        self.filename = self.ui.experiment.text()+'_measurement-parameter.csv'
+        #self.filename = str(input('What is the name of this measurement routine ?:  '))
+        measurement_parameter.to_csv(self.save_path+'\\'+self.filename , index= False)
+        self.logger.info('Saved measurement parameter into: '+ self.save_path+'\\'+self.filename) 
+        
+
+    def load(self):
+        if self.ui.scan_noFilter.isChecked():
+            
+            self.ui.scan_startNM_1.setProperty("value", 696.0)
+        
+        
     # General function to create scanning list
         
     def createScanJob(self, start, stop, step):
