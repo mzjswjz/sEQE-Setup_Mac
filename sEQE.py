@@ -35,6 +35,7 @@ import codecs
 import threading
 from microscope.filterwheels.thorlabs import ThorlabsFilterWheel
 #import LINK_automation
+from tkinter import Tk
 from tkinter import filedialog 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -111,6 +112,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.do_plot = True
 
         self.complete_scan = False
+        
+        # these can not be defined here, due to empty text boxes at start up 
+        # self.userName = self.ui.user.text()
+        # self.experimentName = self.ui.experiment.text()
+        # self.path =f'{self.save_path}/{self.userName}/{self.experimentName}'
 
         self.filter_addition = 'None' ####################################################################################
         
@@ -1213,80 +1219,179 @@ class MainWindow(QtWidgets.QMainWindow):
                 #self.save(measurement_values)
     
     def save_parameter(self):
-
-        measurement_values = {}
-
-        if self.ui.scan_noFilter.isChecked():
-            print('banana')
-            start_f1 = self.ui.scan_startNM_1.value()
-            stop_f1 = self.ui.scan_stopNM_1.value()
-            step_f1 = self.ui.scan_stepNM_1.value()
-            amp_f1 = self.ui.scan_pickAmp_1.value()
-
-            measurement_values['f1']=[start_f1,stop_f1,step_f1,amp_f1]
-                
-        if self.ui.scan_Filter2.isChecked():
+        """Function to save measurement parameters to file
+        
+        Parameters
+        ----------
+        None
             
-            start_f2 = self.ui.scan_startNM_2.value()
-            stop_f2 = self.ui.scan_stopNM_2.value()
-            step_f2 = self.ui.scan_stepNM_2.value()
-            amp_f2 = self.ui.scan_pickAmp_2.value()
-
-            measurement_values['f2']=[start_f2,stop_f2,step_f2,amp_f2]
-                
-
-        if self.ui.scan_Filter3.isChecked():
-
-            start_f3 = self.ui.scan_startNM_3.value()
-            stop_f3 = self.ui.scan_stopNM_3.value()
-            step_f3 = self.ui.scan_stepNM_3.value()
-            amp_f3 = self.ui.scan_pickAmp_3.value()
-
-            measurement_values['f3']=[start_f3,stop_f3,step_f3,amp_f3]
-
-        if self.ui.scan_Filter4.isChecked():
-
-            start_f4 = self.ui.scan_startNM_4.value()
-            stop_f4 = self.ui.scan_stopNM_4.value()
-            step_f4 = self.ui.scan_stepNM_4.value()
-            amp_f4 = self.ui.scan_pickAmp_4.value()
-
-            measurement_values['f4']=[start_f4,stop_f4,step_f4,amp_f4]
-
-        if self.ui.scan_Filter5.isChecked():
-
-            start_f5 = self.ui.scan_startNM_5.value()
-            stop_f5 = self.ui.scan_stopNM_5.value()
-            step_f5 = self.ui.scan_stepNM_5.value()
-            amp_f5 = self.ui.scan_pickAmp_5.value()
-
-            measurement_values['f5']=[start_f5,stop_f5,step_f5,amp_f5]
-  
-        if self.ui.scan_Filter6.isChecked():
-
-            start_f6 = self.ui.scan_startNM_6.value()
-            stop_f6 = self.ui.scan_stopNM_6.value()
-            step_f6 = self.ui.scan_stepNM_6.value()
-            amp_f6 = self.ui.scan_pickAmp_6.value()
-
-            measurement_values['f6']=[start_f6,stop_f6,step_f6,amp_f6]
+        Returns
+        -------
+        None
         
-        measurement_parameter = pd.DataFrame.from_dict(measurement_values)
+        Raises
+        ------
+        LoggerWarning
+            Raises warning if tkinter saving dialog was closed without entering filename
         
-        userName = self.ui.user.text()
-        experimentName = self.ui.experiment.text()
+        Notes
+        -----
+        Reads the spinbox values and saves them into a file selected via tkinter dialog
         
-        self.path =f'{self.save_path}/{userName}/{experimentName}'
-        self.filename = self.ui.experiment.text()+'_measurement-parameter.csv'
-        #self.filename = str(input('What is the name of this measurement routine ?:  '))
-        measurement_parameter.to_csv(self.save_path+'\\'+self.filename , index= False)
-        self.logger.info('Saved measurement parameter into: '+ self.save_path+'\\'+self.filename) 
+        """
         
+        try:
+
+            measurement_values = {}
+
+            if self.ui.scan_noFilter.isChecked():
+
+                start_f1 = self.ui.scan_startNM_1.value()
+                stop_f1 = self.ui.scan_stopNM_1.value()
+                step_f1 = self.ui.scan_stepNM_1.value()
+                amp_f1 = self.ui.scan_pickAmp_1.value()
+
+                measurement_values['f1']=[start_f1,stop_f1,step_f1,amp_f1]
+
+            if self.ui.scan_Filter2.isChecked():
+
+                start_f2 = self.ui.scan_startNM_2.value()
+                stop_f2 = self.ui.scan_stopNM_2.value()
+                step_f2 = self.ui.scan_stepNM_2.value()
+                amp_f2 = self.ui.scan_pickAmp_2.value()
+
+                measurement_values['f2']=[start_f2,stop_f2,step_f2,amp_f2]
+
+
+            if self.ui.scan_Filter3.isChecked():
+
+                start_f3 = self.ui.scan_startNM_3.value()
+                stop_f3 = self.ui.scan_stopNM_3.value()
+                step_f3 = self.ui.scan_stepNM_3.value()
+                amp_f3 = self.ui.scan_pickAmp_3.value()
+
+                measurement_values['f3']=[start_f3,stop_f3,step_f3,amp_f3]
+
+            if self.ui.scan_Filter4.isChecked():
+
+                start_f4 = self.ui.scan_startNM_4.value()
+                stop_f4 = self.ui.scan_stopNM_4.value()
+                step_f4 = self.ui.scan_stepNM_4.value()
+                amp_f4 = self.ui.scan_pickAmp_4.value()
+
+                measurement_values['f4']=[start_f4,stop_f4,step_f4,amp_f4]
+
+            if self.ui.scan_Filter5.isChecked():
+
+                start_f5 = self.ui.scan_startNM_5.value()
+                stop_f5 = self.ui.scan_stopNM_5.value()
+                step_f5 = self.ui.scan_stepNM_5.value()
+                amp_f5 = self.ui.scan_pickAmp_5.value()
+
+                measurement_values['f5']=[start_f5,stop_f5,step_f5,amp_f5]
+
+            if self.ui.scan_Filter6.isChecked():
+
+                start_f6 = self.ui.scan_startNM_6.value()
+                stop_f6 = self.ui.scan_stopNM_6.value()
+                step_f6 = self.ui.scan_stepNM_6.value()
+                amp_f6 = self.ui.scan_pickAmp_6.value()
+
+                measurement_values['f6']=[start_f6,stop_f6,step_f6,amp_f6]
+
+            measurement_parameter = pd.DataFrame.from_dict(measurement_values)
+
+            root = Tk() # Creates master window for tkinters filedialog window
+            root.withdraw() # Hides master window
+            filepath = filedialog.asksaveasfilename() # Creates pop-up window to ask for file save
+
+            # This somehow destroys the Qt event manager, error message: 
+            # "QCoreApplication::exec: The event loop is already running"
+            # self.filename = str(input('What is the name of this measurement routine ?:  '))
+            # if self.path.exists() not:
+            #     os. 
+
+            measurement_parameter.to_csv(filepath, index= False)
+            self.logger.info('Saved measurement parameter into: '+ filepath) 
+        
+        except FileNotFoundError:
+            self.logger.warning('No parameters were safed due to missing filename')
+            
+        except Exception as e:
+            print(e)
 
     def load(self):
-        if self.ui.scan_noFilter.isChecked():
+        """Function to load measurement parameters from file.
+        
+        Parameters
+        ----------
+        None
             
-            self.ui.scan_startNM_1.setProperty("value", 696.0)
+        Returns
+        -------
+        None
+        
+        Notes
+        -----
+        Selects a file via tkinter dialog, reads the values and sets measurement parameters
+        
+        """
+        
+        try:
+            root = Tk() # Creates master window for tkinters filedialog window
+            root.withdraw() # Hides master window
+            filepath = filedialog.askopenfilename() # Creates pop-up window to ask for file save
+
+            measurement_parameters = pd.read_csv(filepath)
+
+            if self.ui.scan_noFilter.isChecked():
+
+                self.ui.scan_startNM_1.setValue(measurement_parameters['f1'][0])
+                self.ui.scan_stopNM_1.setValue(measurement_parameters['f1'][1])
+                self.ui.scan_stepNM_1.setValue(measurement_parameters['f1'][2])
+                self.ui.scan_pickAmp_1.setValue(measurement_parameters['f1'][3])
+
+            if self.ui.scan_Filter2.isChecked():
+
+                self.ui.scan_startNM_2.setValue(measurement_parameters['f2'][0])
+                self.ui.scan_stopNM_2.setValue(measurement_parameters['f2'][1])
+                self.ui.scan_stepNM_2.setValue(measurement_parameters['f2'][2])
+                self.ui.scan_pickAmp_2.setValue(measurement_parameters['f2'][3])                
+
+            if self.ui.scan_Filter3.isChecked():
+
+                self.ui.scan_startNM_3.setValue(measurement_parameters['f3'][0])
+                self.ui.scan_stopNM_3.setValue(measurement_parameters['f3'][1])
+                self.ui.scan_stepNM_3.setValue(measurement_parameters['f3'][2])
+                self.ui.scan_pickAmp_3.setValue(measurement_parameters['f3'][3])
+
+            if self.ui.scan_Filter4.isChecked():
+
+                self.ui.scan_startNM_4.setValue(measurement_parameters['f4'][0])
+                self.ui.scan_stopNM_4.setValue(measurement_parameters['f4'][1])
+                self.ui.scan_stepNM_4.setValue(measurement_parameters['f4'][2])
+                self.ui.scan_pickAmp_4.setValue(measurement_parameters['f4'][3])
+
+            if self.ui.scan_Filter5.isChecked():
+
+                self.ui.scan_startNM_5.setValue(measurement_parameters['f5'][0])
+                self.ui.scan_stopNM_5.setValue(measurement_parameters['f5'][1])
+                self.ui.scan_stepNM_5.setValue(measurement_parameters['f5'][2])
+                self.ui.scan_pickAmp_5.setValue(measurement_parameters['f5'][3])
+
+            if self.ui.scan_Filter6.isChecked():
+
+                self.ui.scan_startNM_6.setValue(measurement_parameters['f6'][0])
+                self.ui.scan_stopNM_6.setValue(measurement_parameters['f6'][1])
+                self.ui.scan_stepNM_6.setValue(measurement_parameters['f6'][2])
+                self.ui.scan_pickAmp_6.setValue(measurement_parameters['f6'][3])
+                
+        except Exception as e:
+            print(e)
+        
+#         if self.ui.scan_noFilter.isChecked():
+            
+#             self.ui.scan_startNM_1.setProperty("value", 696.0)
         
         
     # General function to create scanning list
@@ -1699,6 +1804,7 @@ class MainWindow(QtWidgets.QMainWindow):
         This can be used for crude animation.  For more complex animation use
         :mod:`matplotlib.animation`.
         If there is no active figure, sleep for *interval* seconds instead.
+        
         See Also
         --------
         matplotlib.animation : Proper animations
