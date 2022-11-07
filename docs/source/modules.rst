@@ -1,4 +1,4 @@
-sEQE-Control-Software
+List of modules
 =====================
 
 .. toctree::

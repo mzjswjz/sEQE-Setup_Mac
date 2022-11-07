@@ -11,9 +11,9 @@ sys.path.insert(0, os.path.abspath('../../'))
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'sEQE-Control-Software'
+project = 'AFMDs sEQE setup'
 copyright = '2022, Anna Jungbluth'
-author = 'Anna Jungbluth'
+author = 'Anna Jungbluth and Maximilian Hanauske'
 release = 'October 2022'
 
 # -- General configuration ---------------------------------------------------
@@ -26,6 +26,7 @@ extensions = [
    'sphinx.ext.autosummary',
    'sphinx.ext.napoleon',
    'sphinx.ext.viewcode',
+   'sphinxcontrib.pdfembed',
 
 ]
 
@@ -38,4 +39,4 @@ exclude_patterns = []
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
 html_theme = "sphinx_rtd_theme"
-html_static_path = ['_static']
+html_static_path = ['_static','_assets']
