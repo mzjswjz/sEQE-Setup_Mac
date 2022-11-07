@@ -1229,17 +1229,7 @@ class MainWindow(QtWidgets.QMainWindow):
             
         Returns
         -------
-        None
-        
-        Raises
-        ------
-        LoggerWarning
-            Raises warning if tkinter saving dialog was closed without entering filename
-        
-        Notes
-        -----
-        Reads the spinbox values and saves them into a file selected via tkinter dialog
-        
+        None 
         
         """
         
