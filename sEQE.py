@@ -152,10 +152,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.completeScanButton_start.clicked.connect(self.MonoHandleCompleteScanButton)  #########################################################################################
         self.ui.completeScanButton_stop.clicked.connect(self.HandleStopCompleteScanButton)   #########################################################################################
         
-        # Save and Import data from files
+        # Save and Import data from files or naming from path
         
         self.ui.save_to_file.clicked.connect(self.save_parameter) # Save measurement parameter to file
-        self.ui.import_from_file.clicked.connect(self.load)
+        self.ui.import_from_file.clicked.connect(self.load_parameter)
+        self.ui.importNamingButton.clicked.connect(self.load_naming)
+        
         
         # Import photodiode calibration files
 
@@ -1217,6 +1219,42 @@ class MainWindow(QtWidgets.QMainWindow):
         
         measurement_parameter = pd.DataFrame.from_dict(measurement_values)
                 #self.save(measurement_values)
+            
+    def load_naming(self):
+        """Function to load naming from directory path
+
+        Parameters
+        ----------
+        None
+            
+        Returns
+        -------
+        None
+        
+        Raises
+        ------
+        LoggerWarning
+            Raises warning if tkinter saving dialog was closed without entering filename
+        
+        Notes
+        -----
+        Reads the spinbox values and saves them into a file selected via tkinter dialog
+        
+        
+        """
+        
+        try:
+            
+            root = Tk() # Creates master window for tkinters filedialog window
+            root.withdraw() # Hides master window
+            filepath = filedialog.askdirectory() # Creates pop-up window to ask for file save
+            
+            names = filepath.split("/")
+            self.ui.user.setText(names[5])
+            self.ui.experiment.setText(names[6])
+            
+        except Exception as e:
+            self.logger.exception(e)
     
     def save_parameter(self):
         """Function to save measurement parameters to file
@@ -1318,9 +1356,10 @@ class MainWindow(QtWidgets.QMainWindow):
             self.logger.warning('No parameters were safed due to missing filename')
             
         except Exception as e:
-            print(e)
-
-    def load(self):
+            self.logger.exception(e)
+    
+    
+    def load_parameter(self):
         """Function to load measurement parameters from file.
         
         Parameters
@@ -1387,11 +1426,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.ui.scan_pickAmp_6.setValue(measurement_parameters['f6'][3])
                 
         except Exception as e:
-            print(e)
-        
-#         if self.ui.scan_noFilter.isChecked():
-            
-#             self.ui.scan_startNM_1.setProperty("value", 696.0)
+            self.logger.exception(e)        
+
         
         
     # General function to create scanning list
