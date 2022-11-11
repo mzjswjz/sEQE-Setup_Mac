@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome to the documentation of AFMD’s sEQE setup ! &mdash; AFMDs sEQE setup October 2022 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Getting Started" href="README.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="#">
+            <img src="_static/AFMD_logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="README.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">sEQE-Control-Software</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contact.html">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="licence.html">Licence</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">AFMDs sEQE setup</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
+      <li>Welcome to the documentation of AFMD’s sEQE setup !</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="welcome-to-the-documentation-of-afmd-s-seqe-setup">
+<h1>Welcome to the documentation of AFMD’s sEQE setup !<a class="headerlink" href="#welcome-to-the-documentation-of-afmd-s-seqe-setup" title="Permalink to this heading"></a></h1>
+<p>The documentation contains the full hardware, software and handling requirements to rebuild and use the sensitive external quantum efficiency (sEQE) setup of the AFMD Group.</p>
+<section id="what-is-this-project-about">
+<h2>What is this Project about ?<a class="headerlink" href="#what-is-this-project-about" title="Permalink to this heading"></a></h2>
+<p>This project is about a common technique in solar cell research to probe a solar cell’s photocurrent upon illumination. The measured photocurrent can be used to calculate the so called external quantum efficiency (EQE) of the solar cell, which is a parameter for the solar cells performance. (TODO: for example with our sEQE-Analysis Program - Build reference):</p>
+<div class="math notranslate nohighlight">
+\[\text{EQE} = \frac{\text{electron-hole pairs per sec}}{\text{photons per sec}}\]</div>
+<p>For further background knowledge the interested reader is refered to:</p>
+<ol class="arabic simple">
+<li><p><a class="reference external" href="https://www.physics.ox.ac.uk/research/group/advanced-functional-materials-and-devices-afmd-group">Who is the AFMD group ?</a></p></li>
+<li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Solar_cell">What is a Solar cell ?</a></p></li>
+<li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Quantum_efficiency#Quantum_efficiency_of_solar_cells">Why do we measure EQE ?</a></p></li>
+</ol>
+<p>The sEQE setup is an experimental setup built by Dr. Anna Jungbluth to provide a research group with the means to evaluate one of their own solar cell device’s performance parameters. It is capable of reaching an EQE sensitivity of <span class="math notranslate nohighlight">\(10^{-6}\)</span>.</p>
+</section>
+<section id="where-is-this-project-going">
+<h2>Where is this Project going ?<a class="headerlink" href="#where-is-this-project-going" title="Permalink to this heading"></a></h2>
+<p>The sEQE setup is maintained by the AFMD group and they have many ideas for its future development. Some of those which are already in work are:</p>
+<ol class="arabic simple">
+<li><p>Integrating and automating a cryostate</p></li>
+<li><p>Integrating a light bias source</p></li>
+</ol>
+<p>Feel free to reach out to the AFMD group if you have any ideas for further improvement or feedback.</p>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="README.html">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="README.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="README.html#installation">Installation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">sEQE-Control-Software</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="GUI_template.html">GUI_template module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sEQE.html">sEQE module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contact.html">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="licence.html">Licence</a></li>
+</ul>
+</div>
+</section>
+<section id="credits">
+<h2>Credits<a class="headerlink" href="#credits" title="Permalink to this heading"></a></h2>
+<p>TODO: Mention AFMD members and third party package authors</p>
+</section>
+</section>
+<section id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this heading"></a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="README.html" class="btn btn-neutral float-right" title="Getting Started" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Anna Jungbluth.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>  
+
+  <style>
+    /* Sidebar header (and topbar for mobile) */
+    .wy-side-nav-search, .wy-nav-top {
+      background: #244694; <!-- #F3631D -->
+    }
+    /* Sidebar */
+    .wy-nav-side {
+      background: #ffe95b; <!-- #343131 -->
+    }
+  </style>
+
+
+</body>
+</html>
