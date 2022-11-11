@@ -27,6 +27,8 @@ extensions = [
    'sphinx.ext.napoleon',
    'sphinx.ext.viewcode',
    'sphinxcontrib.pdfembed',
+   'sphinx.ext.autosectionlabel',
+   'sphinx.ext.githubpages',
 
 ]
 
@@ -40,3 +42,8 @@ exclude_patterns = []
 
 html_theme = "sphinx_rtd_theme"
 html_static_path = ['_static','_assets']
+html_logo = "AFMD_logo.png"
+html_theme_options = {
+    'logo_only': True,
+    'display_version': False,
+}
