@@ -1065,6 +1065,7 @@ class MainWindow(QtWidgets.QMainWindow):
         
         """
         self.complete_scan = True
+        self.ui.imageCompleteScan_start.setPixmap(QtGui.QPixmap("Button_on.png"))
         measurement_values = {}
         if self.ui.scan_noFilter.isChecked():
 
@@ -1214,7 +1215,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.logger.info('Moving to open filter')               
         self.chooseFilter(1)
         self.complete_scan = False   
-        self.ui.imageCompleteScan_start.setPixmap(QtGui.QPixmap("Button_off.png"))     
+        self.ui.imageCompleteScan_start.setPixmap(QtGui.QPixmap("Button_off.png"))
+        self.ui.imageCompleteScan_stop.setPixmap(QtGui.QPixmap("Button_off.png"))
+
         self.logger.info('Finished Measurement') 
         
         measurement_parameter = pd.DataFrame.from_dict(measurement_values)
@@ -1664,6 +1667,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 count+=1  
                 
             else:
+                self.ui.imageCompleteScan_stop.setPixmap(QtGui.QPixmap("Button_on.png"))
                 break
         
 
@@ -1891,6 +1895,8 @@ class MainWindow(QtWidgets.QMainWindow):
         """
         self.measuring = False
         self.ui.imageStop.setPixmap(QtGui.QPixmap("Button_on.png"))
+        return self.measuring
+
 
     def HandleStopCompleteScanButton(self):
         """Function to stop multi-filter measurement.
@@ -1902,6 +1908,7 @@ class MainWindow(QtWidgets.QMainWindow):
         """
         self.measuring = False
         self.ui.imageCompleteScan_stop.setPixmap(QtGui.QPixmap("Button_on.png"))
+        return self.measuring
 
 # -----------------------------------------------------------------------------------------------------------
 
