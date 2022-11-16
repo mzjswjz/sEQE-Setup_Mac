@@ -32,8 +32,11 @@ from numpy import *
 from scipy.interpolate import interp1d
 
 import codecs
+
 from monochromator import Monochromator
 from microscope.filterwheels.thorlabs import ThorlabsFilterWheel
+from lockin import LockIn
+
 from tkinter import Tk
 from tkinter import filedialog 
 
@@ -102,6 +105,7 @@ class MainWindow(QtWidgets.QMainWindow):
         
         self.thorfilterwheel = ThorlabsFilterWheel(com=self.filter_usb) # Initialize Thorlabs filter wheel
         self.mono = Monochromator(self.mono_usb)
+        self.lockin = LockIn(self.zurich_device)
         
         # General Setup
          
@@ -144,10 +148,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.ui.connectButton.clicked.connect(self.connectToEquipment)
 
-        self.ui.measureButtonRef_Si.clicked.connect(self.MonoHandleSiRefButton)
-        self.ui.measureButtonRef_GA.clicked.connect(self.MonoHandleGARefButton)        
-        self.ui.measureButtonDev.clicked.connect(self.MonoHandleMeasureButton)        
-        self.ui.stopButton.clicked.connect(self.HandleStopButton)
+        # self.ui.measureButtonRef_Si.clicked.connect(self.MonoHandleSiRefButton)
+        # self.ui.measureButtonRef_GA.clicked.connect(self.MonoHandleGARefButton)        
+        # self.ui.measureButtonDev.clicked.connect(self.MonoHandleMeasureButton)        
+        # self.ui.stopButton.clicked.connect(self.HandleStopButton)
 
         self.ui.completeScanButton_start.clicked.connect(self.MonoHandleCompleteScanButton)  #########################################################################################
         self.ui.completeScanButton_stop.clicked.connect(self.HandleStopCompleteScanButton)   #########################################################################################
@@ -265,7 +269,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
 # -----------------------------------------------------------------------------------------------------------        
         
-    # Establish connection to both
+    # Establish connection to all equipment
         
     def connectToEquipment(self):
         """Function to establish connection to monochromator, Lockin & filter wheel.
@@ -275,7 +279,7 @@ class MainWindow(QtWidgets.QMainWindow):
         None
         
         """
-        self.connectToLockin()
+        self.lockin.connectToLockin()
         self.connectToMono()
         self.connectToFilter()
         
@@ -331,6 +335,7 @@ class MainWindow(QtWidgets.QMainWindow):
             gratingNo = 2
         elif self.ui.Blaze_1600.isChecked():
             gratingNo = 3
+            
         self.mono.chooseGrating(gratingNo)
        
     # Update filter number
@@ -540,10 +545,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
         else:
             pass
-
-        # else:
-        #     self.logger.error('Monochromator Not Connected') 
-    
     
     def monoCheckGrating(self, wavelength):   # Grating switching points from GUI
         """Function to update monochromator grating position from GUI defaults.
@@ -617,6 +618,7 @@ class MainWindow(QtWidgets.QMainWindow):
             Raises error if second filter wheel not connected
        
         """
+        
         if not self.filter_connected:
             self.logger.error("External Filter Wheel Not Connected")
             return False
@@ -633,123 +635,123 @@ class MainWindow(QtWidgets.QMainWindow):
 
     # Set parameters and measure Silicon reference diode
 
-    def MonoHandleSiRefButton(self):
-        """Function to measure silicon reference photodiode.
+#     def MonoHandleSiRefButton(self):
+#         """Function to measure silicon reference photodiode.
         
-        Returns
-        -------
-        None 
+#         Returns
+#         -------
+#         None 
 
-        """
-        start_si = self.ui.startNM_Si.value()
-        stop_si = self.ui.stopNM_Si.value()
-        step_si = self.ui.stepNM_Si.value()
-        amp_si = self.ui.pickAmp_Si.value()
+#         """
+#         start_si = self.ui.startNM_Si.value()
+#         stop_si = self.ui.stopNM_Si.value()
+#         step_si = self.ui.stepNM_Si.value()
+#         amp_si = self.ui.pickAmp_Si.value()
             
-        self.amplification = amp_si
-        self.LockinUpdateParameters()
-        self.MonoHandleSpeedButton()
+#         self.amplification = amp_si
+#         self.LockinUpdateParameters()
+#         self.MonoHandleSpeedButton()
         
-        scan_list = self.createScanJob(start_si, stop_si, step_si)
-        self.HandleMeasurement(scan_list, start_si, stop_si, step_si, amp_si, 1)
+#         scan_list = self.createScanJob(start_si, stop_si, step_si)
+#         self.HandleMeasurement(scan_list, start_si, stop_si, step_si, amp_si, 1)
         
-        self.mono.chooseFilter(1)        
-        self.ui.imageRef_Si.setPixmap(QtGui.QPixmap("Button_on.png"))      
-        self.logger.info('Finished Measurement')        
+#         self.mono.chooseFilter(1)        
+#         self.ui.imageRef_Si.setPixmap(QtGui.QPixmap("Button_on.png"))      
+#         self.logger.info('Finished Measurement')        
     
         
-    # Set parameters and measure InGaAs reference diode
+#     # Set parameters and measure InGaAs reference diode
                
-    def MonoHandleGARefButton(self):
-        """Function to meausure silicon reference photodiode.
+#     def MonoHandleGARefButton(self):
+#         """Function to meausure silicon reference photodiode.
         
-        Returns
-        -------
-        None 
+#         Returns
+#         -------
+#         None 
 
-        """
-        start_ga = self.ui.startNM_GA.value()
-        stop_ga = self.ui.stopNM_GA.value()
-        step_ga = self.ui.stepNM_GA.value()
-        amp_ga = self.ui.pickAmp_GA.value()
+#         """
+#         start_ga = self.ui.startNM_GA.value()
+#         stop_ga = self.ui.stopNM_GA.value()
+#         step_ga = self.ui.stepNM_GA.value()
+#         amp_ga = self.ui.pickAmp_GA.value()
 
-        self.amplification = amp_ga
-        self.LockinUpdateParameters()
-        self.MonoHandleSpeedButton()
+#         self.amplification = amp_ga
+#         self.LockinUpdateParameters()
+#         self.MonoHandleSpeedButton()
 
-        scan_list = self.createScanJob(start_ga, stop_ga, step_ga)
-        self.HandleMeasurement(scan_list, start_ga, stop_ga, step_ga, amp_ga, 2)
+#         scan_list = self.createScanJob(start_ga, stop_ga, step_ga)
+#         self.HandleMeasurement(scan_list, start_ga, stop_ga, step_ga, amp_ga, 2)
         
-        self.mono.chooseFilter(1)              
-        self.ui.imageRef_GA.setPixmap(QtGui.QPixmap("Button_on.png"))       
-        self.logger.info('Finished Measurement')  
+#         self.mono.chooseFilter(1)              
+#         self.ui.imageRef_GA.setPixmap(QtGui.QPixmap("Button_on.png"))       
+#         self.logger.info('Finished Measurement')  
         
         
-    # Set parameters and measure sample
+#     # Set parameters and measure sample
         
-    def MonoHandleMeasureButton(self):
-        """Function to measure samples with different wavelength ranges.
+#     def MonoHandleMeasureButton(self):
+#         """Function to measure samples with different wavelength ranges.
         
-        Returns
-        -------
-        None
+#         Returns
+#         -------
+#         None
 
-        """
-        if self.ui.Range1.isChecked():    
-            start_r1 = self.ui.startNM_R1.value()
-            stop_r1 = self.ui.stopNM_R1.value()
-            step_r1 = self.ui.stepNM_R1.value()
-            amp_r1 = self.ui.pickAmp_R1.value()
+#         """
+#         if self.ui.Range1.isChecked():    
+#             start_r1 = self.ui.startNM_R1.value()
+#             stop_r1 = self.ui.stopNM_R1.value()
+#             step_r1 = self.ui.stepNM_R1.value()
+#             amp_r1 = self.ui.pickAmp_R1.value()
 
-            self.amplification = amp_r1
-            self.LockinUpdateParameters()
-            self.MonoHandleSpeedButton()
+#             self.amplification = amp_r1
+#             self.LockinUpdateParameters()
+#             self.MonoHandleSpeedButton()
                         
-            scan_list = self.createScanJob(start_r1, stop_r1, step_r1)
-            self.HandleMeasurement(scan_list, start_r1, stop_r1, step_r1, amp_r1, 3)
+#             scan_list = self.createScanJob(start_r1, stop_r1, step_r1)
+#             self.HandleMeasurement(scan_list, start_r1, stop_r1, step_r1, amp_r1, 3)
         
-        if self.ui.Range2.isChecked():         
-            start_r2 = self.ui.startNM_R2.value()
-            stop_r2 = self.ui.stopNM_R2.value()
-            step_r2 = self.ui.stepNM_R2.value()
-            amp_r2 = self.ui.pickAmp_R2.value()
+#         if self.ui.Range2.isChecked():         
+#             start_r2 = self.ui.startNM_R2.value()
+#             stop_r2 = self.ui.stopNM_R2.value()
+#             step_r2 = self.ui.stepNM_R2.value()
+#             amp_r2 = self.ui.pickAmp_R2.value()
 
-            self.amplification = amp_r2
-            self.LockinUpdateParameters()
-            self.MonoHandleSpeedButton()        
+#             self.amplification = amp_r2
+#             self.LockinUpdateParameters()
+#             self.MonoHandleSpeedButton()        
             
-            scan_list = self.createScanJob(start_r2, stop_r2, step_r2)
-            self.HandleMeasurement(scan_list, start_r2, stop_r2, step_r2, amp_r2, 3)
+#             scan_list = self.createScanJob(start_r2, stop_r2, step_r2)
+#             self.HandleMeasurement(scan_list, start_r2, stop_r2, step_r2, amp_r2, 3)
             
-        if self.ui.Range3.isChecked():   
-            start_r3 = self.ui.startNM_R3.value()
-            stop_r3 = self.ui.stopNM_R3.value()
-            step_r3 = self.ui.stepNM_R3.value()
-            amp_r3 = self.ui.pickAmp_R3.value()
+#         if self.ui.Range3.isChecked():   
+#             start_r3 = self.ui.startNM_R3.value()
+#             stop_r3 = self.ui.stopNM_R3.value()
+#             step_r3 = self.ui.stepNM_R3.value()
+#             amp_r3 = self.ui.pickAmp_R3.value()
 
-            self.amplification = amp_r3
-            self.LockinUpdateParameters()
-            self.MonoHandleSpeedButton()
+#             self.amplification = amp_r3
+#             self.LockinUpdateParameters()
+#             self.MonoHandleSpeedButton()
             
-            scan_list = self.createScanJob(start_r3, stop_r3, step_r3)
-            self.HandleMeasurement(scan_list, start_r3, stop_r3, step_r3, amp_r3, 3)       
+#             scan_list = self.createScanJob(start_r3, stop_r3, step_r3)
+#             self.HandleMeasurement(scan_list, start_r3, stop_r3, step_r3, amp_r3, 3)       
         
-        if self.ui.Range4.isChecked():   
-            start_r4 = self.ui.startNM_R4.value()
-            stop_r4 = self.ui.stopNM_R4.value()
-            step_r4 = self.ui.stepNM_R4.value()
-            amp_r4 = self.ui.pickAmp_R4.value()
+#         if self.ui.Range4.isChecked():   
+#             start_r4 = self.ui.startNM_R4.value()
+#             stop_r4 = self.ui.stopNM_R4.value()
+#             step_r4 = self.ui.stepNM_R4.value()
+#             amp_r4 = self.ui.pickAmp_R4.value()
 
-            self.amplification = amp_r4
-            self.LockinUpdateParameters()
-            self.MonoHandleSpeedButton()
+#             self.amplification = amp_r4
+#             self.LockinUpdateParameters()
+#             self.MonoHandleSpeedButton()
             
-            scan_list = self.createScanJob(start_r4, stop_r4, step_r4)
-            self.HandleMeasurement(scan_list, start_r4, stop_r4, step_r4, amp_r4, 3)
+#             scan_list = self.createScanJob(start_r4, stop_r4, step_r4)
+#             self.HandleMeasurement(scan_list, start_r4, stop_r4, step_r4, amp_r4, 3)
             
-        self.mono.chooseFilter(1)
-        self.ui.imageMeasure.setPixmap(QtGui.QPixmap("Button_on.png"))
-        self.logger.info('Finished Measurement')
+#         self.mono.chooseFilter(1)
+#         self.ui.imageMeasure.setPixmap(QtGui.QPixmap("Button_on.png"))
+#         self.logger.info('Finished Measurement')
 
 
     # Set parameters for complete scan and measure sample
@@ -1160,62 +1162,62 @@ class MainWindow(QtWidgets.QMainWindow):
         
     # Measure LOCKIN response    
      
-    def HandleMeasurement(self, scan_list, start, stop, step, amp, number):  
-        """Function to prepare sample measurement.
+#     def HandleMeasurement(self, scan_list, start, stop, step, amp, number):  
+#         """Function to prepare sample measurement.
         
-        Parameters
-        ----------
-        scan_list: list of ints, required
-            List of wavelength values to scan
-        start: float, required
-            Wavelength start value
-        stop: float, required
-            Wavelength stop value
-        step: float, required
-            Wavelength step value
-        amp: float, required
-            Pre-amplifier amplification value
-        number: int, required
-            Specifier to decide if power value is calculated (1) or not (0)
+#         Parameters
+#         ----------
+#         scan_list: list of ints, required
+#             List of wavelength values to scan
+#         start: float, required
+#             Wavelength start value
+#         stop: float, required
+#             Wavelength stop value
+#         step: float, required
+#             Wavelength step value
+#         amp: float, required
+#             Pre-amplifier amplification value
+#         number: int, required
+#             Specifier to decide if power value is calculated (1) or not (0)
 
-        Returns
-        -------
-        None
+#         Returns
+#         -------
+#         None
         
-        """      
-        if self.mono_connected and self.lockin_connected and self.filter_connected:   
-            # Assign user, expriment and file name for current measurement
-            userName = self.ui.user.text()
-            experimentName = self.ui.experiment.text()
+#         """      
+#         if self.mono_connected and self.lockin_connected and self.filter_connected:   
+#             # Assign user, expriment and file name for current measurement
+#             userName = self.ui.user.text()
+#             experimentName = self.ui.experiment.text()
             
-            start_no = str(int(start))
-            stop_no = str(int(stop))
-            step_no = str(int(step))
-            amp_no = str(int(amp))
-            if number == 1:
-#                name = 'Si_ref_diode'
-                name = self.ui.file.text()  
-            if number == 2:
-#                name = 'InGaAs_ref_diode'
-                name = self.ui.file.text()  
-            if number == 3:
-                name = self.ui.file.text()
+#             start_no = str(int(start))
+#             stop_no = str(int(stop))
+#             step_no = str(int(step))
+#             amp_no = str(int(amp))
+#             if number == 1:
+# #                name = 'Si_ref_diode'
+#                 name = self.ui.file.text()  
+#             if number == 2:
+# #                name = 'InGaAs_ref_diode'
+#                 name = self.ui.file.text()  
+#             if number == 3:
+#                 name = self.ui.file.text()
 
-            if not self.complete_scan: # If not a complete scan is taken
-                fileName = name + '_(' + start_no + '-' + stop_no + 'nm_' + step_no + 'nm_' + amp_no + 'x)'
-            elif self.complete_scan:
-                fileName = name + '_' + self.filter_addition + 'Filter' + '_(' + start_no + '-' + stop_no + 'nm_' + step_no + 'nm_' + amp_no + 'x)' 
+#             if not self.complete_scan: # If not a complete scan is taken
+#                 fileName = name + '_(' + start_no + '-' + stop_no + 'nm_' + step_no + 'nm_' + amp_no + 'x)'
+#             elif self.complete_scan:
+#                 fileName = name + '_' + self.filter_addition + 'Filter' + '_(' + start_no + '-' + stop_no + 'nm_' + step_no + 'nm_' + amp_no + 'x)' 
         
-            #Set up path to save data
-            self.path =f'{self.save_path}/{userName}/{experimentName}'
-            self.logger.info(f'Saving data to: {self.path}')
-            if not os.path.exists(self.path):
-                os.makedirs(self.path)
-            else:
-                pass       
-            self.naming(fileName, self.path, 2)  # This function defines a variable called self.file_name
+#             #Set up path to save data
+#             self.path =f'{self.save_path}/{userName}/{experimentName}'
+#             self.logger.info(f'Saving data to: {self.path}')
+#             if not os.path.exists(self.path):
+#                 os.makedirs(self.path)
+#             else:
+#                 pass       
+#             self.naming(fileName, self.path, 2)  # This function defines a variable called self.file_name
             
-            self.measure(scan_list, number)
+#             self.measure(scan_list, number)
             
             
          
@@ -1582,7 +1584,7 @@ def main():
         sys.exit(app.exec_())
         
     except Exception as error:
-        self.logger.error(f"Unexpected {error=} during main function, {type(error)=}")
+        logging.error(f"Unexpected {error=} during main function, {type(error)=}")
         raise
 
 if __name__ == "__main__": 
