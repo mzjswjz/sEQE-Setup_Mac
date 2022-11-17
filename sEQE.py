@@ -468,7 +468,6 @@ class MainWindow(QtWidgets.QMainWindow):
         elif startNM_F5 <= wavelength <= stopNM_F5: # Filter 5 [FELH0950]: from 985 - 1800  -- including start, including end
             shouldbeFilterNo = 5
         else:   
-#                shouldbeFilterNo = 2
             self.logger.error('Error: Filter Out Of Range')
 
         if shouldbeFilterNo != filterNo:
@@ -518,7 +517,6 @@ class MainWindow(QtWidgets.QMainWindow):
             shouldbeGratingNo = 3
         else:   # Do I need this?
             self.logger.error('Error: Grating Out Of Range')
-
         if shouldbeGratingNo != gratingNo:
             self.mono.chooseGrating(shouldbeGratingNo)
 
@@ -528,7 +526,7 @@ class MainWindow(QtWidgets.QMainWindow):
             # Dictionary with ['timestamp']['x']['y']['frequency']['phase']['dio']['trigger']['auxin0']['auxin1']['time']
 
         else:
-            self.logger.warning('Unexpected missmatch of gratingNo in monoCheckGrating')
+            pass
 
 # -----------------------------------------------------------------------------------------------------------
 
