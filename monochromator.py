@@ -3,6 +3,7 @@ import logging
 import warnings
 import codecs
 
+import serial 
 
 class Monochromator():
     """Implements Monochromator for Princeton Instruments HRS-300.

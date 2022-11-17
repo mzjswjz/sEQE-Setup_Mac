@@ -225,25 +225,8 @@ class MainWindow(QtWidgets.QMainWindow):
         list
             Zurich Instruments localhost name and device details
         """
-        self.lockin_connected = False
+        self.daq, self.device, self.lockin_connected = self.lockin.connect()
         
-        # Find device via Device Discovery and open connection to ziServer 
-        d = zhinst.ziPython.ziDiscovery()
-        props = d.get(d.find(self.zurich_device))
-        daq = zhinst.ziPython.ziDAQServer(props['serveraddress'],
-                                          props['serverport'], 
-                                          props['apilevel'])
-        daq.connectDevice(self.zurich_device, 
-                          props['interfaces'][0])
-        
-        self.daq = daq
-        
-        # Detect device
-        self.device = zhinst.utils.autoDetect(daq)
-
-        self.logger.info('Connection to Lock-In Established')
-        
-        self.lockin_connected = True       
         self.ui.imageConnect_lockin.setPixmap(QtGui.QPixmap("Button_on.png"))
         
         return self.daq, self.device
@@ -279,7 +262,7 @@ class MainWindow(QtWidgets.QMainWindow):
         None
         
         """
-        self.lockin.connectToLockin()
+        self.connectToLockin()
         self.connectToMono()
         self.connectToFilter()
         
@@ -381,12 +364,23 @@ class MainWindow(QtWidgets.QMainWindow):
         None
         
         """
-        if self.lockin_connected:
-            self.amplification = self.ui.pickAmp.value()
-            self.LockinUpdateParameters()
+        try:
+            if self.lockin_connected:
+                self.amplification = self.ui.pickAmp.value()
+                self.LockinUpdateParameters(self.amplification)
+            else: 
+                self.logger.info('Lock-In not connected')
+        except Exception as err:
+            logging.error(f"Unexpected {err=} during execution of LockinHandleParametersButton function: {type(err)=}")
+            raise
         
-    def LockinUpdateParameters(self):   # Function sets desired Lock-in parameters and calls setParameter function 
+    def LockinUpdateParameters(self,amplification):   # Function sets desired Lock-in parameters and calls setParameter function 
         """Function to update Lockin parameters.
+        
+        Parameters
+        ----------
+        amplification int, required
+            amplification value of the LockIn signal
         
         Returns
         -------
@@ -395,95 +389,38 @@ class MainWindow(QtWidgets.QMainWindow):
         Raises
         ------
         LoggerError
-            Raises error if Lockin not connected
+            Raises error if Lockin not connected or Exception handling
 
-        """     
-        if self.lockin_connected:  
-            self.c_2 = str(self.channel) # Channel 2, with value 1, for the reference input
-            self.tc = self.ui.pickTC.value() # Import value for time constant
-            self.rate = self.ui.pickDTR.value() # Import value for data transfer rate
-            self.lowpass = self.ui.pickLPFO.value() # Import value for low pass filter order
-            self.range = 2 # This sets the default voltage range to 2
-            self.ac = 0 # AC off
-            self.imp50 = 0 # 50 Ohm off
-            self.imp50_2 = 1 # Turn on 50 Ohm on channel 2 to attenuate signal from chopper controller as reference signal
-            self.diff = 1 # Diff off
-#            if self.ui.acButton.isChecked(): # AC on if button is checked
-#                self.ac = 1
-#            if self.ui.imp50Button.isChecked(): # 50 Ohm on if button is checked
-#                self.imp50 = 1
-#            if self.ui.diffButton.isChecked(): # Diff on if button is checked
-#                self.diff = 1                
-#            self.frequency = self.ui.pickFreq.value() # For manual frequency control. The frequency tab is currently not implemented in the GUI
-            
-            self.setParameters()
-            self.logger.info('Updating Lock-In Settings')
-            
-        else:
-            self.logger.error("Lock-In Not Connected")
-             
-    def setParameters(self):       
-        """Function to set default Lockin parameters.
-        
-        Returns
-        -------
-        None
-        
         """
- #       c = str(0)      
- #       print(self.amplification)
-     
-        # Disable all outputs and all demods
-        general_setting = [
-             [['/', self.device, '/demods/0/trigger'], 0],
-             [['/', self.device, '/demods/1/trigger'], 0],
-             [['/', self.device, '/demods/2/trigger'], 0],
-             [['/', self.device, '/demods/3/trigger'], 0],
-             [['/', self.device, '/demods/4/trigger'], 0],
-             [['/', self.device, '/demods/5/trigger'], 0],
-             [['/', self.device, '/sigouts/0/enables/*'], 0],
-             [['/', self.device, '/sigouts/1/enables/*'], 0]
-        ]
-        self.daq.set(general_setting)
-       
-        # Set test settings
-        t1_sigOutIn_setting = [
-            [['/', self.device, '/sigins/',self.c,'/diff'], self.diff],  # Diff Button (Enable for differential mode to measure the difference between +In and -In.)
-            [['/', self.device, '/sigins/',self.c,'/imp50'], self.imp50],  # 50 Ohm Button (Enable to switch input impedance between low (50 Ohm) and high (approx 1 MOhm). Select for signal frequencies of > 10 MHz.) 
-            [['/', self.device, '/sigins/',self.c,'/ac'], self.ac],  # AC Button (Enable for AC coupling to remove DC signal. Cutoff frequency = 1kHz) 
-            [['/', self.device, '/sigins/',self.c,'/range'], self.range],  # Input Range               
-            [['/', self.device, '/demods/',self.c,'/order'], self.lowpass],  # Low-Pass Filter Order                        
-            [['/', self.device, '/demods/',self.c,'/timeconstant'], self.tc],  # Time Constant
-            [['/', self.device, '/demods/',self.c,'/rate'], self.rate],  # Data Transfer Rate 
-            [['/', self.device, '/demods/',self.c,'/oscselect'], self.channel-1],  # Oscillators
-            [['/', self.device, '/demods/',self.c,'/harmonic'], 1],  # Harmonicss
-            [['/', self.device, '/demods/',self.c,'/phaseshift'], 0],  # Phase Shift       
-            [['/', self.device, '/zctrls/',self.c,'/tamp/0/currentgain'], self.amplification],  #  Amplifier Setting
-            [['/', self.device, '/demods/',self.c,'/adcselect'], self.channel-1], # ???
-                        
-        # For locked reference signal
-            [['/', self.device, '/sigins/', self.c_2,'/imp50'], self.imp50_2],  # 50 Ohm Button (Enable to switch input impedance between low (50 Ohm) and high (approx 1 MOhm). Select for signal frequencies of > 10 MHz.)
-            [['/', self.device, '/plls/',self.c,'/enable'], 1],  # Manual [0], External Reference [1]
-            [['/', self.device, '/plls/',self.c,'/adcselect'], 1], # ???
+        try:
+            if self.lockin_connected:  
+                self.c_2 = str(self.channel) # Channel 2, with value 1, for the reference input
+                self.tc = self.ui.pickTC.value() # Import value for time constant
+                self.rate = self.ui.pickDTR.value() # Import value for data transfer rate
+                self.lowpass = self.ui.pickLPFO.value() # Import value for low pass filter order
+                self.range = 2 # This sets the default voltage range to 2
+                self.ac = 0 # AC off
+                self.imp50 = 0 # 50 Ohm off
+                self.imp50_2 = 1 # Turn on 50 Ohm on channel 2 to attenuate signal from chopper controller as reference signal
+                self.diff = 1 # Diff off
+    #            if self.ui.acButton.isChecked(): # AC on if button is checked
+    #                self.ac = 1
+    #            if self.ui.imp50Button.isChecked(): # 50 Ohm on if button is checked
+    #                self.imp50 = 1
+    #            if self.ui.diffButton.isChecked(): # Diff on if button is checked
+    #                self.diff = 1                
+    #            self.frequency = self.ui.pickFreq.value() # For manual frequency control. The frequency tab is currently not implemented in the GUI
 
-        # For manual reference signal - The frequency tab is currently not implemented in the GUI
-#            [['/', self.device, '/plls/',self.c,'/enable'], 0],  # Manual [0], External Reference [1]
-#            [['/', self.device, '/oscs/',self.c,'/freq'], self.frequency],  # Demodulation Frequency
-            
-        # Additional settings ?                        
-    #        [['/', self.device, '/sigouts/',self.c,'/add'], -179.8390],  # Output Add Button (Adds signal from "Add" connection)
-    #        [['/', self.device, '/sigouts/',self.c,'/on'], 1],  # Turn on Output Channel
-    #        [['/', self.device, '/sigouts/',self.c,'/enables/',c6], 1],  # Enable Output Channel
-    #        [['/', self.device, '/sigouts/',self.c,'/range'], 1],  # Output Range
-    #        [['/', self.device, '/sigouts/',self.c,'/amplitudes/',c6], amplitude],  # Output Amplitude
-    #        [['/', self.device, '/sigouts/',self.c,'/offset'], 0],  # Output Offset
-            
-        ]
-        self.daq.set(t1_sigOutIn_setting);       
-        time.sleep(1)  # wait 1s to get a settled lowpass filter
-        self.daq.flush()   # clean queue
-        
-#        self.logger.info("Lock-in settings have been updated")
+                self.lockin.setParameters(self.diff, self.imp50, self.imp50_2, self.ac, self.range, self.lowpass, self.rate, self.tc, self.c_2, amplification)
+                self.logger.info('Updating Lock-In Settings')
+
+            else:
+                self.logger.error("Lock-In not connected")
+                
+        except Exception as err:
+            logging.error(f"Unexpected {err=} during execution of LockinUpdateParameters function: {type(err)=}")
+            raise
+             
         
 # -----------------------------------------------------------------------------------------------------------        
     
@@ -785,7 +722,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 measurement_values['f1']=[start_f1,stop_f1,step_f1,amp_f1]
                 
                 self.amplification = amp_f1
-                self.LockinUpdateParameters()
+                self.LockinUpdateParameters(self.amplification)
                 self.MonoHandleSpeedButton() 
                 
                 scan_list = self.createScanJob(start_f1, stop_f1, step_f1)
@@ -809,7 +746,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 measurement_values['f2']=[start_f2,stop_f2,step_f2,amp_f2]
                 
                 self.amplification = amp_f2
-                self.LockinUpdateParameters()
+                self.LockinUpdateParameters(self.amplification)
                 self.MonoHandleSpeedButton()
 
                 scan_list = self.createScanJob(start_f2, stop_f2, step_f2)
@@ -833,7 +770,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 measurement_values['f3']=[start_f3,stop_f3,step_f3,amp_f3]
                 
                 self.amplification = amp_f3
-                self.LockinUpdateParameters()
+                self.LockinUpdateParameters(self.amplification)
                 self.MonoHandleSpeedButton()
 
                 scan_list = self.createScanJob(start_f3, stop_f3, step_f3)
@@ -857,7 +794,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 measurement_values['f4']=[start_f4,stop_f4,step_f4,amp_f4]
                 
                 self.amplification = amp_f4
-                self.LockinUpdateParameters()
+                self.LockinUpdateParameters(self.amplification)
                 self.MonoHandleSpeedButton()
 
                 scan_list = self.createScanJob(start_f4, stop_f4, step_f4)
@@ -881,7 +818,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 measurement_values['f5']=[start_f5,stop_f5,step_f5,amp_f5]
 
                 self.amplification = amp_f5
-                self.LockinUpdateParameters()
+                self.LockinUpdateParameters(self.amplification)
                 self.MonoHandleSpeedButton()
 
                 scan_list = self.createScanJob(start_f5, stop_f5, step_f5)
@@ -905,7 +842,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 measurement_values['f6']=[start_f6,stop_f6,step_f6,amp_f6]
 
                 self.amplification = amp_f6
-                self.LockinUpdateParameters()
+                self.LockinUpdateParameters(self.amplification)
                 self.MonoHandleSpeedButton()
 
                 scan_list = self.createScanJob(start_f6, stop_f6, step_f6)
@@ -1162,62 +1099,62 @@ class MainWindow(QtWidgets.QMainWindow):
         
     # Measure LOCKIN response    
      
-#     def HandleMeasurement(self, scan_list, start, stop, step, amp, number):  
-#         """Function to prepare sample measurement.
+    def HandleMeasurement(self, scan_list, start, stop, step, amp, number):  
+        """Function to prepare sample measurement.
         
-#         Parameters
-#         ----------
-#         scan_list: list of ints, required
-#             List of wavelength values to scan
-#         start: float, required
-#             Wavelength start value
-#         stop: float, required
-#             Wavelength stop value
-#         step: float, required
-#             Wavelength step value
-#         amp: float, required
-#             Pre-amplifier amplification value
-#         number: int, required
-#             Specifier to decide if power value is calculated (1) or not (0)
+        Parameters
+        ----------
+        scan_list: list of ints, required
+            List of wavelength values to scan
+        start: float, required
+            Wavelength start value
+        stop: float, required
+            Wavelength stop value
+        step: float, required
+            Wavelength step value
+        amp: float, required
+            Pre-amplifier amplification value
+        number: int, required
+            Specifier to decide if power value is calculated (1) or not (0)
 
-#         Returns
-#         -------
-#         None
+        Returns
+        -------
+        None
         
-#         """      
-#         if self.mono_connected and self.lockin_connected and self.filter_connected:   
-#             # Assign user, expriment and file name for current measurement
-#             userName = self.ui.user.text()
-#             experimentName = self.ui.experiment.text()
+        """      
+        if self.mono_connected and self.lockin_connected and self.filter_connected:   
+            # Assign user, expriment and file name for current measurement
+            userName = self.ui.user.text()
+            experimentName = self.ui.experiment.text()
             
-#             start_no = str(int(start))
-#             stop_no = str(int(stop))
-#             step_no = str(int(step))
-#             amp_no = str(int(amp))
-#             if number == 1:
-# #                name = 'Si_ref_diode'
-#                 name = self.ui.file.text()  
-#             if number == 2:
-# #                name = 'InGaAs_ref_diode'
-#                 name = self.ui.file.text()  
-#             if number == 3:
-#                 name = self.ui.file.text()
+            start_no = str(int(start))
+            stop_no = str(int(stop))
+            step_no = str(int(step))
+            amp_no = str(int(amp))
+            if number == 1:
+#                name = 'Si_ref_diode'
+                name = self.ui.file.text()  
+            if number == 2:
+#                name = 'InGaAs_ref_diode'
+                name = self.ui.file.text()  
+            if number == 3:
+                name = self.ui.file.text()
 
-#             if not self.complete_scan: # If not a complete scan is taken
-#                 fileName = name + '_(' + start_no + '-' + stop_no + 'nm_' + step_no + 'nm_' + amp_no + 'x)'
-#             elif self.complete_scan:
-#                 fileName = name + '_' + self.filter_addition + 'Filter' + '_(' + start_no + '-' + stop_no + 'nm_' + step_no + 'nm_' + amp_no + 'x)' 
+            if not self.complete_scan: # If not a complete scan is taken
+                fileName = name + '_(' + start_no + '-' + stop_no + 'nm_' + step_no + 'nm_' + amp_no + 'x)'
+            elif self.complete_scan:
+                fileName = name + '_' + self.filter_addition + 'Filter' + '_(' + start_no + '-' + stop_no + 'nm_' + step_no + 'nm_' + amp_no + 'x)' 
         
-#             #Set up path to save data
-#             self.path =f'{self.save_path}/{userName}/{experimentName}'
-#             self.logger.info(f'Saving data to: {self.path}')
-#             if not os.path.exists(self.path):
-#                 os.makedirs(self.path)
-#             else:
-#                 pass       
-#             self.naming(fileName, self.path, 2)  # This function defines a variable called self.file_name
+            #Set up path to save data
+            self.path =f'{self.save_path}/{userName}/{experimentName}'
+            self.logger.info(f'Saving data to: {self.path}')
+            if not os.path.exists(self.path):
+                os.makedirs(self.path)
+            else:
+                pass       
+            self.naming(fileName, self.path, 2)  # This function defines a variable called self.file_name
             
-#             self.measure(scan_list, number)
+            self.measure(scan_list, number)
             
             
          
