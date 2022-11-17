@@ -47,11 +47,17 @@ class MainWindow(QtWidgets.QMainWindow):
         file = pathlib.Path('pathsNdevices_config.txt')
         if file.exists():
             pNpdata = file.read_text().split(',')
+            print(pNpdata)
             self.zurich_device = pNpdata[0]
             self.filter_usb = pNpdata[1]
             self.mono_usb =  pNpdata[2]
             self.save_path = pNpdata[3]
-            #file.unlink() # to delete file        
+            
+            for i in range(len(pNpdata)):
+                if pNpdata[i] == '':
+                    print('Empty string in pathsNdevices.txt found. The current file will be deleted, please recreate the file')
+                    file.unlink()  # to delete file
+                
         else:
             file.touch(exist_ok = False)
             if platform.system() == 'Linux':
@@ -564,132 +570,9 @@ class MainWindow(QtWidgets.QMainWindow):
         
 # -----------------------------------------------------------------------------------------------------------        
     
-    #### Functions to handle measurement buttons
+    #### Functions to handle measurement parameter and measurment itself
     
 # -----------------------------------------------------------------------------------------------------------  
-
-    # Set parameters and measure Silicon reference diode
-
-#     def MonoHandleSiRefButton(self):
-#         """Function to measure silicon reference photodiode.
-        
-#         Returns
-#         -------
-#         None 
-
-#         """
-#         start_si = self.ui.startNM_Si.value()
-#         stop_si = self.ui.stopNM_Si.value()
-#         step_si = self.ui.stepNM_Si.value()
-#         amp_si = self.ui.pickAmp_Si.value()
-            
-#         self.amplification = amp_si
-#         self.LockinUpdateParameters()
-#         self.MonoHandleSpeedButton()
-        
-#         scan_list = self.createScanJob(start_si, stop_si, step_si)
-#         self.HandleMeasurement(scan_list, start_si, stop_si, step_si, amp_si, 1)
-        
-#         self.mono.chooseFilter(1)        
-#         self.ui.imageRef_Si.setPixmap(QtGui.QPixmap("Button_on.png"))      
-#         self.logger.info('Finished Measurement')        
-    
-        
-#     # Set parameters and measure InGaAs reference diode
-               
-#     def MonoHandleGARefButton(self):
-#         """Function to meausure silicon reference photodiode.
-        
-#         Returns
-#         -------
-#         None 
-
-#         """
-#         start_ga = self.ui.startNM_GA.value()
-#         stop_ga = self.ui.stopNM_GA.value()
-#         step_ga = self.ui.stepNM_GA.value()
-#         amp_ga = self.ui.pickAmp_GA.value()
-
-#         self.amplification = amp_ga
-#         self.LockinUpdateParameters()
-#         self.MonoHandleSpeedButton()
-
-#         scan_list = self.createScanJob(start_ga, stop_ga, step_ga)
-#         self.HandleMeasurement(scan_list, start_ga, stop_ga, step_ga, amp_ga, 2)
-        
-#         self.mono.chooseFilter(1)              
-#         self.ui.imageRef_GA.setPixmap(QtGui.QPixmap("Button_on.png"))       
-#         self.logger.info('Finished Measurement')  
-        
-        
-#     # Set parameters and measure sample
-        
-#     def MonoHandleMeasureButton(self):
-#         """Function to measure samples with different wavelength ranges.
-        
-#         Returns
-#         -------
-#         None
-
-#         """
-#         if self.ui.Range1.isChecked():    
-#             start_r1 = self.ui.startNM_R1.value()
-#             stop_r1 = self.ui.stopNM_R1.value()
-#             step_r1 = self.ui.stepNM_R1.value()
-#             amp_r1 = self.ui.pickAmp_R1.value()
-
-#             self.amplification = amp_r1
-#             self.LockinUpdateParameters()
-#             self.MonoHandleSpeedButton()
-                        
-#             scan_list = self.createScanJob(start_r1, stop_r1, step_r1)
-#             self.HandleMeasurement(scan_list, start_r1, stop_r1, step_r1, amp_r1, 3)
-        
-#         if self.ui.Range2.isChecked():         
-#             start_r2 = self.ui.startNM_R2.value()
-#             stop_r2 = self.ui.stopNM_R2.value()
-#             step_r2 = self.ui.stepNM_R2.value()
-#             amp_r2 = self.ui.pickAmp_R2.value()
-
-#             self.amplification = amp_r2
-#             self.LockinUpdateParameters()
-#             self.MonoHandleSpeedButton()        
-            
-#             scan_list = self.createScanJob(start_r2, stop_r2, step_r2)
-#             self.HandleMeasurement(scan_list, start_r2, stop_r2, step_r2, amp_r2, 3)
-            
-#         if self.ui.Range3.isChecked():   
-#             start_r3 = self.ui.startNM_R3.value()
-#             stop_r3 = self.ui.stopNM_R3.value()
-#             step_r3 = self.ui.stepNM_R3.value()
-#             amp_r3 = self.ui.pickAmp_R3.value()
-
-#             self.amplification = amp_r3
-#             self.LockinUpdateParameters()
-#             self.MonoHandleSpeedButton()
-            
-#             scan_list = self.createScanJob(start_r3, stop_r3, step_r3)
-#             self.HandleMeasurement(scan_list, start_r3, stop_r3, step_r3, amp_r3, 3)       
-        
-#         if self.ui.Range4.isChecked():   
-#             start_r4 = self.ui.startNM_R4.value()
-#             stop_r4 = self.ui.stopNM_R4.value()
-#             step_r4 = self.ui.stepNM_R4.value()
-#             amp_r4 = self.ui.pickAmp_R4.value()
-
-#             self.amplification = amp_r4
-#             self.LockinUpdateParameters()
-#             self.MonoHandleSpeedButton()
-            
-#             scan_list = self.createScanJob(start_r4, stop_r4, step_r4)
-#             self.HandleMeasurement(scan_list, start_r4, stop_r4, step_r4, amp_r4, 3)
-            
-#         self.mono.chooseFilter(1)
-#         self.ui.imageMeasure.setPixmap(QtGui.QPixmap("Button_on.png"))
-#         self.logger.info('Finished Measurement')
-
-
-    # Set parameters for complete scan and measure sample
 
     def MonoHandleCompleteScanButton(self):
         """Function to measure samples with different filters.
@@ -1176,7 +1059,7 @@ class MainWindow(QtWidgets.QMainWindow):
         columns = ['Wavelength', 'Mean Current', 'Amplification', 'Mean R', 'Mean Frequency', 'Mean Phase']    
         
         self.measuring = True 
-        self.ui.imageStop.setPixmap(QtGui.QPixmap("Button_off.png"))
+        self.ui.imageCompleteScan_stop.setPixmap(QtGui.QPixmap("Button_off.png"))
         
         # Set up plot style                
         if self.do_plot:
@@ -1465,7 +1348,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         """
         self.measuring = False
-        self.ui.imageStop.setPixmap(QtGui.QPixmap("Button_on.png"))
+        self.ui.imageCompleteScan_stop.setPixmap(QtGui.QPixmap("Button_on.png"))
         return self.measuring
 
 
