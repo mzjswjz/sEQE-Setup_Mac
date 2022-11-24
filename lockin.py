@@ -63,7 +63,7 @@ class LockIn():
         
         return self.daq, self.device, self.connected
     
-    def setParameters(self,diff,imp50,imp50_2,ac,Range,lowpass,rate,tc,c_2,amplification):       
+    def setParameters(self,diff_2, diff,imp50,imp50_2,ac,Range,lowpass,rate,tc,c_2,amplification):       
         """Function to set default Lockin parameters.
         
         Parameters
@@ -111,6 +111,7 @@ class LockIn():
         """
         try:
             self.diff = diff
+            self.diff_2 = diff_2
             self.imp50 = imp50
             self.imp50_2 = imp50_2
             self.ac = ac
@@ -158,7 +159,8 @@ class LockIn():
             # For locked reference signal
                 # 50 Ohm Button (Enable to switch input impedance between low (50 Ohm) and high (approx 1 MOhm).
                 # Select for signal frequencies of > 10 MHz.)
-                [['/', self.device, '/sigins/', self.c_2,'/imp50'], self.imp50_2], 
+                [['/', self.device, '/sigins/', self.c_2,'/imp50'], self.imp50_2],
+                [['/', self.device, '/sigins/',self.c_2,'/diff'], self.diff_2], 
                 [['/', self.device, '/plls/',self.c,'/enable'], 1],  # Manual [0], External Reference [1]
                 [['/', self.device, '/plls/',self.c,'/adcselect'], 1], # ???
 

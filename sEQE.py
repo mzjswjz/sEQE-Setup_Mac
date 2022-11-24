@@ -409,6 +409,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.imp50 = 0 # 50 Ohm off
                 self.imp50_2 = 1 # Turn on 50 Ohm on channel 2 to attenuate signal from chopper controller as reference signal
                 self.diff = 1 # Diff off
+                self.diff_2 = 0 #diff for channel 2 off
     #            if self.ui.acButton.isChecked(): # AC on if button is checked
     #                self.ac = 1
     #            if self.ui.imp50Button.isChecked(): # 50 Ohm on if button is checked
@@ -417,7 +418,7 @@ class MainWindow(QtWidgets.QMainWindow):
     #                self.diff = 1                
     #            self.frequency = self.ui.pickFreq.value() # For manual frequency control. The frequency tab is currently not implemented in the GUI
 
-                self.lockin.setParameters(self.diff, self.imp50, self.imp50_2, self.ac, self.range, self.lowpass, self.rate, self.tc, self.c_2, amplification)
+                self.lockin.setParameters(self.diff_2, self.diff, self.imp50, self.imp50_2, self.ac, self.range, self.lowpass, self.rate, self.tc, self.c_2, amplification)
                 self.logger.info('Updating Lock-In Settings')
 
             else:
