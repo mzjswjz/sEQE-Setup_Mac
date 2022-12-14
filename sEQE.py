@@ -47,11 +47,13 @@ class MainWindow(QtWidgets.QMainWindow):
         file = pathlib.Path('pathsNdevices_config.txt')
         if file.exists():
             pNpdata = file.read_text().split(',')
-            print(pNpdata)
+            
             self.zurich_device = pNpdata[0]
-            self.filter_usb = pNpdata[1]
-            self.mono_usb =  pNpdata[2]
+            self.filter_port = pNpdata[1]
+            self.mono_port =  pNpdata[2]
             self.save_path = pNpdata[3]
+            
+            print(f'Found the following details for setup in pathsNdevices.txt: \n zurich instrument device name: {self.zurich_device} \n second filter wheel port: {self.filter_port} \n monochromator port: {self.mono_port} \n default path where data are saved: {self.save_path}'))
             
             for i in range(len(pNpdata)):
                 if pNpdata[i] == '':
@@ -69,29 +71,12 @@ class MainWindow(QtWidgets.QMainWindow):
                 port_prefix = '/dev/tty'
             
             self.zurich_device = str(input('Which zurich instrument device is used  ? - type device address string e.g. UHF-DEV2000.  ')) #'hf2-dev838'
-            self.filter_usb = port_prefix+str(input('Which port number is used by the second filter wheel ? - type a number  '))#'COM4'
-            self.mono_usb =  port_prefix+str(input('Which port number is used by the monochromator ? - type a number  '))#'COM1'
-            self.save_path = pathlib.Path(input('Where do you want to save your data ? - copy absolute path of folder  '))#'C:\\Users\\Public\\Documents\\sEQE'
+            self.filter_port = port_prefix+str(input('Which port number is used by the second filter wheel ? - type a number  '))# AFMD default 'COM4'
+            self.mono_port =  port_prefix+str(input('Which port number is used by the monochromator ? - type a number  '))# AFMD default 'COM1'
+            self.save_path = pathlib.Path(input('Where do you want to save your data ? - copy absolute path of folder  '))# AFMD default 'C:\\Users\\Public\\Documents\\sEQE'
             
-            file.write_text(f'{self.zurich_device},{self.filter_usb},{self.mono_usb},{self.save_path}')
-            #print(file.read_text())
-            
-        # if platform.system() == 'Linux':
-        #     self.filter_usb = '/dev/ttyUSB0'
-        #     self.mono_usb = '/dev/ttyUSB1' 
-        #     self.save_path = '/home/jungbluthl/Desktop/sEQE Data'
-        # elif platform.system() == 'Windows':
-        #     self.filter_usb = 'COM4'
-        #     self.mono_usb = 'COM1'
-        #     #self.save_path = 'C:\\Users\\hanauske\\Desktop\\sEQE-Data'
-        #     self.save_path = 'C:\\Users\\Public\\Documents\\sEQE'
-        # else:
-        #     self.logger.error('Operating System is not known - defaulting to Linux system')
-        #     self.filter_usb = input('What is the filter wheel port ?') #'/dev/ttyUSB0'
-        #     self.mono_usb = '/dev/ttyUSB1'
-        #     # Path to save data
-        #     self.save_path = '/home/jungbluthl/Desktop/sEQE Data'
-        
+            file.write_text(f'{self.zurich_device},{self.filter_port},{self.mono_port},{self.save_path}')
+
         QtWidgets.QMainWindow.__init__(self)
         
         warnings.filterwarnings("ignore")
@@ -109,8 +94,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.lockin_connected = False   # Set the Lock-in connection to False
         self.filter_connected = False  # Set the filterwheel connection to False
         
-        self.thorfilterwheel = ThorlabsFilterWheel(com=self.filter_usb) # Initialize Thorlabs filter wheel
-        self.mono = Monochromator(self.mono_usb)
+        # Initialize Thorlabs filter wheel
+        self.mono = Monochromator(self.mono_port)
         self.lockin = LockIn(self.zurich_device)
         
         # General Setup
@@ -147,25 +132,19 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.lockinParameterButton.clicked.connect(self.LockinHandleParameterButton)   # Set Lock-in parameters
 
         # Handle Filterwheel Buttons
-
+        
         self.ui.connectButton_Filter.clicked.connect(self.connectToFilter) # Connect only to Filterwheel
          
         # Handle Combined Buttons
-
+        
         self.ui.connectButton.clicked.connect(self.connectToEquipment)
-
-        # self.ui.measureButtonRef_Si.clicked.connect(self.MonoHandleSiRefButton)
-        # self.ui.measureButtonRef_GA.clicked.connect(self.MonoHandleGARefButton)        
-        # self.ui.measureButtonDev.clicked.connect(self.MonoHandleMeasureButton)        
-        # self.ui.stopButton.clicked.connect(self.HandleStopButton)
-
         self.ui.completeScanButton_start.clicked.connect(self.MonoHandleCompleteScanButton)  #########################################################################################
         self.ui.completeScanButton_stop.clicked.connect(self.HandleStopCompleteScanButton)   #########################################################################################
         
         # Save and Import data from files or naming from path
         
-        self.ui.save_to_file.clicked.connect(self.save_parameter) # Save measurement parameter to file
-        self.ui.import_from_file.clicked.connect(self.load_parameter)
+        self.ui.save_to_file.clicked.connect(self.save_mono_parameter) # Save measurement parameter to file
+        self.ui.import_from_file.clicked.connect(self.load_mono_parameter)
         self.ui.importNamingButton.clicked.connect(self.load_naming)
         
         
@@ -184,7 +163,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def __del__(self):
         try:
             self.thorfilterwheel.close()
-            with serial.Serial(self.mono_usb, 9600, timeout=0) as self.p:
+            with serial.Serial(self.mono_port, 9600, timeout=0) as self.p:
                 self.p.close()
         except:
             pass 
@@ -216,10 +195,15 @@ class MainWindow(QtWidgets.QMainWindow):
         None
         
         """
-        self.mono_connected = self.mono.connect()
-        if self.mono_connected:
-            self.logger.info('Connection to Monochromator Established')
-            self.ui.imageConnect_mono.setPixmap(QtGui.QPixmap("Button_on.png"))           
+        try:
+            self.mono_connected = self.mono.connect()
+            
+            if self.mono_connected:
+                self.logger.info('Connection to Monochromator Established')
+                self.ui.imageConnect_mono.setPixmap(QtGui.QPixmap("Button_on.png"))
+                
+        except Exception as err:
+            self.logger.exception("Unexpected error during execution of connectToMono function:")
             
     # Establish connection to LOCKIN
     
@@ -231,12 +215,16 @@ class MainWindow(QtWidgets.QMainWindow):
         list
             Zurich Instruments localhost name and device details
         """
-        self.daq, self.device, self.lockin_connected = self.lockin.connect()
-        
-        self.ui.imageConnect_lockin.setPixmap(QtGui.QPixmap("Button_on.png"))
-        
-        return self.daq, self.device
+        try: 
+            self.daq, self.device, self.lockin_connected = self.lockin.connect()
 
+            self.ui.imageConnect_lockin.setPixmap(QtGui.QPixmap("Button_on.png"))
+
+            return self.daq, self.device
+        
+        except Exception as err:
+            self.logger.exception("Unexpected error during execution of connectToLockin function:")
+            
     # Establish connection to Filterwheel
 
     def connectToFilter(self):
@@ -246,16 +234,18 @@ class MainWindow(QtWidgets.QMainWindow):
         -------
         None
         
-        """ 
-        
-        if self.thorfilterwheel.position == 0:
-            self.filter_connected = True
-            self.logger.info("Connection to External Filter Wheel Established")
-            self.ui.imageConnect_filter.setPixmap(QtGui.QPixmap("Button_on.png"))
-        else:
-            self.logger.error('Port {0} is unavailable: {1}'.format(self.filter_usb, ex))
-            self.filter_connected = False
-
+        """
+        try:
+            self.thorfilterwheel = ThorlabsFilterWheel(com=self.filter_port)
+            if self.thorfilterwheel.position == 0:
+                self.filter_connected = True
+                self.logger.info("Connection to External Filter Wheel Established")
+                self.ui.imageConnect_filter.setPixmap(QtGui.QPixmap("Button_on.png"))
+            else:
+                self.logger.error('Port {0} is unavailable: {1}'.format(self.filter_port, ex))
+                self.filter_connected = False
+        except Exception as err:
+            self.logger.exception("Unexpected error during execution of connectToFilter function:")
 # -----------------------------------------------------------------------------------------------------------        
         
     # Establish connection to all equipment
@@ -268,11 +258,15 @@ class MainWindow(QtWidgets.QMainWindow):
         None
         
         """
-        self.connectToLockin()
-        self.connectToMono()
-        self.connectToFilter()
-        
-        self.ui.imageConnect.setPixmap(QtGui.QPixmap("Button_on.png"))        
+        try:
+            self.connectToLockin()
+            self.connectToMono()
+            self.connectToFilter()
+
+            self.ui.imageConnect.setPixmap(QtGui.QPixmap("Button_on.png"))
+            
+        except Exception as err:
+             self.logger.exception("Unexpected error during execution of connectToEquipment function:")
     
 # -----------------------------------------------------------------------------------------------------------        
     
@@ -376,9 +370,9 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.LockinUpdateParameters(self.amplification)
             else: 
                 self.logger.info('Lock-In not connected')
+                
         except Exception as err:
-            logging.error(f"Unexpected {err=} during execution of LockinHandleParametersButton function: {type(err)=}")
-            raise
+            self.logger.exception("Unexpected error during execution of LockinHandleParametersButton function:")
         
     def LockinUpdateParameters(self,amplification):   # Function sets desired Lock-in parameters and calls setParameter function 
         """Function to update Lockin parameters.
@@ -425,8 +419,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.logger.error("Lock-In not connected")
                 
         except Exception as err:
-            logging.error(f"Unexpected {err=} during execution of LockinUpdateParameters function: {type(err)=}")
-            raise
+            self.logger.exception("Unexpected error during execution of LockinUpdateParameters function:")
              
         
 # -----------------------------------------------------------------------------------------------------------        
@@ -560,14 +553,17 @@ class MainWindow(QtWidgets.QMainWindow):
             Raises error if second filter wheel not connected
        
         """
-        
-        if not self.filter_connected:
-            self.logger.error("External Filter Wheel Not Connected")
-            return False
+        try:
+            if not self.filter_connected:
+                self.logger.error("External Filter Wheel Not Connected")
+                return False
 
-        self.thorfilterwheel._do_set_position(pos-1)
-        self.logger.info('Thorlabs filterwheel updated')
-        return True
+            self.thorfilterwheel._do_set_position(pos-1)
+            self.logger.info('Thorlabs filterwheel updated')
+            return True
+        
+        except Exception as err: 
+            self.logger.exception("Unexpected error during execution of changeFilter function:")
         
 # -----------------------------------------------------------------------------------------------------------        
     
@@ -583,164 +579,169 @@ class MainWindow(QtWidgets.QMainWindow):
         None
         
         """
-        self.complete_scan = True
-        self.ui.imageCompleteScan_start.setPixmap(QtGui.QPixmap("Button_on.png"))
-        measurement_values = {}
-        if self.ui.scan_noFilter.isChecked():
+        try: 
+            self.complete_scan = True
+            self.ui.imageCompleteScan_start.setPixmap(QtGui.QPixmap("Button_on.png"))
+            measurement_values = {}
+            if self.ui.scan_noFilter.isChecked():
 
-            self.changeFilter(1)
+                self.changeFilter(1)
 
-            if self.changeFilter(1):
+                if self.changeFilter(1):
 
-                self.filter_addition = 'no'
+                    self.filter_addition = 'no'
 
-                self.logger.info('Moving to Open Filter Position')
+                    self.logger.info('Moving to Open Filter Position')
 
-                start_f1 = self.ui.scan_startNM_1.value()
-                stop_f1 = self.ui.scan_stopNM_1.value()
-                step_f1 = self.ui.scan_stepNM_1.value()
-                amp_f1 = self.ui.scan_pickAmp_1.value()
+                    start_f1 = self.ui.scan_startNM_1.value()
+                    stop_f1 = self.ui.scan_stopNM_1.value()
+                    step_f1 = self.ui.scan_stepNM_1.value()
+                    amp_f1 = self.ui.scan_pickAmp_1.value()
+
+                    measurement_values['f1']=[start_f1,stop_f1,step_f1,amp_f1]
+
+                    self.amplification = amp_f1
+                    self.LockinUpdateParameters(self.amplification)
+                    self.MonoHandleSpeedButton() 
+
+                    scan_list = self.createScanJob(start_f1, stop_f1, step_f1)
+                    self.HandleMeasurement(scan_list, start_f1, stop_f1, step_f1, amp_f1, 3)
+
+            if self.ui.scan_Filter2.isChecked():
+
+                self.changeFilter(2)
+
+                if self.changeFilter(2):
+
+                    self.filter_addition = str(int(self.ui.cuton_filter_2.value()))
+
+                    self.logger.info('Moving to %s nm Filter' % self.filter_addition)
+
+                    start_f2 = self.ui.scan_startNM_2.value()
+                    stop_f2 = self.ui.scan_stopNM_2.value()
+                    step_f2 = self.ui.scan_stepNM_2.value()
+                    amp_f2 = self.ui.scan_pickAmp_2.value()
+
+                    measurement_values['f2']=[start_f2,stop_f2,step_f2,amp_f2]
+
+                    self.amplification = amp_f2
+                    self.LockinUpdateParameters(self.amplification)
+                    self.MonoHandleSpeedButton()
+
+                    scan_list = self.createScanJob(start_f2, stop_f2, step_f2)
+                    self.HandleMeasurement(scan_list, start_f2, stop_f2, step_f2, amp_f2, 3)
+
+            if self.ui.scan_Filter3.isChecked():
+
+                self.changeFilter(3)
+
+                if self.changeFilter(3):
+
+                    self.filter_addition = str(int(self.ui.cuton_filter_3.value()))
+
+                    self.logger.info('Moving to %s nm Filter' % self.filter_addition)
+
+                    start_f3 = self.ui.scan_startNM_3.value()
+                    stop_f3 = self.ui.scan_stopNM_3.value()
+                    step_f3 = self.ui.scan_stepNM_3.value()
+                    amp_f3 = self.ui.scan_pickAmp_3.value()
+
+                    measurement_values['f3']=[start_f3,stop_f3,step_f3,amp_f3]
+
+                    self.amplification = amp_f3
+                    self.LockinUpdateParameters(self.amplification)
+                    self.MonoHandleSpeedButton()
+
+                    scan_list = self.createScanJob(start_f3, stop_f3, step_f3)
+                    self.HandleMeasurement(scan_list, start_f3, stop_f3, step_f3, amp_f3, 3)
+
+            if self.ui.scan_Filter4.isChecked():
+
+                self.changeFilter(4)
+
+                if self.changeFilter(4):
+
+                    self.filter_addition = str(int(self.ui.cuton_filter_4.value()))
+
+                    self.logger.info('Moving to %s nm Filter' % self.filter_addition)
+
+                    start_f4 = self.ui.scan_startNM_4.value()
+                    stop_f4 = self.ui.scan_stopNM_4.value()
+                    step_f4 = self.ui.scan_stepNM_4.value()
+                    amp_f4 = self.ui.scan_pickAmp_4.value()
+
+                    measurement_values['f4']=[start_f4,stop_f4,step_f4,amp_f4]
+
+                    self.amplification = amp_f4
+                    self.LockinUpdateParameters(self.amplification)
+                    self.MonoHandleSpeedButton()
+
+                    scan_list = self.createScanJob(start_f4, stop_f4, step_f4)
+                    self.HandleMeasurement(scan_list, start_f4, stop_f4, step_f4, amp_f4, 3)
+
+            if self.ui.scan_Filter5.isChecked():
+
+                self.changeFilter(5)
+
+                if self.changeFilter(5):
+
+                    self.filter_addition = str(int(self.ui.cuton_filter_5.value()))
+
+                    self.logger.info('Moving to %s nm Filter' % self.filter_addition)
+
+                    start_f5 = self.ui.scan_startNM_5.value()
+                    stop_f5 = self.ui.scan_stopNM_5.value()
+                    step_f5 = self.ui.scan_stepNM_5.value()
+                    amp_f5 = self.ui.scan_pickAmp_5.value()
+
+                    measurement_values['f5']=[start_f5,stop_f5,step_f5,amp_f5]
+
+                    self.amplification = amp_f5
+                    self.LockinUpdateParameters(self.amplification)
+                    self.MonoHandleSpeedButton()
+
+                    scan_list = self.createScanJob(start_f5, stop_f5, step_f5)
+                    self.HandleMeasurement(scan_list, start_f5, stop_f5, step_f5, amp_f5, 3)
+
+            if self.ui.scan_Filter6.isChecked():
+
+                self.changeFilter(6)
+
+                if self.changeFilter(6):
+
+                    self.filter_addition = str(int(self.ui.cuton_filter_6.value()))
+
+                    self.logger.info('Moving to %s nm Filter' % self.filter_addition)
+
+                    start_f6 = self.ui.scan_startNM_6.value()
+                    stop_f6 = self.ui.scan_stopNM_6.value()
+                    step_f6 = self.ui.scan_stepNM_6.value()
+                    amp_f6 = self.ui.scan_pickAmp_6.value()
+
+                    measurement_values['f6']=[start_f6,stop_f6,step_f6,amp_f6]
+
+                    self.amplification = amp_f6
+                    self.LockinUpdateParameters(self.amplification)
+                    self.MonoHandleSpeedButton()
+
+                    scan_list = self.createScanJob(start_f6, stop_f6, step_f6)
+                    self.HandleMeasurement(scan_list, start_f6, stop_f6, step_f6, amp_f6, 3)
+
+            self.changeFilter(1) 
+            self.logger.info('Moving to open filter')               
+            self.mono.chooseFilter(1)
+            self.complete_scan = False   
+            self.ui.imageCompleteScan_start.setPixmap(QtGui.QPixmap("Button_off.png"))
+            self.ui.imageCompleteScan_stop.setPixmap(QtGui.QPixmap("Button_off.png"))
+
+            self.logger.info('Finished Measurement') 
+
+            measurement_parameter = pd.DataFrame.from_dict(measurement_values)
+                    #self.save(measurement_values)
                 
-                measurement_values['f1']=[start_f1,stop_f1,step_f1,amp_f1]
-                
-                self.amplification = amp_f1
-                self.LockinUpdateParameters(self.amplification)
-                self.MonoHandleSpeedButton() 
-                
-                scan_list = self.createScanJob(start_f1, stop_f1, step_f1)
-                self.HandleMeasurement(scan_list, start_f1, stop_f1, step_f1, amp_f1, 3)
-                
-        if self.ui.scan_Filter2.isChecked():
-
-            self.changeFilter(2)
-
-            if self.changeFilter(2):
-                
-                self.filter_addition = str(int(self.ui.cuton_filter_2.value()))
-
-                self.logger.info('Moving to %s nm Filter' % self.filter_addition)
-
-                start_f2 = self.ui.scan_startNM_2.value()
-                stop_f2 = self.ui.scan_stopNM_2.value()
-                step_f2 = self.ui.scan_stepNM_2.value()
-                amp_f2 = self.ui.scan_pickAmp_2.value()
-
-                measurement_values['f2']=[start_f2,stop_f2,step_f2,amp_f2]
-                
-                self.amplification = amp_f2
-                self.LockinUpdateParameters(self.amplification)
-                self.MonoHandleSpeedButton()
-
-                scan_list = self.createScanJob(start_f2, stop_f2, step_f2)
-                self.HandleMeasurement(scan_list, start_f2, stop_f2, step_f2, amp_f2, 3)
-
-        if self.ui.scan_Filter3.isChecked():
-
-            self.changeFilter(3)
-
-            if self.changeFilter(3):
-                
-                self.filter_addition = str(int(self.ui.cuton_filter_3.value()))
-
-                self.logger.info('Moving to %s nm Filter' % self.filter_addition)
-
-                start_f3 = self.ui.scan_startNM_3.value()
-                stop_f3 = self.ui.scan_stopNM_3.value()
-                step_f3 = self.ui.scan_stepNM_3.value()
-                amp_f3 = self.ui.scan_pickAmp_3.value()
-
-                measurement_values['f3']=[start_f3,stop_f3,step_f3,amp_f3]
-                
-                self.amplification = amp_f3
-                self.LockinUpdateParameters(self.amplification)
-                self.MonoHandleSpeedButton()
-
-                scan_list = self.createScanJob(start_f3, stop_f3, step_f3)
-                self.HandleMeasurement(scan_list, start_f3, stop_f3, step_f3, amp_f3, 3)
-
-        if self.ui.scan_Filter4.isChecked():
-
-            self.changeFilter(4)
-
-            if self.changeFilter(4):
-                
-                self.filter_addition = str(int(self.ui.cuton_filter_4.value()))
-
-                self.logger.info('Moving to %s nm Filter' % self.filter_addition)
-
-                start_f4 = self.ui.scan_startNM_4.value()
-                stop_f4 = self.ui.scan_stopNM_4.value()
-                step_f4 = self.ui.scan_stepNM_4.value()
-                amp_f4 = self.ui.scan_pickAmp_4.value()
-
-                measurement_values['f4']=[start_f4,stop_f4,step_f4,amp_f4]
-                
-                self.amplification = amp_f4
-                self.LockinUpdateParameters(self.amplification)
-                self.MonoHandleSpeedButton()
-
-                scan_list = self.createScanJob(start_f4, stop_f4, step_f4)
-                self.HandleMeasurement(scan_list, start_f4, stop_f4, step_f4, amp_f4, 3)
-
-        if self.ui.scan_Filter5.isChecked():
-
-            self.changeFilter(5)
-
-            if self.changeFilter(5):
-
-                self.filter_addition = str(int(self.ui.cuton_filter_5.value()))
-
-                self.logger.info('Moving to %s nm Filter' % self.filter_addition)
-
-                start_f5 = self.ui.scan_startNM_5.value()
-                stop_f5 = self.ui.scan_stopNM_5.value()
-                step_f5 = self.ui.scan_stepNM_5.value()
-                amp_f5 = self.ui.scan_pickAmp_5.value()
-                
-                measurement_values['f5']=[start_f5,stop_f5,step_f5,amp_f5]
-
-                self.amplification = amp_f5
-                self.LockinUpdateParameters(self.amplification)
-                self.MonoHandleSpeedButton()
-
-                scan_list = self.createScanJob(start_f5, stop_f5, step_f5)
-                self.HandleMeasurement(scan_list, start_f5, stop_f5, step_f5, amp_f5, 3)
-
-        if self.ui.scan_Filter6.isChecked():
-
-            self.changeFilter(6)
-
-            if self.changeFilter(6):
-
-                self.filter_addition = str(int(self.ui.cuton_filter_6.value()))
-
-                self.logger.info('Moving to %s nm Filter' % self.filter_addition)
-
-                start_f6 = self.ui.scan_startNM_6.value()
-                stop_f6 = self.ui.scan_stopNM_6.value()
-                step_f6 = self.ui.scan_stepNM_6.value()
-                amp_f6 = self.ui.scan_pickAmp_6.value()
-                
-                measurement_values['f6']=[start_f6,stop_f6,step_f6,amp_f6]
-
-                self.amplification = amp_f6
-                self.LockinUpdateParameters(self.amplification)
-                self.MonoHandleSpeedButton()
-
-                scan_list = self.createScanJob(start_f6, stop_f6, step_f6)
-                self.HandleMeasurement(scan_list, start_f6, stop_f6, step_f6, amp_f6, 3)
-
-        self.changeFilter(1) 
-        self.logger.info('Moving to open filter')               
-        self.mono.chooseFilter(1)
-        self.complete_scan = False   
-        self.ui.imageCompleteScan_start.setPixmap(QtGui.QPixmap("Button_off.png"))
-        self.ui.imageCompleteScan_stop.setPixmap(QtGui.QPixmap("Button_off.png"))
-
-        self.logger.info('Finished Measurement') 
-        
-        measurement_parameter = pd.DataFrame.from_dict(measurement_values)
-                #self.save(measurement_values)
+        except Exception as err:
+            self.logger.exception("Unexpected error during execution of MonoHandleCompleteScanButton function:")
+            
             
     def load_naming(self):
         """Function to load naming from directory path
@@ -765,11 +766,11 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.user.setText(names[5])
             self.ui.experiment.setText(names[6])
             
-        except Exception as e:
-            self.logger.exception(e)
+        except Exception as err:
+            self.logger.exception("Unexpected error during execution of load_naming function:")
     
-    def save_parameter(self):
-        """Function to save measurement parameters to file
+    def save_mono_parameter(self):
+        """Function to save monochromator measurement parameters to file
         
         Parameters
         ----------
@@ -868,11 +869,11 @@ class MainWindow(QtWidgets.QMainWindow):
             self.logger.warning('No parameters were safed due to missing filename')
             
         except Exception as err:
-            self.logger.exception(err)
+            self.logger.exception("Unexpected error during execution of save_mono_parameter function:")
     
     
-    def load_parameter(self):
-        """Function to load measurement parameters from file.
+    def load_mono_parameter(self):
+        """Function to load monochromator measurement parameters from file.
         
         Parameters
         ----------
@@ -937,9 +938,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.ui.scan_stepNM_6.setValue(measurement_parameters['f6'][2])
                 self.ui.scan_pickAmp_6.setValue(measurement_parameters['f6'][3])
                 
-        except Exception as e:
-            self.logger.exception(e)        
-
+        except Exception as err:
+            self.logger.exception("Unexpected error during execution of load_mono_parameter function:")
         
         
     # General function to create scanning list
@@ -1339,19 +1339,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self.file_name = file_name
 
 # -----------------------------------------------------------------------------------------------------------   
-        
-    def HandleStopButton(self):
-        """Function to stop measurement.
-        
-        Returns
-        -------
-        None
-
-        """
-        self.measuring = False
-        self.ui.imageCompleteScan_stop.setPixmap(QtGui.QPixmap("Button_on.png"))
-        return self.measuring
-
 
     def HandleStopCompleteScanButton(self):
         """Function to stop multi-filter measurement.
@@ -1403,8 +1390,7 @@ def main():
         sys.exit(app.exec_())
         
     except Exception as error:
-        logging.error(f"Unexpected {error=} during main function, {type(error)=}")
-        raise
+        logging.exception("Unexpected error during main function: ")
 
 if __name__ == "__main__": 
     main()

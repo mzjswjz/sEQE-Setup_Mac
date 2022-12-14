@@ -42,8 +42,7 @@ class Monochromator():
                 return self.connected
             
         except Exception as err:
-            logging.error(f"Unexpected {err=} during connect function, {type(err)=}")
-            raise 
+            logging.exception("Unexpected during connect function:") 
        
     
     # Check Monochromator response
@@ -61,9 +60,13 @@ class Monochromator():
         LoggingError
             Raises error if monochromator connection failed or Exception handling
         
+        Notes
+        -----
+        After 10 unsuccessfull readouts, the function interrupts itself.
         """
+        counter = 0
         ret = False
-        self.p.timeout = 40
+        self.p.timeout = 10
         shouldbEOk = 'filler'
         
         try:
@@ -71,21 +74,24 @@ class Monochromator():
                 shouldbEOk = self.p.readline()
                 shouldbEOk = codecs.decode(shouldbEOk)
                 print(shouldbEOk)
-                #print ( shouldbEOk.endswith('ok\r\n') == True )
+                
                 if shouldbEOk.endswith('ok\r\n'):
                     ret = True
                     return ret
                 else:
-                    logging.info('Waiting for "ok" signal')
-                    #print('Connection to Monochromator Could Not Be Established')
+                    counter += 1                    
+                    logging.info(f'Waiting for "ok" signal - {10-counter} more attempts before exiting')
+
+                    if counter > 10:
+                        logging.error('waitForOK function could not find "ok" response - please check monochromator connections')
+                        break
            
             self.p.timeout = 0
             return ret
 
             
         except Exception as error:
-            logging.error(f"Unexpected {err=} during execution of waitForOk function, is ok still detected ? , {type(err)=}")
-            print(error)
+            logging.exception("Unexpected error during waitForOk function:")
             
 
     def chooseWavelength(self, wavelength):   # Function to send GOTO command to monochromator
@@ -117,8 +123,7 @@ class Monochromator():
                 logging.error('Monochromator Not Connected')
                 
         except Exception as err:
-            logging.error(f"Unexpected {err=} during execution of chooseWavelength function: {type(err)=}")
-            raise
+            logging.exception("Unexpected error during execution of chooseWavelength function:")
         
     def chooseScanSpeed(self, speed):
         """Function to send scan speed command to monochromator.
@@ -148,8 +153,7 @@ class Monochromator():
                 logging.error('Monochromator Not Connected')
                 
         except Exception as err:
-            logging.error(f"Unexpected {err=} during execution of chooseScanSpeed function: {type(err)=}")
-            raise
+            logging.exception("Unexpected error during execution of chooseScanSpeed function:")
 
     def chooseGrating(self, gratingNo):
         """Function to send grating command to monochromator.
@@ -186,8 +190,8 @@ class Monochromator():
                 logging.error('Monochromator Not Connected')
                 
         except Exception as err:
-            logging.error(f"Unexpected {err=} during execution of chooseGrating function: {type(err)=}")
-            raise
+            logging.exception("Unexpected error during execution of chooseGrating function:")
+
 
     def chooseFilter(self, filterNo):
         """Function to send filter selection command to filter wheel.
@@ -227,8 +231,8 @@ class Monochromator():
                 logging.error('Monochromator Not Connected')
                 
         except Exception as err:
-            logging.error(f"Unexpected {err=} during execution of chooseFilter function: {type(err)=}")
-            raise
+            logging.exception("Unexpected error during execution of chooseFilter function:")
+            
             
     def initializeFilter(self, filterDiff):
         """Function to initialize filter wheel.
@@ -259,8 +263,7 @@ class Monochromator():
                 logging.error('Monochromator Not Connected')
         
         except Exception as err:
-            logging.error(f"Unexpected {err=} during execution of initializeFilter function: {type(err)=}")
-            raise
+            logging.exception("Unexpected error during execution of initializeFilter function:")
 
     def checkFilter(self,):   # Filter switching points from GUI
             """Function to read position of monochromators filter wheel.
@@ -306,7 +309,7 @@ class Monochromator():
                     logging.error('Monochromator Not Connected')
                     
             except Exception as err:
-                logging.error(f"Unexpected {err=} during execution of checkFilter function: {type(err)=}")
+                logging.exception("Unexpected error during execution of checkFilter function:}")
                 
     
     def checkGrating(self,):   # Grating switching points from GUI
@@ -351,5 +354,4 @@ class Monochromator():
                 
                 
         except Exception as err:
-            logging.error(f"Unexpected {err=} during execution of checkGrating function: {type(err)=}")
-            raise
+            logging.exception("Unexpected error during execution of checkGrating function:")
