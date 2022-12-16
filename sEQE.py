@@ -94,7 +94,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.lockin_connected = False   # Set the Lock-in connection to False
         self.filter_connected = False  # Set the filterwheel connection to False
         
-        # Initialize Thorlabs filter wheel
+        # Initialize Monochromator and Lock-In Amplifier
         self.mono = Monochromator(self.mono_port)
         self.lockin = LockIn(self.zurich_device)
         
@@ -236,13 +236,13 @@ class MainWindow(QtWidgets.QMainWindow):
         
         """
         try:
-            self.thorfilterwheel = ThorlabsFilterWheel(com=self.filter_port)
+            self.thorfilterwheel = ThorlabsFilterWheel(com=self.filter_port) # Initialize here = GUI openable without equipment physically connected
             if self.thorfilterwheel.position == 0:
                 self.filter_connected = True
-                self.logger.info("Connection to External Filter Wheel Established")
+                self.logger.info("Connection to Thorlabs filter wheel established")
                 self.ui.imageConnect_filter.setPixmap(QtGui.QPixmap("Button_on.png"))
             else:
-                self.logger.error('Port {0} is unavailable: {1}'.format(self.filter_port, ex))
+                self.logger.exception('Could not find the Thorlabs filter wheel in position 1, i.e. in open position. Please check current filter wheel position manually.')
                 self.filter_connected = False
         except Exception as err:
             self.logger.exception("Unexpected error during execution of connectToFilter function:")
@@ -530,7 +530,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
 # -----------------------------------------------------------------------------------------------------------
 
-    #### Function to handle filter changes of Thorlabs filterwheel
+    #### Function to handle filter changes of Thorlabs filter wheel
 
 # -----------------------------------------------------------------------------------------------------------
 
@@ -555,11 +555,11 @@ class MainWindow(QtWidgets.QMainWindow):
         """
         try:
             if not self.filter_connected:
-                self.logger.error("External Filter Wheel Not Connected")
+                self.logger.exception("External Filter Wheel Not Connected")
                 return False
 
             self.thorfilterwheel._do_set_position(pos-1)
-            self.logger.info('Thorlabs filterwheel updated')
+            self.logger.info(f'Thorlabs filterwheel moved to {pos-1}. position')
             return True
         
         except Exception as err: 
