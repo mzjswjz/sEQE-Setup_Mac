@@ -53,7 +53,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.mono_port =  pNpdata[2]
             self.save_path = pNpdata[3]
             
-            print(f'Found the following details for setup in pathsNdevices.txt: \n zurich instrument device name: {self.zurich_device} \n second filter wheel port: {self.filter_port} \n monochromator port: {self.mono_port} \n default path where data are saved: {self.save_path}'))
+            print(f'Found the following details for setup in pathsNdevices.txt: \n zurich instrument device name: {self.zurich_device} \n second filter wheel port: {self.filter_port} \n monochromator port: {self.mono_port} \n default path where data are saved: {self.save_path}')
             
             for i in range(len(pNpdata)):
                 if pNpdata[i] == '':
@@ -534,7 +534,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
 # -----------------------------------------------------------------------------------------------------------
 
-    def changeFilter(self, pos):
+    def thorChangeFilter(self, pos):
         """Function to update position of second filter wheel.
         
         Parameters
@@ -563,7 +563,7 @@ class MainWindow(QtWidgets.QMainWindow):
             return True
         
         except Exception as err: 
-            self.logger.exception("Unexpected error during execution of changeFilter function:")
+            self.logger.exception("Unexpected error during execution of thorChangeFilter function:")
         
 # -----------------------------------------------------------------------------------------------------------        
     
@@ -585,9 +585,9 @@ class MainWindow(QtWidgets.QMainWindow):
             measurement_values = {}
             if self.ui.scan_noFilter.isChecked():
 
-                self.changeFilter(1)
+                self.thorChangeFilter(1)
 
-                if self.changeFilter(1):
+                if self.thorChangeFilter(1):
 
                     self.filter_addition = 'no'
 
@@ -609,9 +609,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
             if self.ui.scan_Filter2.isChecked():
 
-                self.changeFilter(2)
+                self.thorChangeFilter(2)
 
-                if self.changeFilter(2):
+                if self.thorChangeFilter(2):
 
                     self.filter_addition = str(int(self.ui.cuton_filter_2.value()))
 
@@ -633,9 +633,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
             if self.ui.scan_Filter3.isChecked():
 
-                self.changeFilter(3)
+                self.thorChangeFilter(3)
 
-                if self.changeFilter(3):
+                if self.thorChangeFilter(3):
 
                     self.filter_addition = str(int(self.ui.cuton_filter_3.value()))
 
@@ -657,9 +657,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
             if self.ui.scan_Filter4.isChecked():
 
-                self.changeFilter(4)
+                self.thorChangeFilter(4)
 
-                if self.changeFilter(4):
+                if self.thorChangeFilter(4):
 
                     self.filter_addition = str(int(self.ui.cuton_filter_4.value()))
 
@@ -681,9 +681,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
             if self.ui.scan_Filter5.isChecked():
 
-                self.changeFilter(5)
+                self.thorChangeFilter(5)
 
-                if self.changeFilter(5):
+                if self.thorChangeFilter(5):
 
                     self.filter_addition = str(int(self.ui.cuton_filter_5.value()))
 
@@ -705,9 +705,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
             if self.ui.scan_Filter6.isChecked():
 
-                self.changeFilter(6)
+                self.thorChangeFilter(6)
 
-                if self.changeFilter(6):
+                if self.thorChangeFilter(6):
 
                     self.filter_addition = str(int(self.ui.cuton_filter_6.value()))
 
@@ -727,7 +727,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     scan_list = self.createScanJob(start_f6, stop_f6, step_f6)
                     self.HandleMeasurement(scan_list, start_f6, stop_f6, step_f6, amp_f6, 3)
 
-            self.changeFilter(1) 
+            self.thorChangeFilter(1) 
             self.logger.info('Moving to open filter')               
             self.mono.chooseFilter(1)
             self.complete_scan = False   

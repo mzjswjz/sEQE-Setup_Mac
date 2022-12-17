@@ -153,7 +153,8 @@ class LockIn():
                 [['/', self.device, '/demods/',self.c,'/oscselect'], self.channel-1],  # Oscillators
                 [['/', self.device, '/demods/',self.c,'/harmonic'], 1],  # Harmonicss
                 [['/', self.device, '/demods/',self.c,'/phaseshift'], 0],  # Phase Shift       
-                [['/', self.device, '/zctrls/',self.c,'/tamp/0/currentgain'], self.amplification],  #  Amplifier Setting
+                [['/', self.device, '/zctrls/',self.c,'/tamp/0/currentgain'], self.amplification],  #  Amplifier Setting for wire 1 ?
+                [['/', self.device, '/zctrls/',self.c,'/tamp/1/currentgain'], self.amplification],  #  Amplifier Setting for wire 2 ? 
                 [['/', self.device, '/demods/',self.c,'/adcselect'], self.channel-1], # ???
 
             # For locked reference signal
