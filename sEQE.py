@@ -558,8 +558,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.logger.exception("External Filter Wheel Not Connected")
                 return False
 
-            self.thorfilterwheel._do_set_position(pos-1)
-            self.logger.info(f'Thorlabs filterwheel moved to {pos-1}. position')
+            self.thorfilterwheel._do_set_position(pos-1) # -1 due to microscope.thorfilterwheel code accepting only 0-5
+            self.logger.info(f'Thorlabs filterwheel moved to {pos}. position')
             return True
         
         except Exception as err: 
