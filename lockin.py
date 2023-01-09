@@ -42,6 +42,7 @@ class LockIn():
         -------
         tuple
             Zurich Instruments localhost name, device details and True if device is connected
+            
         """        
         # Find device via Device Discovery and open connection to ziServer 
         d = zhinst.ziPython.ziDiscovery()
@@ -68,45 +69,40 @@ class LockIn():
         
         Parameters
         ----------
-        diff int, required
+        diff : int, required
             Boolean representation to turn differentiale mode on and off: default: 1
             
-        imp50 int, required
+        imp50 : int, required
             Boolean representation to turn 50 Ohm impedance(?) on or off, default: 0
         
-        imp50_2 int,required
+        imp50_2 : int,required
             Boolean representation to turn on 50 Ohm on channel 2 to attenuate signal from chopper controller as reference signal, default: 1 
         
-        ac int, required
+        ac : int, required
             Boolean representation to turn AC voltage on or off, default: 0
             
-        Range int, required
+        Range : int, required
             Voltage range for measurement, default: 2V
         
-        lowpass int, required
+        lowpass : int, required
             low pass filter order
         
-        rate int, required
+        rate : int, required
             data transfer rate
         
-        tc int, required
+        tc : int, required
              time constant for measurement
         
-        c_2 str, required
+        c_2 : str, required
             Channel 2, with value 1, for the reference input
         
-        amplification int, required
+        amplification : int, required
             Lock-in amplification of the signal
         
         
         Returns
         -------
         None
-        
-        Raises
-        ------
-        LoggingError
-             Raises error for Exception handling
         
         """
         try:
@@ -183,5 +179,4 @@ class LockIn():
             self.daq.flush()   # clean queue
         
         except Exception as err:
-            logging.error(f"Unexpected {err=} during execution of setParameters function: {type(err)=}")
-            raise
+            logging.exception("Unexpected error during execution of setParameters function:")
