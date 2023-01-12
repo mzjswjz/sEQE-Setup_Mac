@@ -38,7 +38,7 @@ jobs:
     - name: Install dependencies
       run: |
         python3 -m pip install -r docs/docs_requirements.txt
-        python3 -m pip install git+git://github.com/SuperKogito/sphinxcontrib-pdfembed
+        python3 -m pip install git+https://github.com/SuperKogito/sphinxcontrib-pdfembed.git
     
     - name: directly build sphinx
       run: |
