@@ -36,7 +36,9 @@ jobs:
         sudo apt-get install python3-sphinx
 
     - name: Install dependencies
-      run: python3 -m pip install -r docs/docs_requirements.txt    
+      run: |
+        python3 -m pip install -r docs/docs_requirements.txt
+        python3 -m pip install git+git://github.com/SuperKogito/sphinxcontrib-pdfembed
     
     - name: directly build sphinx
       run: |
