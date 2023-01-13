@@ -2085,7 +2085,7 @@
       <property name="geometry">
        <rect>
         <x>990</x>
-        <y>400</y>
+        <y>420</y>
         <width>20</width>
         <height>301</height>
        </rect>
@@ -2098,7 +2098,7 @@
       <property name="geometry">
        <rect>
         <x>50</x>
-        <y>390</y>
+        <y>410</y>
         <width>951</width>
         <height>20</height>
        </rect>
@@ -2111,7 +2111,7 @@
       <property name="geometry">
        <rect>
         <x>50</x>
-        <y>690</y>
+        <y>710</y>
         <width>951</width>
         <height>20</height>
        </rect>
@@ -2124,7 +2124,7 @@
       <property name="geometry">
        <rect>
         <x>40</x>
-        <y>400</y>
+        <y>420</y>
         <width>20</width>
         <height>301</height>
        </rect>
@@ -2137,7 +2137,7 @@
       <property name="geometry">
        <rect>
         <x>50</x>
-        <y>400</y>
+        <y>420</y>
         <width>931</width>
         <height>297</height>
        </rect>
@@ -3333,7 +3333,7 @@
       <property name="geometry">
        <rect>
         <x>50</x>
-        <y>730</y>
+        <y>740</y>
         <width>51</width>
         <height>41</height>
        </rect>
@@ -3352,7 +3352,7 @@
       <property name="geometry">
        <rect>
         <x>50</x>
-        <y>810</y>
+        <y>820</y>
         <width>51</width>
         <height>41</height>
        </rect>
@@ -3371,7 +3371,7 @@
       <property name="geometry">
        <rect>
         <x>120</x>
-        <y>720</y>
+        <y>730</y>
         <width>281</width>
         <height>61</height>
        </rect>
@@ -3391,7 +3391,7 @@
       <property name="geometry">
        <rect>
         <x>120</x>
-        <y>800</y>
+        <y>810</y>
         <width>281</width>
         <height>61</height>
        </rect>
@@ -3411,7 +3411,7 @@
       <property name="geometry">
        <rect>
         <x>590</x>
-        <y>720</y>
+        <y>730</y>
         <width>371</width>
         <height>61</height>
        </rect>
@@ -3431,7 +3431,7 @@
       <property name="geometry">
        <rect>
         <x>590</x>
-        <y>800</y>
+        <y>810</y>
         <width>371</width>
         <height>61</height>
        </rect>
@@ -3445,6 +3445,50 @@
       </property>
       <property name="text">
        <string>Save parameter to file</string>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="data_average_factor">
+      <property name="geometry">
+       <rect>
+        <x>670</x>
+        <y>390</y>
+        <width>51</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="suffix">
+       <string/>
+      </property>
+      <property name="decimals">
+       <number>0</number>
+      </property>
+      <property name="minimum">
+       <double>1.000000000000000</double>
+      </property>
+      <property name="maximum">
+       <double>100.000000000000000</double>
+      </property>
+      <property name="value">
+       <double>5.000000000000000</double>
+      </property>
+     </widget>
+     <widget class="QLabel" name="data_average_factor_label">
+      <property name="geometry">
+       <rect>
+        <x>330</x>
+        <y>380</y>
+        <width>321</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>12</pointsize>
+        <italic>false</italic>
+       </font>
+      </property>
+      <property name="text">
+       <string>measurements averaged for each data point:</string>
       </property>
      </widget>
     </widget>

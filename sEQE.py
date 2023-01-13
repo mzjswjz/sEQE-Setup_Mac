@@ -470,7 +470,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         """
         filterNo = self.mono.checkFilter()
-        data_average_factor = self.ui.data_average_factor.value() # TODO: Add GUI window with corresponding name
+        data_average_factor = self.ui.data_average_factor.value()
 
         startNM_F2 = int(self.ui.startNM_F2.value())
         stopNM_F2 = int(self.ui.stopNM_F2.value())                
