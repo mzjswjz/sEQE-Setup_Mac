@@ -6,6 +6,7 @@ Created on Fri Sep 28 11:59:40 2018
 @author: jungbluth
 """
 
+# AFMD standard python packages
 import io
 import itertools
 import math
@@ -13,34 +14,55 @@ import os
 import re
 import sys
 import time
+
+#logging packages
 import logging
 import warnings
+
 import platform
 import pathlib
 
-import GUI_template
-import matplotlib
-import matplotlib.pyplot as plt
-import pandas as pd
+
+
+
 import serial
+
+# for zurich instruments lock in amplifier:
 import zhinst.utils
 import zhinst.ziPython
+
 # for the gui
 from PyQt5 import QtCore, QtGui, QtWidgets
-from matplotlib import style
-from numpy import *
-from scipy.interpolate import interp1d
-
-import codecs
-
-from monochromator import Monochromator
-from microscope.filterwheels.thorlabs import ThorlabsFilterWheel
-from lockin import LockIn
-
 from tkinter import Tk
 from tkinter import filedialog 
 
+# AFMD standard scientific python packages
+import matplotlib
+import matplotlib.pyplot as plt
+from matplotlib import style
+import pandas as pd
+from numpy import *
+from scipy.interpolate import interp1d
+
+# bit to unicode translator
+import codecs 
+
+# AFMD modules
+import GUI_template
+from monochromator import Monochromator 
+from microscope.filterwheels.thorlabs import ThorlabsFilterWheel
+from lockin import LockIn
+
+
+
 class MainWindow(QtWidgets.QMainWindow):
+    """sEQE control software main window. 
+    
+    Parameters
+    ----------
+    QtWidgets.QMainWindow: 
+        The Qt5 GUI Interface
+    """
     def __init__(self):
         
          # Initialising ports, device names and save path
@@ -99,7 +121,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.lockin = LockIn(self.zurich_device)
         
         # General Setup
-         
         self.channel = 1
         self.c = str(self.channel-1) 
         self.c6 = str(6)
@@ -449,6 +470,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         """
         filterNo = self.mono.checkFilter()
+        data_average_factor = self.ui.data_average_factor.value() # TODO: Add GUI window with corresponding name
 
         startNM_F2 = int(self.ui.startNM_F2.value())
         stopNM_F2 = int(self.ui.stopNM_F2.value())                
@@ -476,7 +498,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
             # Take data and discard it, this is required to avoid kinks
             # Poll data for 5 time constants, second parameter is poll timeout in [ms] (recomended value is 500ms) 
-            dataDict = self.daq.poll(5*self.tc,500)  
+            dataDict = self.daq.poll(data_average_factor*self.tc,500)  
             # Dictionary with ['timestamp']['x']['y']['frequency']['phase']['dio']['trigger']['auxin0']['auxin1']['time']
 
         else:
