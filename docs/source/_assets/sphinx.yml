@@ -1,0 +1,53 @@
+# This file was created to automate the documentations update, generation and deployment.
+# It is based on https://github.com/peaceiris/actions-gh-pages#%EF%B8%8F-static-site-generators-with-python
+
+name: Sphinx build
+
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest 						# Github Actions creates a container with latest ubuntu as OS
+    steps:
+    - uses: actions/checkout@v3					# Checkout current repositories data
+    
+    - name: Setup Python						# Install python v3.9 in container
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.9'
+
+    - name: Upgrade pip							# Upgrade pip such that current 
+      run: |
+        # install pip=>20.1 to use "pip cache dir"
+        python3 -m pip install --upgrade pip
+    - name: Get pip cache dir
+      id: pip-cache
+      run: echo "dir=$(pip cache dir)" >> $GITHUB_OUTPUT
+
+    - name: Cache dependencies 					# https://github.com/actions/cache : "This action allows caching dependencies and build outputs to improve 
+      											# workflow execution time."
+      uses: actions/cache@v3 					
+      with:
+        path: ${{ steps.pip-cache.outputs.dir }}
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+          
+    - name: Install ubuntu packages 			# Installs python packges which need to be installed by OS package manager, not by pip
+      run: |
+        sudo apt-get update
+        sudo apt-get install python3-sphinx
+    - name: Install dependencies				# Installs python packages via pip from docs_requirements.txt and git repository
+      run: |
+        python3 -m pip install -r docs/docs_requirements.txt
+        python3 -m pip install git+https://github.com/SuperKogito/sphinxcontrib-pdfembed.git
+    
+    - name: directly build sphinx 				# Build Sphinx html documentation 
+      run: |
+        sphinx-build -b html docs/source docs/build/html
+    - name: Deploy								# Use peaceiris Github Action to deploy newly created html documentation from gh-pages branch
+      uses: peaceiris/actions-gh-pages@v3
+      if: github.ref == 'refs/heads/master'
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: docs/build/html

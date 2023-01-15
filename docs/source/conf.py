@@ -13,7 +13,7 @@ sys.path.insert(0, os.path.abspath('../../'))
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'AFMDs sEQE setup'
-copyright = '2022, Anna Jungbluth'
+copyright = '2022, AFMD Group - notably Kate Trinkhaus for logo and Maximilian Hanauske for documentation'
 author = 'Anna Jungbluth and Maximilian Hanauske'
 release = 'October 2022'
 
