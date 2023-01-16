@@ -1,6 +1,10 @@
 colour # analysis code 
-sphinx-rtd-theme # doc
+lmfit # analysis code 
+tqdm # analysis code 
 seaborn # analysis code 
+
+sphinx-rtd-theme # doc
+
 scipy==1.9.3 # control code 
 matplotlib==3.6.2 # control code 
 microscope==0.6.0 # control code
@@ -8,7 +12,6 @@ numpy==1.22.4 # control code
 pandas==1.5.2 # control code 
 PyQt5==5.15.4 # control code 
 pyserial==3.5 # control code 
-tqdm # analysis code 
 zhinst==22.8.1 # control code 
 zhinst-core==22.8.35048 # control code 
 zhinst-toolkit==0.4.1 # control code 
