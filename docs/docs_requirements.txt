@@ -7,6 +7,7 @@ numpy==1.22.4
 pandas==1.5.2
 PyQt5==5.15.4 
 pyserial==3.5
+tqdm
 zhinst==22.8.1
 zhinst-core==22.8.35048
 zhinst-toolkit==0.4.1
