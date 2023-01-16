@@ -41,14 +41,15 @@ Feel free to reach out to the AFMD group if you have any ideas for further impro
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
-
-   README
-   hardware
-   usage
-   modules
-   contact
-   licence
- 
+   
+   content/README
+   content/hardware
+   content/usage
+   control_generated/modules
+   analysis_generated/modules
+   content/contact
+   content/licence
+	
 
 Credits
 -------

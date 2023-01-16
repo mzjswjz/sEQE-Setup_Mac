@@ -7,7 +7,8 @@ import os
 import pathlib
 import sys
 
-sys.path.insert(0, os.path.abspath('../../'))
+sys.path.insert(0, (pathlib.Path(__file__).parents[2] / "sEQE-Control-Software" ).resolve().as_posix())
+sys.path.insert(0, (pathlib.Path(__file__).parents[2] / "sEQE-Analysis-Software" ).resolve().as_posix())
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
@@ -43,7 +44,7 @@ exclude_patterns = []
 
 html_theme = "sphinx_rtd_theme"
 html_static_path = ['_static','_assets']
-html_logo = "AFMD_logo.png"
+html_logo = "_static/AFMD_logo.png"
 html_theme_options = {
     'logo_only': True,
     'display_version': False,
