@@ -1,15 +1,16 @@
-sphinx-rtd-theme
-seaborn
-scipy==1.9.3
-matplotlib==3.6.2
-microscope==0.6.0
-numpy==1.22.4
-pandas==1.5.2
-PyQt5==5.15.4 
-pyserial==3.5
-tqdm
-zhinst==22.8.1
-zhinst-core==22.8.35048
-zhinst-toolkit==0.4.1
-zhinst-utils==0.1.0
+colour # analysis code 
+sphinx-rtd-theme # doc
+seaborn # analysis code 
+scipy==1.9.3 # control code 
+matplotlib==3.6.2 # control code 
+microscope==0.6.0 # control code
+numpy==1.22.4 # control code 
+pandas==1.5.2 # control code 
+PyQt5==5.15.4 # control code 
+pyserial==3.5 # control code 
+tqdm # analysis code 
+zhinst==22.8.1 # control code 
+zhinst-core==22.8.35048 # control code 
+zhinst-toolkit==0.4.1 # control code 
+zhinst-utils==0.1.0 # control code 
 
