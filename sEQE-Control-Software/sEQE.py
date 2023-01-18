@@ -1,12 +1,27 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Fri Sep 28 11:59:40 2018
-
+V.1.0 Created from September 2018 onwards
 @author: jungbluth
+
+V.2.0 Created from August 2022 onwards 
+@author: jungbluth, hanauske 
+
+sEQE Control Code Script
+
+This script allows the user to use the self-built sEQE setup of the AFMD group. It opens a PyQT5 GUI window which offers the user an interface to run the sEQE measurement. It is assumed that the user has read the online documentation at https://afmd.github.io/sEQE-Control-Software/. 
+
+This tool needs no input to open the GUI.
+
+This script requires that several packages to be installed within the Python
+environment you are running this script in. To find out which read the requirements files in the github repository of the AFMD group.
+
+This file is not intended to be imported as a module.
+
 """
 
-# AFMD standard python packages
+
+# Standard python packages
 import io
 import itertools
 import math
@@ -14,16 +29,27 @@ import os
 import re
 import sys
 import time
+import platform
+import pathlib
+import serial
+
+# Standard scientific python packages
+import matplotlib
+import matplotlib.pyplot as plt
+from matplotlib import style
+import pandas as pd
+from numpy import *
+from scipy.interpolate import interp1d
+
+# AFMD modules
+import GUI_template
+from monochromator import Monochromator
+from microscope.filterwheels.thorlabs import ThorlabsFilterWheel
+from lockin import LockIn
 
 # logging packages
 import logging
 import warnings
-
-import platform
-import pathlib
-
-
-import serial
 
 # for zurich instruments lock in amplifier:
 import zhinst.utils
@@ -34,22 +60,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from tkinter import Tk
 from tkinter import filedialog
 
-# AFMD standard scientific python packages
-import matplotlib
-import matplotlib.pyplot as plt
-from matplotlib import style
-import pandas as pd
-from numpy import *
-from scipy.interpolate import interp1d
-
 # bit to unicode translator
 import codecs
-
-# AFMD modules
-import GUI_template
-from monochromator import Monochromator
-from microscope.filterwheels.thorlabs import ThorlabsFilterWheel
-from lockin import LockIn
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -59,19 +71,29 @@ class MainWindow(QtWidgets.QMainWindow):
     ----------
     QtWidgets.QMainWindow:
         The Qt5 GUI Interface
+
+    Attributes:
+    -----------
+
+
+
     """
 
     def __init__(self):
+        """Constructor."""
 
-        # Initialising ports, device names and save path
+        # Initialising ports, device names and save path ------------------------------------------------------------------------
+
         file = pathlib.Path("pathsNdevices_config.txt")
         if file.exists():
             pNpdata = file.read_text().split(",")
 
-            self.zurich_device = pNpdata[0]
-            self.filter_port = pNpdata[1]
-            self.mono_port = pNpdata[2]
-            self.save_path = pNpdata[3]
+            self.zurich_device = pNpdata[
+                0
+            ]  # zurich instruments lock-in amplifier device name
+            self.filter_port = pNpdata[1]  # second filter wheel serial port number
+            self.mono_port = pNpdata[2]  # monochromator serial port number
+            self.save_path = pNpdata[3]  # path to save data to
 
             print(
                 f"Found the following details for setup in pathsNdevices.txt: \n zurich instrument device name: {self.zurich_device} \n second filter wheel port: {self.filter_port} \n monochromator port: {self.mono_port} \n default path where data are saved: {self.save_path}"
@@ -121,42 +143,45 @@ class MainWindow(QtWidgets.QMainWindow):
                 f"{self.zurich_device},{self.filter_port},{self.mono_port},{self.save_path}"
             )
 
+        # Miscellaneous ------------------------------------------------------------------------------------
+
+        # Set up the user interface from Designer and Logger
+
         QtWidgets.QMainWindow.__init__(self)
 
-        warnings.filterwarnings("ignore")
+        warnings.filterwarnings("ignore")  # Reduce user distraction
 
         self.logger = self.get_logger()
-
-        # Set up the user interface from Designer
 
         self.ui = GUI_template.Ui_MainWindow()
         self.ui.setupUi(self)
 
-        # Connections
-
-        self.mono_connected = False  # Set the monochromator connection to False
-        self.lockin_connected = False  # Set the Lock-in connection to False
-        self.filter_connected = False  # Set the filterwheel connection to False
+        # Connection default values - False to prevent MainWindow's methods being use before connecting tools
+        self.mono_connected = False
+        self.lockin_connected = False
+        self.filter_connected = False
 
         # Initialize Monochromator and Lock-In Amplifier
         self.mono = Monochromator(self.mono_port)
         self.lockin = LockIn(self.zurich_device)
 
-        # General Setup
+        # General lock-in amplifier setup
         self.channel = 1
         self.c = str(self.channel - 1)
-        self.c6 = str(6)
+        self.c6 = str(6)  # TODO: Is deprecated ?
 
-        self.do_plot = True
+        self.do_plot = True  # Enable plotting during measurement
 
-        self.complete_scan = False
+        self.complete_scan = False  # Enable to stop measurement
 
         # these can not be defined here, due to empty text boxes at start up
         # self.userName = self.ui.user.text()
         # self.experimentName = self.ui.experiment.text()
         # self.path =f'{self.save_path}/{self.userName}/{self.experimentName}'
 
-        self.filter_addition = "None"  ####################################################################################
+        self.filter_addition = "None"  # TODO: Is deprecated ?
+
+        # GUI button assignment -------------------------------------------------------------------------------------
 
         # Handle Monochromator Buttons
 
@@ -198,19 +223,22 @@ class MainWindow(QtWidgets.QMainWindow):
         # Handle Combined Buttons
 
         self.ui.connectButton.clicked.connect(self.connectToEquipment)
+
         self.ui.completeScanButton_start.clicked.connect(
             self.MonoHandleCompleteScanButton
-        )  #########################################################################################
+        )
         self.ui.completeScanButton_stop.clicked.connect(
             self.HandleStopCompleteScanButton
-        )  #########################################################################################
+        )
 
-        # Save and Import data from files or naming from path
+        # Handle Save and Import
 
         self.ui.save_to_file.clicked.connect(
             self.save_mono_parameter
         )  # Save measurement parameter to file
+
         self.ui.import_from_file.clicked.connect(self.load_mono_parameter)
+
         self.ui.importNamingButton.clicked.connect(self.load_naming)
 
         # Import photodiode calibration files
@@ -225,7 +253,7 @@ class MainWindow(QtWidgets.QMainWindow):
         InGaAs_file = pd.ExcelFile("FGA21-CAL.xlsx")
         self.InGaAs_cal = InGaAs_file.parse("Sheet1")
 
-    # Close connection to Monochromator and Thorlabs filter wheel when window is closed
+    # Close connection to Monochromator and Thorlabs filter wheel when window is closed -------------------------
 
     def __del__(self):
         try:
@@ -234,12 +262,6 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.p.close()
         except:
             pass
-
-    # -----------------------------------------------------------------------------------------------------------
-
-    #### Functions to import data into GUI
-
-    # -----------------------------------------------------------------------------------------------------------
 
     # -----------------------------------------------------------------------------------------------------------
 
