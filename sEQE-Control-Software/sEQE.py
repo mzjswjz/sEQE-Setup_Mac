@@ -608,7 +608,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.mono.chooseFilter(shouldbeFilterNo)
 
             # Take data and discard it, this is required to avoid kinks
-            # Poll data for 5 time constants, second parameter is poll timeout in [ms] (recomended value is 500ms)
+            # Poll data for data_average_factor * time constants, second parameter is poll timeout in [ms] (recomended value is 500ms)
             dataDict = self.daq.poll(data_average_factor * self.tc, 500)
             # Dictionary with ['timestamp']['x']['y']['frequency']['phase']['dio']['trigger']['auxin0']['auxin1']['time']
 
@@ -634,6 +634,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         """
         gratingNo = self.mono.checkGrating()
+        data_average_factor = self.ui.data_average_factor.value()
 
         startNM_G1 = int(self.ui.startNM_G1.value())
         stopNM_G1 = int(self.ui.stopNM_G1.value())
@@ -660,8 +661,8 @@ class MainWindow(QtWidgets.QMainWindow):
             self.mono.chooseGrating(shouldbeGratingNo)
 
             # Take data and discard it, this is required to avoid kinks
-            # Poll data for 5 time constants, second parameter is poll timeout in [ms] (recomended value is 500ms)
-            dataDict = self.daq.poll(5 * self.tc, 500)
+            # Poll data for multiple of time constants, second parameter is poll timeout in [ms] (recomended value is 500ms)
+            dataDict = self.daq.poll(data_average_factor * self.tc, 500)
             # Dictionary with ['timestamp']['x']['y']['frequency']['phase']['dio']['trigger']['auxin0']['auxin1']['time']
 
         else:
@@ -1257,6 +1258,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.measuring = True
         self.ui.imageCompleteScan_stop.setPixmap(QtGui.QPixmap("Button_off.png"))
+        data_average_factor = self.ui.data_average_factor.value()
+
 
         # Set up plot style
         if self.do_plot:
@@ -1290,9 +1293,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
                 self.mono.chooseWavelength(wavelength)
 
-                # Poll data for 5 time constants, second parameter is poll timeout in [ms] (recomended value is 500ms)
+                # Poll data for multiple of time constants, second parameter is poll timeout in [ms] (recomended value is 500ms)
                 dataDict = self.daq.poll(
-                    5 * self.tc, 500
+                    data_average_factor * self.tc, 500
                 )  # Dictionary with ['timestamp']['x']['y']['frequency']['phase']['dio']['trigger']['auxin0']['auxin1']['time']
                 #                print(dataDict[self.device]['demods'][self.c]['sample']['timestamp'])
 
