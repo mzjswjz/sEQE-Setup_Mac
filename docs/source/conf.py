@@ -44,7 +44,7 @@ exclude_patterns = []
 
 html_theme = "sphinx_rtd_theme"
 html_static_path = ['_static','_assets']
-# html_logo = "_static/AFMD_placeholder.png"
+html_logo = "_static/AFMD_placeholder.png"
 html_theme_options = {
     'logo_only': True,
     'display_version': False,
