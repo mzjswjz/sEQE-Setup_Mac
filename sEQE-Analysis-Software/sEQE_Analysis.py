@@ -9,9 +9,8 @@ Created on Fri Sep 28 11:59:40 2018
 import math
 import os
 import sys
-import tkinter as tk
+# import tkinter as tk
 import warnings
-from tkinter import filedialog
 
 import matplotlib.pyplot as plt
 import matplotlib as mpl
@@ -20,6 +19,7 @@ import pandas as pd
 import seaborn
 # for the gui
 from PyQt5 import QtWidgets
+from PyQt5.QtWidgets import QFileDialog
 from numpy import exp, linspace
 from scipy.optimize import curve_fit
 from tqdm import tqdm
@@ -57,9 +57,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui = sEQE_Analysis_template.Ui_MainWindow()
         self.ui.setupUi(self)
 
-        # Tkinter
-        root = tk.Tk()
-        root.withdraw()
+        # Tkinter doesn't work well with PyQt5 on Mac
+        # root = tk.Tk()
+        # root.withdraw()
 
         # Logger
         self.logger = get_logger()
@@ -357,7 +357,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.sim_guess_sig = [0.001, 0.150, 1.30, 0.01, 0.150, 1.5, 0.1]  # fCT, lCT, ECT, fopt, lopt, Eopt, sig
 
         # Set floating point precision
-        precision = 8 # decimal places
+        precision = 8  # decimal places
 
     # -----------------------------------------------------------------------------------------------------------
 
@@ -384,7 +384,8 @@ class MainWindow(QtWidgets.QMainWindow):
         """
 
         os.chdir(self.data_dir)
-        file_ = filedialog.askopenfilename()
+        file_, _ = QFileDialog.getOpenFileName(None, "Open File", "", "All Files (*);;")
+        # file_ = filedialog.askopenfilename() old tk version
 
         if len(file_) != 0:
             path_, filename_ = os.path.split(file_)
@@ -860,7 +861,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
                 del wave_inc[minimum]  # Delete recently appended value
 
-            EQE_file = filedialog.asksaveasfilename()  # Prompt the user to pick a folder & name to save data to
+            # EQE_file = filedialog.asksaveasfilename() old tk version
+            # Prompt the user to pick a folder & name to save data to
+            EQE_file, _ = QFileDialog.getSaveFileName(caption="Save EQE data", directory=".",
+                                                      filter="All Files (*);;")
             export_path, export_filename = os.path.split(EQE_file)
 
             if len(export_path) != 0:  # Check if the user actually selected a path
@@ -1097,7 +1101,7 @@ class MainWindow(QtWidgets.QMainWindow):
         None
         """
 
-        # Change this if you want to plot on the same graph 
+        # Change this if you want to plot on the same graph
         if self.fit_plot:
             self.axFit_1, self.axFit_2 = set_up_EQE_plot()  # Sets up plot of energy vs EQE / log(EQE)
             self.fit_plot = False
@@ -1167,7 +1171,7 @@ class MainWindow(QtWidgets.QMainWindow):
         Returns
         -------
         Bool :
-            True if fit is successful, 
+            True if fit is successful,
             False otherwise
         """
 
@@ -1294,7 +1298,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     if include_Disorder:
                         print('Sigma (eV) : ', format(best_vals[3], '.6f'), '+/-',
                               format(math.sqrt(covar[3, 3]), '.6f'))
-                        W = best_vals[1]*self.T_CT + (best_vals[3]**2)/(2*self.k)
+                        W = best_vals[1] * self.T_CT + (best_vals[3] ** 2) / (2 * self.k)
                         print('Gaussian Variance [W] (eV K) : ', format(W, '.2f'))
 
                     print('R2 : ', format(r_squared, '.6f'))
@@ -1359,7 +1363,10 @@ class MainWindow(QtWidgets.QMainWindow):
                         if include_Disorder:
                             fit_file['Sigma (eV)'] = best_vals[3]
 
-                        save_fit_file = filedialog.asksaveasfilename()  # User to pick folder & name to save to
+                        save_fit_file, _ = QFileDialog.getSaveFileName(caption="Save Fit Data", directory=".",
+                                                                       filter="All Files (*);;")
+                        # User to pick folder & name to save to
+                        # save_fit_file = filedialog.asksaveasfilename()  old tk version
                         save_fit_path, save_fit_filename = os.path.split(save_fit_file)
                         if len(save_fit_path) != 0:  # Check if the user actually selected a path
                             os.chdir(save_fit_path)  # Change the working directory
@@ -1462,7 +1469,10 @@ class MainWindow(QtWidgets.QMainWindow):
                     if include_Disorder:
                         fit_file['Sigma (eV)'] = best_vals[3]
 
-                    save_fit_file = filedialog.asksaveasfilename()  # User to pick folder & name to save to
+                    save_fit_file, _ = QFileDialog.getSaveFileName(caption="Save Fit Data", directory=".",
+                                                                   filter="All Files (*);;")
+                    # User to pick folder & name to save to
+                    # save_fit_file = filedialog.asksaveasfilename()  old tk version
                     save_fit_path, save_fit_filename = os.path.split(save_fit_file)
                     if len(save_fit_path) != 0:  # Check if the user actually selected a path
                         os.chdir(save_fit_path)  # Change the working directory
@@ -1486,7 +1496,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     if include_Disorder:
                         print('Sigma (eV) : ', format(best_vals[3], '.6f'), '+/-',
                               format(math.sqrt(covar[3, 3]), '.6f'))
-                        W = best_vals[1]*self.T_x + (best_vals[3]**2)/(2*self.k)
+                        W = best_vals[1] * self.T_x + (best_vals[3] ** 2) / (2 * self.k)
                         print('Gaussian Variance [W] (eV K) : ', format(W, '.2f'))
 
                     print('R2 : ', format(r_squared, '.6f'))
@@ -1592,7 +1602,7 @@ class MainWindow(QtWidgets.QMainWindow):
         Returns
         -------
         None
-        """            
+        """
 
         include_Disorder = False
         fit_opticalPeak = False
@@ -1678,7 +1688,7 @@ class MainWindow(QtWidgets.QMainWindow):
                                                                         guessRange=ECT_guess,
                                                                         guessRange_sig=Sig_guess,
                                                                         include_disorder=True,
-                                                                        bounds=True # to use fit model
+                                                                        bounds=True  # to use fit model
                                                                         )
 
                             if r_squared > 0:
@@ -1700,7 +1710,7 @@ class MainWindow(QtWidgets.QMainWindow):
                                                                         guessRange=ECT_guess,
                                                                         guessRange_sig=Sig_guess,
                                                                         include_disorder=False,
-                                                                        bounds=None # to use fit function
+                                                                        bounds=None  # to use fit function
                                                                         )
 
                             if r_squared > 0:
@@ -1827,7 +1837,8 @@ class MainWindow(QtWidgets.QMainWindow):
                       format(parameter_df['l'].std(), '.6f'))
 
                 if fit_opticalPeak:
-                    print('Average Optical Peak Energy [E_Opt] (eV) : ', format(parameter_df['Ect'].mean(), '.6f'), '+/-',
+                    print('Average Optical Peak Energy [E_Opt] (eV) : ', format(parameter_df['Ect'].mean(), '.6f'),
+                          '+/-',
                           format(parameter_df['Ect'].std(), '.6f'))
                 else:
                     print('Average CT State Energy [ECT] (eV) : ', format(parameter_df['Ect'].mean(), '.6f'), '+/-',
@@ -1838,7 +1849,7 @@ class MainWindow(QtWidgets.QMainWindow):
                           format(parameter_df['Sig'].std(), '.6f'))
                     if file_no == 'x1':
                         Average_W = parameter_df['l'].mean() * self.T_x + (parameter_df['Sig'].mean() ** 2) / (
-                                    2 * self.k)
+                                2 * self.k)
                     else:
                         Average_W = parameter_df['l'].mean() * self.T_CT + (parameter_df['Sig'].mean() ** 2) / (
                                 2 * self.k)
@@ -1991,7 +2002,7 @@ class MainWindow(QtWidgets.QMainWindow):
         -------
         EQE : float
             EQE value
-        """   
+        """
 
         return (f / (E * math.sqrt(4 * math.pi * l * self.T_CT * self.k))) * exp(
             -(Ect + l - E) ** 2 / (4 * l * self.k * self.T_CT))
@@ -2016,18 +2027,17 @@ class MainWindow(QtWidgets.QMainWindow):
         -------
         EQE : float
             EQE value
-        """  
+        """
 
         return (f / (E * math.sqrt(2 * math.pi * (2 * l * self.T_CT * self.k + sig ** 2)))) * exp(
             -((Ect - (sig ** 2 / (2 * self.k * self.T_CT)) + l + (sig ** 2 / (2 * self.k * self.T_CT)) - E) ** 2 / (
                     4 * l * self.k * self.T_CT + 2 * sig ** 2)))
 
-
     # -----------------------------------------------------------------------------------------------------------
 
     # MLJ function
 
-    def MLJ_gaussian(self, E, f, l, Ect): 
+    def MLJ_gaussian(self, E, f, l, Ect):
         """Marcus-Levich-Jortner theory
 
         Parameters
@@ -2045,10 +2055,10 @@ class MainWindow(QtWidgets.QMainWindow):
         -------
         EQE : float
             EQE value
-        """  
+        """
 
         EQE = 0
-        for n in range(0, 6): # TODO: Check line breaks
+        for n in range(0, 6):  # TODO: Check line breaks
             EQE_n = (f / (E * math.sqrt(4 * math.pi * l * self.T_x * self.k))) \
                     * (math.exp(-self.S_i) * self.S_i ** n / math.factorial(n)) \
                     * exp(-(Ect + l - E + n * self.hbarw_i) ** 2 \
@@ -2072,16 +2082,16 @@ class MainWindow(QtWidgets.QMainWindow):
         Ect : float, required
             CT state energy
         sig : float, required
-            Gaussian disorder    
+            Gaussian disorder
 
         Returns
         -------
         EQE : float
             EQE value
-        """ 
+        """
 
         EQE = 0
-        for n in range(0, 6): # TODO: Check line breaks
+        for n in range(0, 6):  # TODO: Check line breaks
             EQE_n = (f / (E * math.sqrt(2 * math.pi * (2 * l * self.T_x * self.k + sig ** 2))) \
                      * (math.exp(-self.S_i) * self.S_i ** n / math.factorial(n)) \
                      * exp(-(Ect + l - E + n * self.hbarw_i) ** 2 \
@@ -2124,7 +2134,7 @@ class MainWindow(QtWidgets.QMainWindow):
         Returns
         -------
         None
-        """ 
+        """
 
         self.T_EL = self.ui.EL_Temperature.value()
 
@@ -2283,7 +2293,7 @@ class MainWindow(QtWidgets.QMainWindow):
         Returns
         -------
         None
-        """ 
+        """
 
         include_Disorder = False
 
@@ -2532,7 +2542,7 @@ class MainWindow(QtWidgets.QMainWindow):
         -------
         EL : float
             Reduced EL value
-        """   
+        """
 
         return (f / (math.sqrt(4 * math.pi * l * self.T_EL * self.k))) * exp(
             -(Ect - l - E) ** 2 / (4 * l * self.k * self.T_EL))
@@ -2559,7 +2569,7 @@ class MainWindow(QtWidgets.QMainWindow):
         -------
         EL : float
             Reduced EL value
-        """   
+        """
 
         return (f / (math.sqrt(4 * math.pi * l * self.T_EL * self.k + 2 * self.sig_EL ** 2))) * exp(
             -(Ect - l - E) ** 2 / (4 * l * self.k * self.T_EL + 2 * self.sig_EL ** 2))
@@ -2586,10 +2596,10 @@ class MainWindow(QtWidgets.QMainWindow):
         -------
         EL : float
             Reduced EL value
-        """   
+        """
 
         EL = 0
-        for n in range(0, 6): # TODO: Check line breaks
+        for n in range(0, 6):  # TODO: Check line breaks
             EL_n = (f / (math.sqrt(4 * math.pi * l * self.T_EL * self.k))) \
                    * (math.exp(-self.S_i_EL) * self.S_i_EL ** n / math.factorial(n)) \
                    * exp(-(Ect - E - l - n * self.hbarw_i_EL) ** 2 \
@@ -2619,10 +2629,10 @@ class MainWindow(QtWidgets.QMainWindow):
         -------
         EL : float
             Reduced EL value
-        """   
+        """
 
         EL = 0
-        for n in range(0, 6): # TODO: Check line breaks
+        for n in range(0, 6):  # TODO: Check line breaks
             EL_n = (f / (math.sqrt(4 * math.pi * l * self.T_EL * self.k + 2 * self.sig_EL ** 2))) \
                    * (math.exp(-self.S_i_EL) * self.S_i_EL ** n / math.factorial(n)) \
                    * exp(-(Ect - E - l - n * self.hbarw_i_EL) ** 2 \
@@ -2652,7 +2662,7 @@ class MainWindow(QtWidgets.QMainWindow):
         -------
         EQE : float
             Reduced EQE value
-        """   
+        """
 
         return (f / (math.sqrt(4 * math.pi * l * self.T_EL * self.k))) * exp(
             -(Ect + l - E) ** 2 / (4 * l * self.k * self.T_EL))
@@ -2679,7 +2689,7 @@ class MainWindow(QtWidgets.QMainWindow):
         -------
         EQE : float
             Reduced EQE value
-        """  
+        """
 
         return (f / (math.sqrt(4 * math.pi * l * self.T_EL * self.k + 2 * self.sig_EL ** 2))) * exp(
             -(Ect + l - E) ** 2 / (4 * l * self.k * self.T_EL + 2 * self.sig_EL ** 2))
@@ -2706,10 +2716,10 @@ class MainWindow(QtWidgets.QMainWindow):
         -------
         EQE : float
             Reduced EQE value
-        """  
+        """
 
         EQE = 0
-        for n in range(0, 6): # TODO: Check line breaks
+        for n in range(0, 6):  # TODO: Check line breaks
             EQE_n = (f / (math.sqrt(4 * math.pi * l * self.T_EL * self.k))) \
                     * (math.exp(-self.S_i_EL) * self.S_i_EL ** n / math.factorial(n)) \
                     * exp(-(Ect - E + l + n * self.hbarw_i_EL) ** 2 \
@@ -2739,10 +2749,10 @@ class MainWindow(QtWidgets.QMainWindow):
         -------
         EQE : float
             Reduced EQE value
-        """  
+        """
 
         EQE = 0
-        for n in range(0, 6): # TODO: Check line breaks
+        for n in range(0, 6):  # TODO: Check line breaks
             EQE_n = (f / (math.sqrt(4 * math.pi * l * self.T_EL * self.k + 2 * self.sig_EL ** 2))) \
                     * (math.exp(-self.S_i_EL) * self.S_i_EL ** n / math.factorial(n)) \
                     * exp(-(Ect - E + l + n * self.hbarw_i_EL) ** 2 \
@@ -2782,11 +2792,11 @@ class MainWindow(QtWidgets.QMainWindow):
             GUI text box with fit plot color
         color_EQE: gui object, required
             GUI text box with EQE plot color
-        
+
         Returns
         -------
         None
-        """ 
+        """
 
         E_fit = 0
         sub_EQE = []
@@ -2840,7 +2850,10 @@ class MainWindow(QtWidgets.QMainWindow):
                 sub_file['Log_EQE'] = np.log(sub_EQE)
                 sub_file['Wavelength'] = data_EQE['Wavelength']
 
-                save_sub_file = filedialog.asksaveasfilename()  # User to pick a folder & name to save data to
+                save_sub_file, _ = QFileDialog.getSaveFileName(caption="Save Fit Data", directory=".",
+                                                               filter="All Files (*);;")
+                # User to pick folder & name to save to
+                # save_sub_file = filedialog.asksaveasfilename()  old tk version
                 save_sub_path, save_sub_filename = os.path.split(save_sub_file)
                 if len(save_sub_path) != 0:  # Check if the user actually selected a path
                     os.chdir(save_sub_path)  # Change the working directory
@@ -2917,11 +2930,11 @@ class MainWindow(QtWidgets.QMainWindow):
             CT state fit data
         data_EQE: dataFrame, required
             EQE data
-        
+
         Returns
         -------
         None
-        """ 
+        """
 
         include_disorder = False
 
@@ -3088,11 +3101,11 @@ class MainWindow(QtWidgets.QMainWindow):
         Parameters
         ----------
         None
-        
+
         Returns
         -------
         None
-        """ 
+        """
 
         increase_factor = 1.05  # NOTE: Modify to increase data range for R2 calculation and fit selection
         include_disorder = False
@@ -3159,7 +3172,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         if startOpt_ok and stopOpt_ok and guessOpt_ok and startCT_ok and stopCT_ok and guessCT_ok:
 
-            startRange_Opt = np.round(np.arange(startStart_Opt, startStop_Opt + 0.005, 0.01), 3).tolist() # Change step to 0.05
+            startRange_Opt = np.round(np.arange(startStart_Opt, startStop_Opt + 0.005, 0.01),
+                                      3).tolist()  # Change step to 0.05
             stopRange_Opt = np.round(np.arange(stopStart_Opt, stopStop_Opt + 0.005, 0.01), 3).tolist()
 
             startRange_CT = np.round(np.arange(startStart_CT, startStop_CT + 0.005, 0.01), 3).tolist()
@@ -3263,7 +3277,7 @@ class MainWindow(QtWidgets.QMainWindow):
                                                                             guessRange=guessRange_CT,
                                                                             guessRange_sig=guessRange_Sig,
                                                                             include_disorder=True,
-                                                                            bounds=True # to use fit model
+                                                                            bounds=True  # to use fit model
                                                                             )
                             else:
                                 best_vals, covar, p0, r_squared = guess_fit(eqe=new_eqe,
@@ -3481,7 +3495,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
                 # Save fit data
                 if self.ui.save_DoubleFit.isChecked():
-                    save_fit_file = filedialog.asksaveasfilename()  # User to pick folder & name to save to
+                    save_fit_file, _ = QFileDialog.getSaveFileName(caption="Save Fit Data", directory=".",
+                                                                   filter="All Files (*);;")
+
+                    # User to pick folder & name to save to
+                    # save_fit_file = filedialog.asksaveasfilename()  old tk version
                     save_fit = True
                     self.logger.info('Saving fit data.')
                 else:
@@ -3492,7 +3510,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
                 # for x in np.arange(1, 6, 1):
                 n = int(self.ui.n.value())
-                for x in np.arange(1, n+1, 1):
+                for x in np.arange(1, n + 1, 1):
                     print('-' * 80)
                     print(('Best Fit No. {} : ').format(x))
                     df_results = find_best_fit(df_both=df_results,
@@ -3536,7 +3554,6 @@ class MainWindow(QtWidgets.QMainWindow):
         return (f / (E * math.sqrt(4 * math.pi * l * self.T_double * self.k))) * exp(
             -(Ect + l - E) ** 2 / (4 * l * self.k * self.T_double))
 
-
     def gaussian_disorder_double(self, E, f, l, Ect, sig):
         """Marcus theory including disorder to separately fit double peaks
 
@@ -3560,8 +3577,9 @@ class MainWindow(QtWidgets.QMainWindow):
         """
 
         return (f / (E * math.sqrt(2 * math.pi * (2 * l * self.T_double * self.k + sig ** 2)))) * exp(
-            -((Ect - (sig ** 2 / (2 * self.k * self.T_double)) + l + (sig ** 2 / (2 * self.k * self.T_double)) - E) ** 2 / (
-                    4 * l * self.k * self.T_double + 2 * sig ** 2)))
+            -((Ect - (sig ** 2 / (2 * self.k * self.T_double)) + l + (
+                        sig ** 2 / (2 * self.k * self.T_double)) - E) ** 2 / (
+                      4 * l * self.k * self.T_double + 2 * sig ** 2)))
 
     # -----------------------------------------------------------------------------------------------------------
 
@@ -3755,7 +3773,10 @@ class MainWindow(QtWidgets.QMainWindow):
             if include_disorder:
                 CT_file['Sigma (eV)'] = best_vals[6]
 
-            save_fit_file = filedialog.asksaveasfilename()  # User to pick folder & name to save to
+            save_fit_file, _ = QFileDialog.getSaveFileName(caption="Save Fit Data", directory=".",
+                                                           filter="All Files (*);;")
+            # User to pick folder & name to save to
+            # save_fit_file = filedialog.asksaveasfilename() #old tk version
             save_fit_path, save_fit_filename = os.path.split(save_fit_file)
             if len(save_fit_path) != 0:  # Check if the user actually selected a path
                 os.chdir(save_fit_path)  # Change the working directory
@@ -3763,7 +3784,6 @@ class MainWindow(QtWidgets.QMainWindow):
                 CT_file.to_csv(f'{save_fit_filename}_Fit_simDouble_CT')  # Save data to csv
                 self.logger.info('Saving fit data to: %s' % str(save_fit_file))
                 os.chdir(self.data_dir)  # Change the directory back
-
 
     # -----------------------------------------------------------------------------------------------------------
 
@@ -3864,14 +3884,14 @@ class MainWindow(QtWidgets.QMainWindow):
                         p0 = self.sim_guess_sig
                         try:
                             best_vals, covar, y_fit, r_squared = fit_model_double(
-                                                                            function=self.gaussian_disorder_double_sim,
-                                                                            energy_fit=energy_fit,
-                                                                            eqe_fit=eqe_fit,
-                                                                            bound_dict=bound_dict,
-                                                                            p0=p0,
-                                                                            include_disorder=include_disorder,
-                                                                            print_report=False
-                                                                            )
+                                function=self.gaussian_disorder_double_sim,
+                                energy_fit=energy_fit,
+                                eqe_fit=eqe_fit,
+                                bound_dict=bound_dict,
+                                p0=p0,
+                                include_disorder=include_disorder,
+                                print_report=False
+                            )
                             best_CT = [
                                 best_vals[0],
                                 best_vals[1],
@@ -3972,7 +3992,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
                 # Save fit data
                 if self.ui.save_simDoubleFit.isChecked():
-                    save_fit_file = filedialog.asksaveasfilename()  # User to pick folder & name to save to
+                    save_fit_file, _ = QFileDialog.getSaveFileName(caption="Save Fit Data", directory=".",
+                                                                   filter="All Files (*);;")
+                    # User to pick folder & name to save to
+                    # save_fit_file = filedialog.asksaveasfilename() old tk version
                     save_fit = True
                     self.logger.info('Saving fit data.')
                 else:
@@ -3982,7 +4005,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 label = pick_EQE_Label(self.ui.textBox_simFit_label, self.ui.textBox_simFit)
 
                 n = int(self.ui.n_Sim.value())
-                for x in np.arange(1, n+1, 1):
+                for x in np.arange(1, n + 1, 1):
                     print('-' * 80)
                     print(('Best Fit No. {} : ').format(x))
                     df_results = find_best_fit(df_both=df_results,
@@ -4217,7 +4240,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # startOpt_ok = StartStop_is_valid(startStart_Opt, startStop_Opt)
         # stopOpt_ok = StartStop_is_valid(stopStart_Opt, stopStop_Opt)
 
-        startOpt_ok = True # Checks removed to allow same start/stop value
+        startOpt_ok = True  # Checks removed to allow same start/stop value
         stopOpt_ok = True
 
         # startCT_ok = StartStop_is_valid(startStart_CT, startStop_CT)
@@ -4233,7 +4256,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         if startOpt_ok and stopOpt_ok and guessOpt_ok and startCT_ok and stopCT_ok and guessCT_ok:
 
-            startRange_Opt = np.round(np.arange(startStart_Opt, startStop_Opt + 0.005, 0.01), 3).tolist() # Change step to 0.05
+            startRange_Opt = np.round(np.arange(startStart_Opt, startStop_Opt + 0.005, 0.01),
+                                      3).tolist()  # Change step to 0.05
             stopRange_Opt = np.round(np.arange(stopStart_Opt, stopStop_Opt + 0.005, 0.01), 3).tolist()
 
             startRange_CT = np.round(np.arange(startStart_CT, startStop_CT + 0.005, 0.01), 3).tolist()
@@ -4337,7 +4361,7 @@ class MainWindow(QtWidgets.QMainWindow):
                                                                             guessRange=guessRange_CT,
                                                                             guessRange_sig=guessRange_Sig,
                                                                             include_disorder=True,
-                                                                            bounds=True # to use fit model
+                                                                            bounds=True  # to use fit model
                                                                             )
                             else:
                                 best_vals, covar, p0, r_squared = guess_fit(eqe=new_eqe,
@@ -4561,7 +4585,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
                 # Save fit data
                 if self.ui.save_extraDoubleFit.isChecked():
-                    save_fit_file = filedialog.asksaveasfilename()  # User to pick folder & name to save to
+                    save_fit_file, _ = QFileDialog.getSaveFileName(caption="Save Fit Data", directory=".",
+                                                                   filter="All Files (*);;")
+                    # User to pick folder & name to save to
+                    # save_fit_file = filedialog.asksaveasfilename() old tk version
                     save_fit = True
                     self.logger.info('Saving fit data.')
                 else:
@@ -4571,7 +4598,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 label = pick_EQE_Label(self.ui.textBox_extraDouble_label, self.ui.textBox_extraDouble)
 
                 n = int(self.ui.n_Extra.value())
-                for x in np.arange(1, n+1, 1):
+                for x in np.arange(1, n + 1, 1):
                     print('-' * 80)
                     print(('Best Fit No. {} : ').format(x))
                     df_results = find_best_fit(df_both=df_results,
@@ -4617,7 +4644,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     # MLJ function
 
-    def MLJ_double(self, E, f, l, Ect): 
+    def MLJ_double(self, E, f, l, Ect):
         """Marcus-Levich-Jortner theory for double peak fitting
 
         Parameters
@@ -4638,7 +4665,7 @@ class MainWindow(QtWidgets.QMainWindow):
         """
 
         EQE = 0
-        for n in range(0, 6): # TODO: Check line breaks
+        for n in range(0, 6):  # TODO: Check line breaks
             EQE_n = (f / (E * math.sqrt(4 * math.pi * l * self.T_xDouble * self.k))) \
                     * (math.exp(-self.S_Double) * self.S_Double ** n / math.factorial(n)) \
                     * exp(-(Ect + l - E + n * self.hbarw_Double) ** 2 \
@@ -4671,7 +4698,7 @@ class MainWindow(QtWidgets.QMainWindow):
         """
 
         EQE = 0
-        for n in range(0, 6): # TODO: Check line breaks
+        for n in range(0, 6):  # TODO: Check line breaks
             EQE_n = (f / (E * math.sqrt(2 * math.pi * (2 * l * self.T_xDouble * self.k + sig ** 2))) \
                      * (math.exp(-self.S_Double) * self.S_Double ** n / math.factorial(n)) \
                      * exp(-(Ect + l - E + n * self.hbarw_Double) ** 2 \
