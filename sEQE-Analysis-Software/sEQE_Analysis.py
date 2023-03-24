@@ -1837,8 +1837,7 @@ class MainWindow(QtWidgets.QMainWindow):
                       format(parameter_df['l'].std(), '.6f'))
 
                 if fit_opticalPeak:
-                    print('Average Optical Peak Energy [E_Opt] (eV) : ', format(parameter_df['Ect'].mean(), '.6f'),
-                          '+/-',
+                    print('Average Optical Peak Energy [E_Opt] (eV) : ', format(parameter_df['Ect'].mean(), '.6f'),'+/-',
                           format(parameter_df['Ect'].std(), '.6f'))
                 else:
                     print('Average CT State Energy [ECT] (eV) : ', format(parameter_df['Ect'].mean(), '.6f'), '+/-',
@@ -3172,8 +3171,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         if startOpt_ok and stopOpt_ok and guessOpt_ok and startCT_ok and stopCT_ok and guessCT_ok:
 
-            startRange_Opt = np.round(np.arange(startStart_Opt, startStop_Opt + 0.005, 0.01),
-                                      3).tolist()  # Change step to 0.05
+            startRange_Opt = np.round(np.arange(startStart_Opt, startStop_Opt + 0.005, 0.01),3).tolist()  # Change step to 0.05
             stopRange_Opt = np.round(np.arange(stopStart_Opt, stopStop_Opt + 0.005, 0.01), 3).tolist()
 
             startRange_CT = np.round(np.arange(startStart_CT, startStop_CT + 0.005, 0.01), 3).tolist()
@@ -3577,8 +3575,7 @@ class MainWindow(QtWidgets.QMainWindow):
         """
 
         return (f / (E * math.sqrt(2 * math.pi * (2 * l * self.T_double * self.k + sig ** 2)))) * exp(
-            -((Ect - (sig ** 2 / (2 * self.k * self.T_double)) + l + (
-                        sig ** 2 / (2 * self.k * self.T_double)) - E) ** 2 / (
+            -((Ect - (sig ** 2 / (2 * self.k * self.T_double)) + l + (sig ** 2 / (2 * self.k * self.T_double)) - E) ** 2 / (
                       4 * l * self.k * self.T_double + 2 * sig ** 2)))
 
     # -----------------------------------------------------------------------------------------------------------
@@ -4256,8 +4253,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         if startOpt_ok and stopOpt_ok and guessOpt_ok and startCT_ok and stopCT_ok and guessCT_ok:
 
-            startRange_Opt = np.round(np.arange(startStart_Opt, startStop_Opt + 0.005, 0.01),
-                                      3).tolist()  # Change step to 0.05
+            startRange_Opt = np.round(np.arange(startStart_Opt, startStop_Opt + 0.005, 0.01),3).tolist()  # Change step to 0.05
             stopRange_Opt = np.round(np.arange(stopStart_Opt, stopStop_Opt + 0.005, 0.01), 3).tolist()
 
             startRange_CT = np.round(np.arange(startStart_CT, startStop_CT + 0.005, 0.01), 3).tolist()
