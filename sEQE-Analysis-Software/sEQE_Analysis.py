@@ -588,7 +588,7 @@ class MainWindow(QtWidgets.QMainWindow):
             Dataframe with sample measurement
         startNM : float, required
             Start wavelength [nm]
-        stop : float, required
+        stopNM: float, required
             Stop wavelength [nm]
         range_no : int, required
             Number specifying which data range to compile
@@ -740,8 +740,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 label_ = pick_Label(range_no, startNM, stopNM)
 
                 self.ax1.plot(Wavelength, EQE, linewidth=3, label=label_)
-                self.ax2.semilogy(Wavelength, EQE,
-                                  linewidth=3)  # Equivalent to the line above but with proper log scale axes
+                self.ax2.semilogy(Wavelength, EQE, linewidth=3)  # Equivalent to the line above but with proper log scale axes
                 self.ax1.legend()
                 plt.draw()
 
@@ -782,10 +781,8 @@ class MainWindow(QtWidgets.QMainWindow):
         if self.ui.exportBox_1.isChecked():  # If the checkBox is checked
             startNM1 = self.ui.startNM_1.value()  # Pick start wavelength
             stopNM1 = self.ui.stopNM_1.value()  # Pick stop wavelength
-            if Ref_Data_is_valid(self.ref_1, self.data_1, startNM1, stopNM1,
-                                 1):  # Check that files are non-empty and within wavelength range
-                Wave_1, Energy_1, EQE_1, log_EQE_1 = self.calculate_EQE(self.ref_1, self.data_1, startNM1, stopNM1,
-                                                                        1)  # Extract data
+            if Ref_Data_is_valid(self.ref_1, self.data_1, startNM1, stopNM1, 1):  # Check that files are non-empty and within wavelength range
+                Wave_1, Energy_1, EQE_1, log_EQE_1 = self.calculate_EQE(self.ref_1, self.data_1, startNM1, stopNM1,1)  # Extract data
                 export_1 = pd.DataFrame({'Wavelength': Wave_1, 'Energy': Energy_1, 'EQE': EQE_1,
                                          'Log_EQE': log_EQE_1})  # Create dataFrame with EQE data
                 wave_inc['1'] = Wave_1[0]  # Add the first wavelength value to the wave_inc list
@@ -991,7 +988,7 @@ class MainWindow(QtWidgets.QMainWindow):
             Dataframe with EQE data
         startNM : float, required
             Start wavelength [nm]
-        stop : float, required
+        stopNM : float, required
             Stop wavelength [nm]
         filename_Box : gui object, required
             GUI textbox with filename information for plot labeling
