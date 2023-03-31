@@ -50,7 +50,6 @@ warnings.filterwarnings('ignore', "Intel MKL ERROR")
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
-
         QtWidgets.QMainWindow.__init__(self)
 
         # Set up the user interface from Designer
@@ -734,13 +733,14 @@ class MainWindow(QtWidgets.QMainWindow):
 
             else:  # If the "Calculate EQE" button has been clicked
                 if self.do_plot:  # This is set to true during setup of the program
-                    self.ax1, self.ax2 = set_up_plot()
+                    self.ax1, self.ax2,= set_up_plot()
                     self.do_plot = False  # Set self.do_plot to False to plot on the same graph
 
                 label_ = pick_Label(range_no, startNM, stopNM)
 
                 self.ax1.plot(Wavelength, EQE, linewidth=3, label=label_)
-                self.ax2.semilogy(Wavelength, EQE, linewidth=3)  # Equivalent to the line above but with proper log scale axes
+                self.ax2.semilogy(Wavelength, [10**x for x in log_EQE], linewidth=3)
+                #self.ax2.plot(Wavelength, log_EQE, linewidth=3)  # Equivalent to the line above but with proper log scale axes
                 self.ax1.legend()
                 plt.draw()
 
