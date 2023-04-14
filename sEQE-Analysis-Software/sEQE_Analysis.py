@@ -18,7 +18,7 @@ import numpy as np
 import pandas as pd
 import seaborn
 # for the gui
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets,QtCore
 from PyQt5.QtWidgets import QFileDialog
 from numpy import exp, linspace
 from scipy.optimize import curve_fit
@@ -55,6 +55,8 @@ class MainWindow(QtWidgets.QMainWindow):
         # Set up the user interface from Designer
         self.ui = sEQE_Analysis_template.Ui_MainWindow()
         self.ui.setupUi(self)
+
+
 
         # Tkinter doesn't work well with PyQt5 on Mac
         # root = tk.Tk()
@@ -3010,6 +3012,7 @@ class MainWindow(QtWidgets.QMainWindow):
                         add_Fits.append(OptFit_value + CTFit_value)
 
                 self.axAdd_1, self.axAdd_2 = set_up_EQE_plot()
+                fontsize = 18
 
                 self.axAdd_1.plot(data_OptFit['Energy'],
                                   data_OptFit['Signal'],
@@ -3039,37 +3042,50 @@ class MainWindow(QtWidgets.QMainWindow):
                                   color=color_EQE,
                                   label=label_EQE
                                   )
-                self.axAdd_1.legend()
 
-                self.axAdd_2.plot(data_OptFit['Energy'],
+                self.axAdd_1.legend(fontsize=fontsize-2, frameon=False, loc='lower right')
+                #self.axAdd_1.set_ylim(10E-8, 10E-1)
+                #self.axAdd_1.set_xlim(0.7, 3.8)
+                #self.axAdd_1.set_xticks(np.arange(1, 4, 0.5))
+
+                self.axAdd_2.semilogy(data_OptFit['Energy'],
                                   data_OptFit['Signal'],
                                   linewidth=2,
                                   linestyle='--',
                                   color=color_OptFit,
                                   label=label_OptFit
                                   )
-                self.axAdd_2.plot(data_CTFit['Energy'],
+                self.axAdd_2.semilogy(data_CTFit['Energy'],
                                   data_CTFit['Signal'],
                                   linewidth=2,
                                   linestyle='--',
                                   color=color_CTFit,
                                   label=label_CTFit
                                   )
-                self.axAdd_2.plot(add_Energy,
+                self.axAdd_2.semilogy(add_Energy,
                                   add_Fits,
                                   linewidth=2,
                                   linestyle='dotted',
                                   color='grey',
                                   label='$\mathrm{S_1}$ + CT Fit'
                                   )
-                self.axAdd_2.plot(data_EQE['Energy'],
+                self.axAdd_2.semilogy(data_EQE['Energy'],
                                   data_EQE['EQE'],
                                   linewidth=2,
                                   linestyle='-',
                                   color=color_EQE,
                                   label=label_EQE
                                   )
-                self.axAdd_2.legend()
+                self.axAdd_2.legend(fontsize=fontsize-2, frameon=False, loc='lower right')
+
+                self.axAdd_2.tick_params(labelsize=fontsize, direction='in', axis='both', which='major', length=6, width=1,top=True, right=False, left=True)
+                self.axAdd_2.tick_params(labelsize=fontsize, direction='in', axis='both', which='minor', length=3, width=1,left=True, bottom=True, top=True)
+
+                self.axAdd_2.set_ylim(10E-7, 10E-1)
+                self.axAdd_2.set_xlim(0.7, 3.8)
+                self.axAdd_2.set_xticks(np.arange(1, 4, 0.5))
+
+
 
                 df_add = pd.DataFrame()
                 df_add['Energy'] = np.array(add_Energy)
