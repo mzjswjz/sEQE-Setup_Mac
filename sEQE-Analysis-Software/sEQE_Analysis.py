@@ -959,10 +959,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
         if ok_EQE_1 and ok_EQE_2 and ok_EQE_3 and ok_EQE_4 and ok_EQE_5 and ok_EQE_6 and ok_EQE_7 and ok_EQE_8 and \
                 ok_EQE_9 and ok_EQE_10:
-            self.axEQE_1.legend()
-            self.axEQE_2.legend()
-            # self.axEQE_1.legend(frameon=False, fontsize=13) # Adjusted style
-            # self.axEQE_2.legend(frameon=False, fontsize=13) # Adjusted style
+            #self.axEQE_1.legend()
+            #self.axEQE_2.legend()
+            self.axEQE_1.legend(fontsize=16, frameon=False, loc='lower right') # Adjusted style
+            self.axEQE_2.legend(fontsize=16, frameon=False, loc='lower right') # Adjusted style
             plt.show()
         else:
             plt.close()
@@ -3044,7 +3044,10 @@ class MainWindow(QtWidgets.QMainWindow):
                                   )
 
                 self.axAdd_1.legend(fontsize=fontsize-2, frameon=False, loc='lower right')
-                #self.axAdd_1.set_ylim(10E-8, 10E-1)
+
+                #self.axAdd_1.tick_params(labelsize=fontsize, direction='in', axis='both', which='major', length=6, width=1, top=True, right=False, left=True)
+                #self.axAdd_1.tick_params(labelsize=fontsize, direction='in', axis='both', which='minor', length=3, width=1, left=True, bottom=True, top=True)
+                #self.axAdd_1.set_ylim(0, 1)
                 #self.axAdd_1.set_xlim(0.7, 3.8)
                 #self.axAdd_1.set_xticks(np.arange(1, 4, 0.5))
 
@@ -3078,8 +3081,8 @@ class MainWindow(QtWidgets.QMainWindow):
                                   )
                 self.axAdd_2.legend(fontsize=fontsize-2, frameon=False, loc='lower right')
 
-                self.axAdd_2.tick_params(labelsize=fontsize, direction='in', axis='both', which='major', length=6, width=1,top=True, right=False, left=True)
-                self.axAdd_2.tick_params(labelsize=fontsize, direction='in', axis='both', which='minor', length=3, width=1,left=True, bottom=True, top=True)
+                #self.axAdd_2.tick_params(labelsize=fontsize, direction='in', axis='both', which='major', length=6, width=1,top=True, right=False, left=True)
+                #self.axAdd_2.tick_params(labelsize=fontsize, direction='in', axis='both', which='minor', length=3, width=1,left=True, bottom=True, top=True)
 
                 self.axAdd_2.set_ylim(10E-7, 10E-1)
                 self.axAdd_2.set_xlim(0.7, 3.8)
