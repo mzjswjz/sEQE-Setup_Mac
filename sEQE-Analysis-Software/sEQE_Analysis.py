@@ -2884,21 +2884,21 @@ class MainWindow(QtWidgets.QMainWindow):
                               )
             self.axSub_1.legend()
 
-            self.axSub_2.plot(data_Fit['Energy'],
+            self.axSub_2.semilogy(data_Fit['Energy'],
                               data_Fit['Signal'],
                               linewidth=2,
                               linestyle='--',
                               color=color_fit,
                               label=label_fit
                               )
-            self.axSub_2.plot(data_EQE['Energy'],
+            self.axSub_2.semilogy(data_EQE['Energy'],
                               data_EQE['EQE'],
                               linewidth=2,
                               linestyle='-',
                               color=color_eqe,
                               label=label_eqe
                               )
-            self.axSub_2.plot(data_EQE['Energy'],
+            self.axSub_2.semilogy(data_EQE['Energy'],
                               sub_EQE,
                               linewidth=2,
                               linestyle='-',
@@ -3028,13 +3028,6 @@ class MainWindow(QtWidgets.QMainWindow):
                                   color=color_CTFit,
                                   label=label_CTFit
                                   )
-                self.axAdd_1.plot(add_Energy,
-                                  add_Fits,
-                                  linewidth=2,
-                                  linestyle='dotted',
-                                  color='grey',
-                                  label='$\mathrm{S_1}$ + CT Fit'
-                                  )
                 self.axAdd_1.plot(data_EQE['Energy'],
                                   data_EQE['EQE'],
                                   linewidth=2,
@@ -3042,6 +3035,14 @@ class MainWindow(QtWidgets.QMainWindow):
                                   color=color_EQE,
                                   label=label_EQE
                                   )
+                self.axAdd_1.plot(add_Energy,
+                                  add_Fits,
+                                  linewidth=2,
+                                  linestyle='dotted',
+                                  color='#76EE00',
+                                  label='$\mathrm{S_1}$ + CT Fit'
+                                  )
+
 
                 self.axAdd_1.legend(fontsize=fontsize-2, frameon=False, loc='lower right')
 
@@ -3065,13 +3066,6 @@ class MainWindow(QtWidgets.QMainWindow):
                                   color=color_CTFit,
                                   label=label_CTFit
                                   )
-                self.axAdd_2.semilogy(add_Energy,
-                                  add_Fits,
-                                  linewidth=2,
-                                  linestyle='dotted',
-                                  color='grey',
-                                  label='$\mathrm{S_1}$ + CT Fit'
-                                  )
                 self.axAdd_2.semilogy(data_EQE['Energy'],
                                   data_EQE['EQE'],
                                   linewidth=2,
@@ -3079,6 +3073,14 @@ class MainWindow(QtWidgets.QMainWindow):
                                   color=color_EQE,
                                   label=label_EQE
                                   )
+                self.axAdd_2.semilogy(add_Energy,
+                                  add_Fits,
+                                  linewidth=2,
+                                  linestyle='dotted',
+                                  color='#76EE00',
+                                  label='$\mathrm{S_1}$ + CT Fit'
+                                  )
+
                 self.axAdd_2.legend(fontsize=fontsize-2, frameon=False, loc='lower right')
 
                 #self.axAdd_2.tick_params(labelsize=fontsize, direction='in', axis='both', which='major', length=6, width=1,top=True, right=False, left=True)
