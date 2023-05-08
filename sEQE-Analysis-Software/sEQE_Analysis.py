@@ -3039,7 +3039,7 @@ class MainWindow(QtWidgets.QMainWindow):
                                   add_Fits,
                                   linewidth=2,
                                   linestyle='dotted',
-                                  color='#76EE00',
+                                  color='tab:green',
                                   label='$\mathrm{S_1}$ + CT Fit'
                                   )
 
@@ -3077,7 +3077,7 @@ class MainWindow(QtWidgets.QMainWindow):
                                   add_Fits,
                                   linewidth=2,
                                   linestyle='dotted',
-                                  color='#76EE00',
+                                  color='tab:green',
                                   label='$\mathrm{S_1}$ + CT Fit'
                                   )
 
