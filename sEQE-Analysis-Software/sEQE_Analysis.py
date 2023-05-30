@@ -3011,93 +3011,94 @@ class MainWindow(QtWidgets.QMainWindow):
                         add_Energy.append(data_EQE['Energy'][x])
                         add_Fits.append(OptFit_value + CTFit_value)
 
-                self.axAdd_1, self.axAdd_2 = set_up_EQE_plot()
-                fontsize = 18
+                with mpl.rc_context({'axes.linewidth': 2}):
+                    self.axAdd_1, self.axAdd_2 = set_up_EQE_plot()
+                    fontsize = 18
 
-                self.axAdd_1.plot(data_OptFit['Energy'],
+                    self.axAdd_1.plot(data_OptFit['Energy'],
                                   data_OptFit['Signal'],
-                                  linewidth=2,
+                                  linewidth=3,
                                   linestyle='--',
                                   color=color_OptFit,
                                   label=label_OptFit
                                   )
-                self.axAdd_1.plot(data_CTFit['Energy'],
+                    self.axAdd_1.plot(data_CTFit['Energy'],
                                   data_CTFit['Signal'],
-                                  linewidth=2,
+                                  linewidth=3,
                                   linestyle='--',
                                   color=color_CTFit,
                                   label=label_CTFit
                                   )
-                self.axAdd_1.plot(data_EQE['Energy'],
+                    self.axAdd_1.plot(data_EQE['Energy'],
                                   data_EQE['EQE'],
-                                  linewidth=2,
+                                  linewidth=3,
                                   linestyle='-',
                                   color=color_EQE,
                                   label=label_EQE
                                   )
-                self.axAdd_1.plot(add_Energy,
+                    self.axAdd_1.plot(add_Energy,
                                   add_Fits,
-                                  linewidth=2,
-                                  linestyle='dotted',
-                                  color='tab:green',
+                                  linewidth=3,
+                                  linestyle='dashdot',
+                                  color='tab:olive',
                                   label='$\mathrm{S_1}$ + CT Fit'
                                   )
 
 
-                self.axAdd_1.legend(fontsize=fontsize-2, frameon=False, loc='lower right')
+                    self.axAdd_1.legend(fontsize=fontsize-2, frameon=False, loc='lower right')
 
                 #self.axAdd_1.tick_params(labelsize=fontsize, direction='in', axis='both', which='major', length=6, width=1, top=True, right=False, left=True)
                 #self.axAdd_1.tick_params(labelsize=fontsize, direction='in', axis='both', which='minor', length=3, width=1, left=True, bottom=True, top=True)
                 #self.axAdd_1.set_ylim(0, 1)
-                #self.axAdd_1.set_xlim(0.7, 3.8)
-                #self.axAdd_1.set_xticks(np.arange(1, 4, 0.5))
+                    self.axAdd_1.set_xlim(0.9, 3)
+                    self.axAdd_1.set_xticks(np.arange(1, 3.5, 0.5))
 
-                self.axAdd_2.semilogy(data_OptFit['Energy'],
+                    self.axAdd_2.semilogy(data_OptFit['Energy'],
                                   data_OptFit['Signal'],
-                                  linewidth=2,
+                                  linewidth=3,
                                   linestyle='--',
                                   color=color_OptFit,
                                   label=label_OptFit
                                   )
-                self.axAdd_2.semilogy(data_CTFit['Energy'],
+                    self.axAdd_2.semilogy(data_CTFit['Energy'],
                                   data_CTFit['Signal'],
-                                  linewidth=2,
+                                  linewidth=3,
                                   linestyle='--',
                                   color=color_CTFit,
                                   label=label_CTFit
                                   )
-                self.axAdd_2.semilogy(data_EQE['Energy'],
+                    self.axAdd_2.semilogy(data_EQE['Energy'],
                                   data_EQE['EQE'],
-                                  linewidth=2,
+                                  linewidth=3,
                                   linestyle='-',
                                   color=color_EQE,
                                   label=label_EQE
                                   )
-                self.axAdd_2.semilogy(add_Energy,
+                    self.axAdd_2.semilogy(add_Energy,
                                   add_Fits,
-                                  linewidth=2,
-                                  linestyle='dotted',
-                                  color='tab:green',
+                                  linewidth=3,
+                                  linestyle='dashdot',
+                                  color='tab:olive',
                                   label='$\mathrm{S_1}$ + CT Fit'
                                   )
 
-                self.axAdd_2.legend(fontsize=fontsize-2, frameon=False, loc='lower right')
+                    self.axAdd_2.legend(fontsize=fontsize-2, frameon=False, loc='lower right')
 
                 #self.axAdd_2.tick_params(labelsize=fontsize, direction='in', axis='both', which='major', length=6, width=1,top=True, right=False, left=True)
                 #self.axAdd_2.tick_params(labelsize=fontsize, direction='in', axis='both', which='minor', length=3, width=1,left=True, bottom=True, top=True)
 
-                self.axAdd_2.set_ylim(10E-7, 10E-1)
-                self.axAdd_2.set_xlim(0.7, 3.8)
-                self.axAdd_2.set_xticks(np.arange(1, 4, 0.5))
+                    self.axAdd_2.set_ylim(10E-7, 10E-1)
+                    self.axAdd_2.set_xlim(0.9, 3)
+                    self.axAdd_2.set_xticks(np.arange(1, 3.5, 0.5))
 
 
 
-                df_add = pd.DataFrame()
-                df_add['Energy'] = np.array(add_Energy)
-                df_add['EQE'] = np.array(add_Fits)
+                    df_add = pd.DataFrame()
+                    df_add['Energy'] = np.array(add_Energy)
+                    df_add['EQE'] = np.array(add_Fits)
 
-                EQE_label = self.ui.textBox_p7_7.toPlainText()
-                df_add.to_csv(f'{EQE_label}_Fit_sum.csv')
+                    EQE_label = self.ui.textBox_p7_7.toPlainText()
+                    df_add.to_csv(f'{EQE_label}_Fit_sum.csv')
 
             else:
                 self.logger.error('Please import a valid EQE file.')
