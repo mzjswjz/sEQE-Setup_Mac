@@ -57,57 +57,20 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.setupUi(self)
 
 
-
-        # Tkinter doesn't work well with PyQt5 on Mac
-        # root = tk.Tk()
-        # root.withdraw()
-
         # Logger
         self.logger = get_logger()
 
         ## Page 1 - Calculate EQE
+        # Dynamically create ref_x and data_x attributes
+        for i in range(1, 7):
+            setattr(self, f'ref_{i}', [])
+            setattr(self, f'data_{i}', [])
 
-        self.ref_1 = []
-        self.ref_2 = []
-        self.ref_3 = []
-        self.ref_4 = []
-        self.ref_5 = []
-        self.ref_6 = []
+        # Dynamically connect calculate buttons
+        self.setup_calculate_buttons()
 
-        self.data_1 = []
-        self.data_2 = []
-        self.data_3 = []
-        self.data_4 = []
-        self.data_5 = []
-        self.data_6 = []
-
-        # Handle Browse Buttons
-        self.ui.browseButton_1.clicked.connect(lambda: self.writeText(self.ui.textBox_p1_1, 1))
-        self.ui.browseButton_2.clicked.connect(lambda: self.writeText(self.ui.textBox_p1_2, 2))
-        self.ui.browseButton_3.clicked.connect(lambda: self.writeText(self.ui.textBox_p1_3, 3))
-        self.ui.browseButton_4.clicked.connect(lambda: self.writeText(self.ui.textBox_p1_4, 4))
-        self.ui.browseButton_5.clicked.connect(lambda: self.writeText(self.ui.textBox_p1_5, 5))
-        self.ui.browseButton_6.clicked.connect(lambda: self.writeText(self.ui.textBox_p1_6, 6))
-        self.ui.browseButton_7.clicked.connect(lambda: self.writeText(self.ui.textBox_p1_7, 7))
-        self.ui.browseButton_8.clicked.connect(lambda: self.writeText(self.ui.textBox_p1_8, 8))
-        self.ui.browseButton_9.clicked.connect(lambda: self.writeText(self.ui.textBox_p1_9, 9))
-        self.ui.browseButton_10.clicked.connect(lambda: self.writeText(self.ui.textBox_p1_10, 10))
-        self.ui.browseButton_11.clicked.connect(lambda: self.writeText(self.ui.textBox_p1_11, 11))
-        self.ui.browseButton_12.clicked.connect(lambda: self.writeText(self.ui.textBox_p1_12, 12))
-
-        # Handle Calculate Buttons
-        self.ui.calculateButton_1.clicked.connect(
-            lambda: self.pre_EQE(self.ref_1, self.data_1, self.ui.startNM_1, self.ui.stopNM_1, 1))
-        self.ui.calculateButton_2.clicked.connect(
-            lambda: self.pre_EQE(self.ref_2, self.data_2, self.ui.startNM_2, self.ui.stopNM_2, 2))
-        self.ui.calculateButton_3.clicked.connect(
-            lambda: self.pre_EQE(self.ref_3, self.data_3, self.ui.startNM_3, self.ui.stopNM_3, 3))
-        self.ui.calculateButton_4.clicked.connect(
-            lambda: self.pre_EQE(self.ref_4, self.data_4, self.ui.startNM_4, self.ui.stopNM_4, 4))
-        self.ui.calculateButton_5.clicked.connect(
-            lambda: self.pre_EQE(self.ref_5, self.data_5, self.ui.startNM_5, self.ui.stopNM_5, 5))
-        self.ui.calculateButton_6.clicked.connect(
-            lambda: self.pre_EQE(self.ref_6, self.data_6, self.ui.startNM_6, self.ui.stopNM_6, 6))
+        # Dynamically connect browse buttons
+        self.setup_browse_buttons()
 
         # Handle Export All Data Button
         self.ui.exportButton.clicked.connect(self.export_EQE)
@@ -365,6 +328,43 @@ class MainWindow(QtWidgets.QMainWindow):
     # Functions to read file and update textbox
 
     # -----------------------------------------------------------------------------------------------------------
+    def setup_calculate_buttons(self):
+        # Loop through each calculate button by its index.
+        for i in range(1, 7):
+            # Dynamically access each calculate button using its index.
+            button = getattr(self.ui, f'calculateButton_{i}')
+            # Similarly, access the start and stop wavelength input fields for each button.
+            startNM = getattr(self.ui, f'startNM_{i}')
+            stopNM = getattr(self.ui, f'stopNM_{i}')
+            # Connect the clicked signal of each button to a lambda function.
+            # This lambda function calls the pre_EQE method with the appropriate parameters.
+            # Using lambda allows us to capture the current value of `i`, `startNM`, and `stopNM` for each connection.
+            button.clicked.connect(
+                lambda _, i=i, startNM=startNM, stopNM=stopNM: self.pre_EQE(
+                    getattr(self, f'ref_{i}'),  # Dynamically get the reference data set for the calculation.
+                    getattr(self, f'data_{i}'),  # Dynamically get the data set for the calculation.
+                    startNM,  # Pass the start wavelength GUI element directly.
+                    stopNM,  # Pass the stop wavelength GUI element directly.
+                    i  # Pass the index to identify which set of data and UI elements to work with.
+                )
+            )
+
+    def setup_browse_buttons(self):
+        # Loop through each browse button by its index, assuming there are 12 buttons.
+        for i in range(1, 13):
+            # Dynamically access each browse button using its index.
+            button = getattr(self.ui, f'browseButton_{i}')
+            # Access the corresponding text box where the file path will be displayed.
+            textBox = getattr(self.ui, f'textBox_p1_{i}')
+            # Connect the clicked signal of each browse button to a lambda function.
+            # This lambda function calls the writeText method when a button is clicked.
+            # The lambda captures the current value of `i` and the associated text box for each button.
+            button.clicked.connect(
+                lambda _, i=i, textBox=textBox: self.writeText(
+                    textBox,  # Pass the text box where the file path will be displayed.
+                    i  # Pass the index to identify which text box and button are being interacted with.
+                )
+            )
 
     def writeText(self,
                   text_Box,
