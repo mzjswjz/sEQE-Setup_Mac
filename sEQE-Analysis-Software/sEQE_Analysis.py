@@ -61,7 +61,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.logger = get_logger()
 
         ## Page 1 - Calculate EQE
-        # Dynamically create ref_x and data_x attributes
+        # Dynamically create ref_x and data_x attributes 6 in total
         for i in range(1, 7):
             setattr(self, f'ref_{i}', [])
             setattr(self, f'data_{i}', [])
@@ -69,7 +69,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # Dynamically connect calculate buttons
         self.setup_calculate_buttons()
 
-        # Dynamically connect browse buttons
+        # Dynamically connect browse buttons 12 in total
         self.setup_browse_buttons()
 
         # Handle Export All Data Button
@@ -79,29 +79,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.clearButton.clicked.connect(self.clear_plot)
 
         ## Page 2 - Plot EQE
+        for i in range(1, 11):
+            setattr(self, f'EQE_{i}', [])
 
-        self.EQE_1 = []
-        self.EQE_2 = []
-        self.EQE_3 = []
-        self.EQE_4 = []
-        self.EQE_5 = []
-        self.EQE_6 = []
-        self.EQE_7 = []
-        self.EQE_8 = []
-        self.EQE_9 = []
-        self.EQE_10 = []
-
-        # Handle Import EQE Buttons
-        self.ui.browseEQEButton_1.clicked.connect(lambda: self.writeText(self.ui.textBox_p2_1, 'p1'))
-        self.ui.browseEQEButton_2.clicked.connect(lambda: self.writeText(self.ui.textBox_p2_4, 'p4'))
-        self.ui.browseEQEButton_3.clicked.connect(lambda: self.writeText(self.ui.textBox_p2_7, 'p7'))
-        self.ui.browseEQEButton_4.clicked.connect(lambda: self.writeText(self.ui.textBox_p2_10, 'p10'))
-        self.ui.browseEQEButton_5.clicked.connect(lambda: self.writeText(self.ui.textBox_p2_13, 'p13'))
-        self.ui.browseEQEButton_6.clicked.connect(lambda: self.writeText(self.ui.textBox_p2_16, 'p16'))
-        self.ui.browseEQEButton_7.clicked.connect(lambda: self.writeText(self.ui.textBox_p2_19, 'p19'))
-        self.ui.browseEQEButton_8.clicked.connect(lambda: self.writeText(self.ui.textBox_p2_22, 'p22'))
-        self.ui.browseEQEButton_9.clicked.connect(lambda: self.writeText(self.ui.textBox_p2_25, 'p25'))
-        self.ui.browseEQEButton_10.clicked.connect(lambda: self.writeText(self.ui.textBox_p2_28, 'p28'))
+        # Set up import eqe buttons
+        self.setup_import_eqe_buttons()
 
         # Handle Plot EQE Buttons
         self.ui.plotEQEButton_Wavelength.clicked.connect(lambda: self.pre_plot_EQE(0))
@@ -365,6 +347,32 @@ class MainWindow(QtWidgets.QMainWindow):
                     i  # Pass the index to identify which text box and button are being interacted with.
                 )
             )
+
+    def setup_import_eqe_buttons(self):
+        # Mapping of button indexes to their corresponding textBox and parameter suffix.
+        # This dictionary maps each browseEQEButton to its corresponding textBox and the suffix to pass to writeText.
+        button_mappings = {
+            1: ('textBox_p2_1', 'p1'),
+            2: ('textBox_p2_4', 'p4'),
+            3: ('textBox_p2_7', 'p7'),
+            4: ('textBox_p2_10', 'p10'),
+            5: ('textBox_p2_13', 'p13'),
+            6: ('textBox_p2_16', 'p16'),
+            7: ('textBox_p2_19', 'p19'),
+            8: ('textBox_p2_22', 'p22'),
+            9: ('textBox_p2_25', 'p25'),
+            10: ('textBox_p2_28', 'p28'),
+        }
+
+        # Loop through each mapping and set up the connection.
+        for button_index, (textBox_attr, param) in button_mappings.items():
+            # Dynamically access each Import EQE button using its index.
+            button = getattr(self.ui, f'browseEQEButton_{button_index}')
+            # Dynamically access the corresponding text box.
+            textBox = getattr(self.ui, textBox_attr)
+            # Connect the clicked signal of each Import EQE button to a lambda function.
+            # The lambda function calls writeText with the corresponding text box and parameter.
+            button.clicked.connect(lambda _, textBox=textBox, param=param: self.writeText(textBox, param))
 
     def writeText(self,
                   text_Box,
