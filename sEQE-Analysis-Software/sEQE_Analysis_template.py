@@ -934,20 +934,30 @@ class Ui_MainWindow(object):
         self.horizontalLayout_53.addWidget(self.clearButton)
         self.verticalLayout_21.addLayout(self.horizontalLayout_53)
         self.scrollArea_2.setWidget(self.scrollAreaWidgetContents_4)
-        self.tabWidget.addTab(self.tab, "")
+
+        # Add tab 2
         self.tab_2 = QtWidgets.QWidget()
         self.tab_2.setObjectName("tab_2")
+        self.tabWidget.addTab(self.tab_2, "Tab 2")
+
+        # Add scroll area to the tab
         self.scrollArea_3 = QtWidgets.QScrollArea(self.tab_2)
-        self.scrollArea_3.setGeometry(QtCore.QRect(30, 30, 1121, 911))
         self.scrollArea_3.setWidgetResizable(True)
         self.scrollArea_3.setObjectName("scrollArea_3")
+        self.tabLayout = QtWidgets.QVBoxLayout(self.tab_2)
+        self.tabLayout.addWidget(self.scrollArea_3)
+
+        # Add scroll area contents
         self.scrollAreaWidgetContents_5 = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents_5.setGeometry(QtCore.QRect(0, 0, 1106, 1006))
         self.scrollAreaWidgetContents_5.setObjectName("scrollAreaWidgetContents_5")
+        self.scrollArea_3.setWidget(self.scrollAreaWidgetContents_5)
+
+        # Set up layouts within the scroll area contents
         self.verticalLayout_24 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents_5)
         self.verticalLayout_24.setObjectName("verticalLayout_24")
         self.gridLayout_6 = QtWidgets.QGridLayout()
         self.gridLayout_6.setObjectName("gridLayout_6")
+
         self.line_109 = QtWidgets.QFrame(self.scrollAreaWidgetContents_5)
         self.line_109.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_109.setFrameShadow(QtWidgets.QFrame.Sunken)

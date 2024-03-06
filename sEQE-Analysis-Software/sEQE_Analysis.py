@@ -635,25 +635,15 @@ class MainWindow(QtWidgets.QMainWindow):
                 if self.ui.Range1_Si_button.isChecked() and not self.ui.Range1_InGaAs_button.isChecked():
                     try:
                         ref_df['Power'] = calculate_Power(ref_df, self.Si_cal)
-                    except Exception as e:
-                        error_message = 'Please select a valid reference diode.'
-                        self.logger.error(error_message)
-                        self.show_error_popup(error_message)
-                        # Optionally log the exception details as well, or include them in the popup
-                        self.logger.error(f"Error details: {e}")
+                    except:
+                        self.logger.error('Please select a valid reference diode.')
                 elif self.ui.Range1_InGaAs_button.isChecked() and not self.ui.Range1_Si_button.isChecked():
                     try:
                         ref_df['Power'] = calculate_Power(ref_df, self.InGaAs_cal)
-                    except Exception as e:
-                        error_message = 'Please select a valid reference diode.'
-                        self.logger.error(error_message)
-                        self.show_error_popup(error_message)
-                        # Optionally log the exception details as well, or include them in the popup
-                        self.logger.error(f"Error details: {e}")
+                    except:
+                        self.logger.error('Please select a valid reference diode.')
                 else:
-                    error_message = 'Please select a valid reference diode.'
-                    self.logger.error(error_message)
-                    self.show_error_popup(error_message)
+                    self.logger.error('Please select a valid reference diode.')
 
             elif range_no == 2:
                 if self.ui.Range2_Si_button.isChecked() and not self.ui.Range2_InGaAs_button.isChecked():
