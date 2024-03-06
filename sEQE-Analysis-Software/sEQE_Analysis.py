@@ -18,13 +18,15 @@ import numpy as np
 import pandas as pd
 import seaborn
 # for the gui
-from PyQt5 import QtWidgets,QtCore
+from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
 from numpy import exp, linspace
 from scipy.optimize import curve_fit
 from tqdm import tqdm
 from collections import defaultdict
 from scipy.interpolate import interp1d
+from source.PyQt5_GUI_Help import AppDelegate
+import traceback
 
 import sEQE_Analysis_template
 from source.add_subtract import subtract_Opt
@@ -4819,14 +4821,21 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
 def main():
-    app = QtWidgets.QApplication(sys.argv)
+    app = AppDelegate(sys.argv)  # Use your custom application class
     monoUI = MainWindow()
     monoUI.show()
     sys.exit(app.exec_())
+
+    # app = QtWidgets.QApplication(sys.argv)
+    # monoUI = MainWindow()
+    # monoUI.show()
+    # sys.exit(app.exec_())
 
 
 if __name__ == '__main__':
     try:
         main()
-    except:
+    except Exception as e:
+        print("An error occurred:", e)
+        traceback.print_exc()
         app = QtWidgets.QApplication(sys.argv)
