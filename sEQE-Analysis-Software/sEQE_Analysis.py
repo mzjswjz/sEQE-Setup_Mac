@@ -19,7 +19,7 @@ import pandas as pd
 import seaborn
 # for the gui
 from PyQt5 import QtWidgets,QtCore
-from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtWidgets import QFileDialog, QMessageBox
 from numpy import exp, linspace
 from scipy.optimize import curve_fit
 from tqdm import tqdm
@@ -542,6 +542,13 @@ class MainWindow(QtWidgets.QMainWindow):
     # -----------------------------------------------------------------------------------------------------------
 
     # Function to select data and reference files
+    def show_error_popup(self, message):
+        """Shows an error popup with the provided message."""
+        msg_box = QMessageBox()
+        msg_box.setIcon(QMessageBox.Critical)
+        msg_box.setText(message)
+        msg_box.setWindowTitle("Error")
+        msg_box.exec_()
 
     def pre_EQE(self,
                 ref_df,
@@ -579,6 +586,11 @@ class MainWindow(QtWidgets.QMainWindow):
     # -----------------------------------------------------------------------------------------------------------
 
     # Function to calculate EQE
+
+    # def show_error_popup(self, message):
+    #     """Shows an error popup with the provided message."""
+    #     QMessageBox.critical(None, "Error", message)
+
 
     def calculate_EQE(self,
                       ref_df,
@@ -621,15 +633,25 @@ class MainWindow(QtWidgets.QMainWindow):
                 if self.ui.Range1_Si_button.isChecked() and not self.ui.Range1_InGaAs_button.isChecked():
                     try:
                         ref_df['Power'] = calculate_Power(ref_df, self.Si_cal)
-                    except:
-                        self.logger.error('Please select a valid reference diode.')
+                    except Exception as e:
+                        error_message = 'Please select a valid reference diode.'
+                        self.logger.error(error_message)
+                        self.show_error_popup(error_message)
+                        # Optionally log the exception details as well, or include them in the popup
+                        self.logger.error(f"Error details: {e}")
                 elif self.ui.Range1_InGaAs_button.isChecked() and not self.ui.Range1_Si_button.isChecked():
                     try:
                         ref_df['Power'] = calculate_Power(ref_df, self.InGaAs_cal)
-                    except:
-                        self.logger.error('Please select a valid reference diode.')
+                    except Exception as e:
+                        error_message = 'Please select a valid reference diode.'
+                        self.logger.error(error_message)
+                        self.show_error_popup(error_message)
+                        # Optionally log the exception details as well, or include them in the popup
+                        self.logger.error(f"Error details: {e}")
                 else:
-                    self.logger.error('Please select a valid reference diode.')
+                    error_message = 'Please select a valid reference diode.'
+                    self.logger.error(error_message)
+                    self.show_error_popup(error_message)
 
             elif range_no == 2:
                 if self.ui.Range2_Si_button.isChecked() and not self.ui.Range2_InGaAs_button.isChecked():
