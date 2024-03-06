@@ -10,24 +10,42 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
+        # Set up the main window
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1180, 1048)
         MainWindow.setLayoutDirection(QtCore.Qt.LeftToRight)
+
+        # Create central widget and set it
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
+        MainWindow.setCentralWidget(self.centralwidget)
+
+        # Create tab widget and layout for central widget
         self.tabWidget = QtWidgets.QTabWidget(self.centralwidget)
-        self.tabWidget.setGeometry(QtCore.QRect(0, 0, 1191, 1041))
-        self.tabWidget.setMovable(True)
+        self.tabWidget.setGeometry(QtCore.QRect(0, 0, 1180, 1048))
         self.tabWidget.setObjectName("tabWidget")
+        self.centralLayout = QtWidgets.QVBoxLayout(self.centralwidget)
+        self.centralLayout.addWidget(self.tabWidget)
+
+        # Add a tab
         self.tab = QtWidgets.QWidget()
         self.tab.setObjectName("tab")
+        self.tabWidget.addTab(self.tab, "Tab 1")
+
+
+        # Add scroll area to the tab
         self.scrollArea_2 = QtWidgets.QScrollArea(self.tab)
-        self.scrollArea_2.setGeometry(QtCore.QRect(30, 30, 1111, 911))
         self.scrollArea_2.setWidgetResizable(True)
         self.scrollArea_2.setObjectName("scrollArea_2")
+        self.tabLayout = QtWidgets.QVBoxLayout(self.tab)
+        self.tabLayout.addWidget(self.scrollArea_2)
+
+        # Add scroll area contents
         self.scrollAreaWidgetContents_4 = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents_4.setGeometry(QtCore.QRect(0, 0, 1096, 1096))
         self.scrollAreaWidgetContents_4.setObjectName("scrollAreaWidgetContents_4")
+        self.scrollArea_2.setWidget(self.scrollAreaWidgetContents_4)
+
+        # Set up layouts within the scroll area contents
         self.verticalLayout_21 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents_4)
         self.verticalLayout_21.setObjectName("verticalLayout_21")
         self.gridLayout_24 = QtWidgets.QGridLayout()
@@ -36,6 +54,8 @@ class Ui_MainWindow(object):
         self.verticalLayout_16.setObjectName("verticalLayout_16")
         self.horizontalLayout_30 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_30.setObjectName("horizontalLayout_30")
+
+
         self.Range5_Si_button = QtWidgets.QRadioButton(self.scrollAreaWidgetContents_4)
         self.Range5_Si_button.setChecked(True)
         self.Range5_Si_button.setAutoExclusive(False)
