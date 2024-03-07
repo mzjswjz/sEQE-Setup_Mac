@@ -2038,23 +2038,39 @@ class Ui_MainWindow(object):
         self.verticalLayout_24.addLayout(self.gridLayout_30)
         self.scrollArea_3.setWidget(self.scrollAreaWidgetContents_5)
         self.tabWidget.addTab(self.tab_2, "")
+
+        # setting up tab 3
+
         self.tab_3 = QtWidgets.QWidget()
         self.tab_3.setObjectName("tab_3")
+
+        self.tab_3_layout = QtWidgets.QVBoxLayout(self.tab_3)
+        self.tab_3_layout.setObjectName("tab_3_layout")
+
         self.line_202 = QtWidgets.QFrame(self.tab_3)
         self.line_202.setGeometry(QtCore.QRect(20, 60, 1141, 20))
         self.line_202.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_202.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_202.setObjectName("line_202")
+
+
         self.line_214 = QtWidgets.QFrame(self.tab_3)
         self.line_214.setGeometry(QtCore.QRect(10, 70, 20, 471))
         self.line_214.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_214.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_214.setObjectName("line_214")
+
         self.line_215 = QtWidgets.QFrame(self.tab_3)
         self.line_215.setGeometry(QtCore.QRect(1150, 70, 20, 471))
         self.line_215.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_215.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_215.setObjectName("line_215")
+
+        # Add the horizontal line to the vertical layout
+        self.tab_3_layout.addWidget(self.line_202)
+        self.tab_3_layout.addWidget(self.line_214)
+        self.tab_3_layout.addWidget(self.line_215)
+
         self.clearButton_2 = QtWidgets.QPushButton(self.tab_3)
         self.clearButton_2.setGeometry(QtCore.QRect(980, 580, 181, 51))
         font = QtGui.QFont()
@@ -2064,31 +2080,38 @@ class Ui_MainWindow(object):
         font.setWeight(75)
         self.clearButton_2.setFont(font)
         self.clearButton_2.setObjectName("clearButton_2")
+
         self.gridLayoutWidget_7 = QtWidgets.QWidget(self.tab_3)
         self.gridLayoutWidget_7.setGeometry(QtCore.QRect(30, 80, 1121, 451))
         self.gridLayoutWidget_7.setObjectName("gridLayoutWidget_7")
         self.gridLayout_20 = QtWidgets.QGridLayout(self.gridLayoutWidget_7)
         self.gridLayout_20.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_20.setObjectName("gridLayout_20")
+
         self.line_308 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_308.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_308.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_308.setObjectName("line_308")
         self.gridLayout_20.addWidget(self.line_308, 4, 3, 1, 1)
+
         self.line_307 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_307.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_307.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_307.setObjectName("line_307")
         self.gridLayout_20.addWidget(self.line_307, 2, 3, 1, 1)
+
+
         self.verticalLayout_19 = QtWidgets.QVBoxLayout()
         self.verticalLayout_19.setObjectName("verticalLayout_19")
         self.gridLayout_2 = QtWidgets.QGridLayout()
         self.gridLayout_2.setObjectName("gridLayout_2")
+
         self.line_234 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_234.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_234.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_234.setObjectName("line_234")
         self.gridLayout_2.addWidget(self.line_234, 0, 3, 1, 1)
+
         self.startStart_2 = QtWidgets.QDoubleSpinBox(self.gridLayoutWidget_7)
         self.startStart_2.setSuffix("")
         self.startStart_2.setDecimals(2)
@@ -2097,6 +2120,7 @@ class Ui_MainWindow(object):
         self.startStart_2.setProperty("value", 1.0)
         self.startStart_2.setObjectName("startStart_2")
         self.gridLayout_2.addWidget(self.startStart_2, 0, 2, 1, 1)
+
         self.startStop_2 = QtWidgets.QDoubleSpinBox(self.gridLayoutWidget_7)
         self.startStop_2.setSuffix("")
         self.startStop_2.setDecimals(2)
@@ -2105,28 +2129,33 @@ class Ui_MainWindow(object):
         self.startStop_2.setProperty("value", 2.0)
         self.startStop_2.setObjectName("startStop_2")
         self.gridLayout_2.addWidget(self.startStop_2, 0, 4, 1, 1)
+
         self.label_22 = QtWidgets.QLabel(self.gridLayoutWidget_7)
         font = QtGui.QFont()
         font.setPointSize(12)
         self.label_22.setFont(font)
         self.label_22.setObjectName("label_22")
         self.gridLayout_2.addWidget(self.label_22, 0, 0, 1, 1)
+
         self.line_235 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_235.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_235.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_235.setObjectName("line_235")
         self.gridLayout_2.addWidget(self.line_235, 0, 1, 1, 1)
+
         self.label_21 = QtWidgets.QLabel(self.gridLayoutWidget_7)
         font = QtGui.QFont()
         font.setPointSize(12)
         self.label_21.setFont(font)
         self.label_21.setObjectName("label_21")
         self.gridLayout_2.addWidget(self.label_21, 1, 0, 1, 1)
+
         self.line_233 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_233.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_233.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_233.setObjectName("line_233")
         self.gridLayout_2.addWidget(self.line_233, 1, 1, 1, 1)
+
         self.stopStart_2 = QtWidgets.QDoubleSpinBox(self.gridLayoutWidget_7)
         self.stopStart_2.setSuffix("")
         self.stopStart_2.setDecimals(2)
@@ -2135,6 +2164,7 @@ class Ui_MainWindow(object):
         self.stopStart_2.setProperty("value", 2.0)
         self.stopStart_2.setObjectName("stopStart_2")
         self.gridLayout_2.addWidget(self.stopStart_2, 1, 2, 1, 1)
+
         self.stopStop_2 = QtWidgets.QDoubleSpinBox(self.gridLayoutWidget_7)
         self.stopStop_2.setSuffix("")
         self.stopStop_2.setDecimals(2)
@@ -2143,17 +2173,20 @@ class Ui_MainWindow(object):
         self.stopStop_2.setProperty("value", 3.0)
         self.stopStop_2.setObjectName("stopStop_2")
         self.gridLayout_2.addWidget(self.stopStop_2, 1, 4, 1, 1)
+
         self.line_232 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_232.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_232.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_232.setObjectName("line_232")
         self.gridLayout_2.addWidget(self.line_232, 1, 3, 1, 1)
+
         self.verticalLayout_19.addLayout(self.gridLayout_2)
         self.line_316 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_316.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_316.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_316.setObjectName("line_316")
         self.verticalLayout_19.addWidget(self.line_316)
+
         self.heatButton_2 = QtWidgets.QPushButton(self.gridLayoutWidget_7)
         font = QtGui.QFont()
         font.setPointSize(12)
@@ -2163,6 +2196,7 @@ class Ui_MainWindow(object):
         self.heatButton_2.setObjectName("heatButton_2")
         self.verticalLayout_19.addWidget(self.heatButton_2)
         self.gridLayout_20.addLayout(self.verticalLayout_19, 4, 10, 1, 1)
+
         self.label_15 = QtWidgets.QLabel(self.gridLayoutWidget_7)
         font = QtGui.QFont()
         font.setPointSize(13)
@@ -2171,15 +2205,18 @@ class Ui_MainWindow(object):
         self.label_15.setFont(font)
         self.label_15.setObjectName("label_15")
         self.gridLayout_20.addWidget(self.label_15, 0, 4, 1, 1)
+
         self.line_216 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_216.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_216.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_216.setObjectName("line_216")
         self.gridLayout_20.addWidget(self.line_216, 1, 10, 1, 1)
+
         self.verticalLayout_11 = QtWidgets.QVBoxLayout()
         self.verticalLayout_11.setObjectName("verticalLayout_11")
         self.gridLayout_29 = QtWidgets.QGridLayout()
         self.gridLayout_29.setObjectName("gridLayout_29")
+
         self.startStart_1 = QtWidgets.QDoubleSpinBox(self.gridLayoutWidget_7)
         self.startStart_1.setSuffix("")
         self.startStart_1.setDecimals(2)
@@ -2188,6 +2225,7 @@ class Ui_MainWindow(object):
         self.startStart_1.setProperty("value", 1.0)
         self.startStart_1.setObjectName("startStart_1")
         self.gridLayout_29.addWidget(self.startStart_1, 0, 2, 1, 1)
+
         self.startStop_1 = QtWidgets.QDoubleSpinBox(self.gridLayoutWidget_7)
         self.startStop_1.setSuffix("")
         self.startStop_1.setDecimals(2)
@@ -2196,17 +2234,20 @@ class Ui_MainWindow(object):
         self.startStop_1.setProperty("value", 2.0)
         self.startStop_1.setObjectName("startStop_1")
         self.gridLayout_29.addWidget(self.startStop_1, 0, 4, 1, 1)
+
         self.line_50 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_50.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_50.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_50.setObjectName("line_50")
         self.gridLayout_29.addWidget(self.line_50, 0, 1, 1, 1)
+
         self.label_25 = QtWidgets.QLabel(self.gridLayoutWidget_7)
         font = QtGui.QFont()
         font.setPointSize(12)
         self.label_25.setFont(font)
         self.label_25.setObjectName("label_25")
         self.gridLayout_29.addWidget(self.label_25, 0, 0, 1, 1)
+
         self.stopStart_1 = QtWidgets.QDoubleSpinBox(self.gridLayoutWidget_7)
         self.stopStart_1.setSuffix("")
         self.stopStart_1.setDecimals(2)
@@ -2215,6 +2256,7 @@ class Ui_MainWindow(object):
         self.stopStart_1.setProperty("value", 2.0)
         self.stopStart_1.setObjectName("stopStart_1")
         self.gridLayout_29.addWidget(self.stopStart_1, 1, 2, 1, 1)
+
         self.stopStop_1 = QtWidgets.QDoubleSpinBox(self.gridLayoutWidget_7)
         self.stopStop_1.setSuffix("")
         self.stopStop_1.setDecimals(2)
@@ -2223,33 +2265,40 @@ class Ui_MainWindow(object):
         self.stopStop_1.setProperty("value", 3.0)
         self.stopStop_1.setObjectName("stopStop_1")
         self.gridLayout_29.addWidget(self.stopStop_1, 1, 4, 1, 1)
+
         self.line_59 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_59.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_59.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_59.setObjectName("line_59")
         self.gridLayout_29.addWidget(self.line_59, 1, 1, 1, 1)
+
         self.label_26 = QtWidgets.QLabel(self.gridLayoutWidget_7)
         font = QtGui.QFont()
         font.setPointSize(12)
         self.label_26.setFont(font)
         self.label_26.setObjectName("label_26")
         self.gridLayout_29.addWidget(self.label_26, 1, 0, 1, 1)
+
         self.line_83 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_83.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_83.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_83.setObjectName("line_83")
         self.gridLayout_29.addWidget(self.line_83, 0, 3, 1, 1)
+
         self.line_242 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_242.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_242.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_242.setObjectName("line_242")
         self.gridLayout_29.addWidget(self.line_242, 1, 3, 1, 1)
+
         self.verticalLayout_11.addLayout(self.gridLayout_29)
         self.line_302 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_302.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_302.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_302.setObjectName("line_302")
         self.verticalLayout_11.addWidget(self.line_302)
+
+
         self.heatButton_1 = QtWidgets.QPushButton(self.gridLayoutWidget_7)
         font = QtGui.QFont()
         font.setPointSize(12)
@@ -2259,39 +2308,47 @@ class Ui_MainWindow(object):
         self.heatButton_1.setObjectName("heatButton_1")
         self.verticalLayout_11.addWidget(self.heatButton_1)
         self.gridLayout_20.addLayout(self.verticalLayout_11, 2, 10, 1, 1)
+
         self.line_218 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_218.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_218.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_218.setObjectName("line_218")
         self.gridLayout_20.addWidget(self.line_218, 1, 12, 1, 1)
+
         self.line_253 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_253.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_253.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_253.setObjectName("line_253")
         self.gridLayout_20.addWidget(self.line_253, 3, 8, 1, 1)
+
         self.textBox_f3 = QtWidgets.QTextEdit(self.gridLayoutWidget_7)
         self.textBox_f3.setObjectName("textBox_f3")
         self.gridLayout_20.addWidget(self.textBox_f3, 2, 6, 1, 1)
+
         self.line_213 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_213.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_213.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_213.setObjectName("line_213")
         self.gridLayout_20.addWidget(self.line_213, 1, 8, 1, 1)
+
         self.line_209 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_209.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_209.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_209.setObjectName("line_209")
         self.gridLayout_20.addWidget(self.line_209, 1, 2, 1, 1)
+
         self.line_298 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_298.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_298.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_298.setObjectName("line_298")
         self.gridLayout_20.addWidget(self.line_298, 0, 9, 1, 1)
+
         self.line_297 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_297.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_297.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_297.setObjectName("line_297")
         self.gridLayout_20.addWidget(self.line_297, 0, 7, 1, 1)
+
         self.label_53 = QtWidgets.QLabel(self.gridLayoutWidget_7)
         font = QtGui.QFont()
         font.setPointSize(13)
@@ -2300,26 +2357,31 @@ class Ui_MainWindow(object):
         self.label_53.setFont(font)
         self.label_53.setObjectName("label_53")
         self.gridLayout_20.addWidget(self.label_53, 0, 12, 1, 1)
+
         self.line_282 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_282.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_282.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_282.setObjectName("line_282")
         self.gridLayout_20.addWidget(self.line_282, 0, 1, 1, 1)
+
         self.line_223 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_223.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_223.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_223.setObjectName("line_223")
         self.gridLayout_20.addWidget(self.line_223, 3, 2, 1, 1)
+
         self.line_283 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_283.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_283.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_283.setObjectName("line_283")
         self.gridLayout_20.addWidget(self.line_283, 0, 3, 1, 1)
+
         self.line_296 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_296.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_296.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_296.setObjectName("line_296")
         self.gridLayout_20.addWidget(self.line_296, 0, 5, 1, 1)
+
         self.label_16 = QtWidgets.QLabel(self.gridLayoutWidget_7)
         font = QtGui.QFont()
         font.setPointSize(13)
@@ -2328,27 +2390,33 @@ class Ui_MainWindow(object):
         self.label_16.setFont(font)
         self.label_16.setObjectName("label_16")
         self.gridLayout_20.addWidget(self.label_16, 0, 8, 1, 1)
+
         self.line_208 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_208.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_208.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_208.setObjectName("line_208")
         self.gridLayout_20.addWidget(self.line_208, 1, 0, 1, 1)
+
         self.textBox_f5 = QtWidgets.QTextEdit(self.gridLayoutWidget_7)
         self.textBox_f5.setObjectName("textBox_f5")
         self.gridLayout_20.addWidget(self.textBox_f5, 4, 4, 1, 1)
+
         self.textBox_f2 = QtWidgets.QTextEdit(self.gridLayoutWidget_7)
         self.textBox_f2.setObjectName("textBox_f2")
         self.gridLayout_20.addWidget(self.textBox_f2, 2, 4, 1, 1)
+
         self.line_211 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_211.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_211.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_211.setObjectName("line_211")
         self.gridLayout_20.addWidget(self.line_211, 1, 4, 1, 1)
+
         self.line_252 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_252.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_252.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_252.setObjectName("line_252")
         self.gridLayout_20.addWidget(self.line_252, 3, 6, 1, 1)
+
         self.label_18 = QtWidgets.QLabel(self.gridLayoutWidget_7)
         font = QtGui.QFont()
         font.setPointSize(13)
@@ -2357,16 +2425,19 @@ class Ui_MainWindow(object):
         self.label_18.setFont(font)
         self.label_18.setObjectName("label_18")
         self.gridLayout_20.addWidget(self.label_18, 0, 10, 1, 1)
+
         self.line_256 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_256.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_256.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_256.setObjectName("line_256")
         self.gridLayout_20.addWidget(self.line_256, 3, 12, 1, 1)
+
         self.line_219 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_219.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_219.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_219.setObjectName("line_219")
         self.gridLayout_20.addWidget(self.line_219, 3, 0, 1, 1)
+
         self.label_14 = QtWidgets.QLabel(self.gridLayoutWidget_7)
         font = QtGui.QFont()
         font.setPointSize(13)
@@ -2375,83 +2446,100 @@ class Ui_MainWindow(object):
         self.label_14.setFont(font)
         self.label_14.setObjectName("label_14")
         self.gridLayout_20.addWidget(self.label_14, 0, 6, 1, 1)
+
         self.line_300 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_300.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_300.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_300.setObjectName("line_300")
         self.gridLayout_20.addWidget(self.line_300, 0, 11, 1, 1)
+
         self.line_301 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_301.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_301.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_301.setObjectName("line_301")
         self.gridLayout_20.addWidget(self.line_301, 2, 1, 1, 1)
+
         self.browseFitButton_1 = QtWidgets.QPushButton(self.gridLayoutWidget_7)
         font = QtGui.QFont()
         font.setPointSize(12)
         self.browseFitButton_1.setFont(font)
         self.browseFitButton_1.setObjectName("browseFitButton_1")
         self.gridLayout_20.addWidget(self.browseFitButton_1, 2, 0, 1, 1)
+
         self.line_317 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_317.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_317.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_317.setObjectName("line_317")
         self.gridLayout_20.addWidget(self.line_317, 4, 5, 1, 1)
+
         self.line_383 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_383.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_383.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_383.setObjectName("line_383")
         self.gridLayout_20.addWidget(self.line_383, 2, 5, 1, 1)
+
         self.line_384 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_384.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_384.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_384.setObjectName("line_384")
         self.gridLayout_20.addWidget(self.line_384, 2, 7, 1, 1)
+
         self.line_405 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_405.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_405.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_405.setObjectName("line_405")
         self.gridLayout_20.addWidget(self.line_405, 4, 7, 1, 1)
+
         self.line_416 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_416.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_416.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_416.setObjectName("line_416")
         self.gridLayout_20.addWidget(self.line_416, 2, 9, 1, 1)
+
         self.line_423 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_423.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_423.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_423.setObjectName("line_423")
         self.gridLayout_20.addWidget(self.line_423, 2, 11, 1, 1)
+
         self.line_417 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_417.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_417.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_417.setObjectName("line_417")
         self.gridLayout_20.addWidget(self.line_417, 4, 9, 1, 1)
+
         self.line_424 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_424.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_424.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_424.setObjectName("line_424")
         self.gridLayout_20.addWidget(self.line_424, 4, 11, 1, 1)
+
         self.textBox_f1 = QtWidgets.QTextEdit(self.gridLayoutWidget_7)
         self.textBox_f1.setObjectName("textBox_f1")
         self.gridLayout_20.addWidget(self.textBox_f1, 2, 2, 1, 1)
+
         self.line_255 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_255.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_255.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_255.setObjectName("line_255")
         self.gridLayout_20.addWidget(self.line_255, 3, 10, 1, 1)
+
         self.textBox_f6 = QtWidgets.QTextEdit(self.gridLayoutWidget_7)
         self.textBox_f6.setObjectName("textBox_f6")
         self.gridLayout_20.addWidget(self.textBox_f6, 4, 6, 1, 1)
+
         self.line_251 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_251.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_251.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_251.setObjectName("line_251")
         self.gridLayout_20.addWidget(self.line_251, 3, 4, 1, 1)
+
         self.line_212 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_212.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_212.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_212.setObjectName("line_212")
         self.gridLayout_20.addWidget(self.line_212, 1, 6, 1, 1)
+
         self.label_13 = QtWidgets.QLabel(self.gridLayoutWidget_7)
         font = QtGui.QFont()
         font.setPointSize(13)
@@ -2460,35 +2548,42 @@ class Ui_MainWindow(object):
         self.label_13.setFont(font)
         self.label_13.setObjectName("label_13")
         self.gridLayout_20.addWidget(self.label_13, 0, 2, 1, 1)
+
         self.line_303 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_303.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_303.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_303.setObjectName("line_303")
         self.gridLayout_20.addWidget(self.line_303, 4, 1, 1, 1)
+
         self.textBox_f4 = QtWidgets.QTextEdit(self.gridLayoutWidget_7)
         self.textBox_f4.setObjectName("textBox_f4")
         self.gridLayout_20.addWidget(self.textBox_f4, 4, 2, 1, 1)
+
         self.verticalLayout_15 = QtWidgets.QVBoxLayout()
         self.verticalLayout_15.setObjectName("verticalLayout_15")
         self.gridLayout_10 = QtWidgets.QGridLayout()
         self.gridLayout_10.setObjectName("gridLayout_10")
+
         self.label_41 = QtWidgets.QLabel(self.gridLayoutWidget_7)
         font = QtGui.QFont()
         font.setPointSize(12)
         self.label_41.setFont(font)
         self.label_41.setObjectName("label_41")
         self.gridLayout_10.addWidget(self.label_41, 1, 0, 1, 1)
+
         self.label_42 = QtWidgets.QLabel(self.gridLayoutWidget_7)
         font = QtGui.QFont()
         font.setPointSize(12)
         self.label_42.setFont(font)
         self.label_42.setObjectName("label_42")
         self.gridLayout_10.addWidget(self.label_42, 0, 0, 1, 1)
+
         self.line_227 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_227.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_227.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_227.setObjectName("line_227")
         self.gridLayout_10.addWidget(self.line_227, 0, 3, 1, 1)
+
         self.startFit_2 = QtWidgets.QDoubleSpinBox(self.gridLayoutWidget_7)
         self.startFit_2.setDecimals(3)
         self.startFit_2.setMinimum(0.6)
@@ -2496,16 +2591,19 @@ class Ui_MainWindow(object):
         self.startFit_2.setProperty("value", 1.0)
         self.startFit_2.setObjectName("startFit_2")
         self.gridLayout_10.addWidget(self.startFit_2, 1, 2, 1, 1)
+
         self.line_228 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_228.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_228.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_228.setObjectName("line_228")
         self.gridLayout_10.addWidget(self.line_228, 0, 1, 1, 1)
+
         self.line_266 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_266.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_266.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_266.setObjectName("line_266")
         self.gridLayout_10.addWidget(self.line_266, 1, 3, 1, 1)
+
         self.startPlot_2 = QtWidgets.QDoubleSpinBox(self.gridLayoutWidget_7)
         self.startPlot_2.setDecimals(3)
         self.startPlot_2.setMinimum(0.6)
@@ -2513,11 +2611,13 @@ class Ui_MainWindow(object):
         self.startPlot_2.setProperty("value", 1.0)
         self.startPlot_2.setObjectName("startPlot_2")
         self.gridLayout_10.addWidget(self.startPlot_2, 0, 2, 1, 1)
+
         self.line_284 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_284.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_284.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_284.setObjectName("line_284")
         self.gridLayout_10.addWidget(self.line_284, 1, 1, 1, 1)
+
         self.stopPlot_2 = QtWidgets.QDoubleSpinBox(self.gridLayoutWidget_7)
         self.stopPlot_2.setSuffix("")
         self.stopPlot_2.setDecimals(3)
@@ -2526,6 +2626,7 @@ class Ui_MainWindow(object):
         self.stopPlot_2.setProperty("value", 3.6)
         self.stopPlot_2.setObjectName("stopPlot_2")
         self.gridLayout_10.addWidget(self.stopPlot_2, 0, 4, 1, 1)
+
         self.stopFit_2 = QtWidgets.QDoubleSpinBox(self.gridLayoutWidget_7)
         self.stopFit_2.setSuffix("")
         self.stopFit_2.setDecimals(3)
@@ -2534,6 +2635,7 @@ class Ui_MainWindow(object):
         self.stopFit_2.setProperty("value", 3.6)
         self.stopFit_2.setObjectName("stopFit_2")
         self.gridLayout_10.addWidget(self.stopFit_2, 1, 4, 1, 1)
+
         self.startFitPlot_2 = QtWidgets.QDoubleSpinBox(self.gridLayoutWidget_7)
         self.startFitPlot_2.setDecimals(3)
         self.startFitPlot_2.setMinimum(0.6)
@@ -2541,6 +2643,7 @@ class Ui_MainWindow(object):
         self.startFitPlot_2.setProperty("value", 1.0)
         self.startFitPlot_2.setObjectName("startFitPlot_2")
         self.gridLayout_10.addWidget(self.startFitPlot_2, 2, 2, 1, 1)
+
         self.stopFitPlot_2 = QtWidgets.QDoubleSpinBox(self.gridLayoutWidget_7)
         self.stopFitPlot_2.setSuffix("")
         self.stopFitPlot_2.setDecimals(3)
@@ -2549,16 +2652,19 @@ class Ui_MainWindow(object):
         self.stopFitPlot_2.setProperty("value", 2.0)
         self.stopFitPlot_2.setObjectName("stopFitPlot_2")
         self.gridLayout_10.addWidget(self.stopFitPlot_2, 2, 4, 1, 1)
+
         self.line_367 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_367.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_367.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_367.setObjectName("line_367")
         self.gridLayout_10.addWidget(self.line_367, 2, 1, 1, 1)
+
         self.line_368 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_368.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_368.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_368.setObjectName("line_368")
         self.gridLayout_10.addWidget(self.line_368, 2, 3, 1, 1)
+
         self.label_38 = QtWidgets.QLabel(self.gridLayoutWidget_7)
         font = QtGui.QFont()
         font.setPointSize(12)
@@ -2566,11 +2672,13 @@ class Ui_MainWindow(object):
         self.label_38.setObjectName("label_38")
         self.gridLayout_10.addWidget(self.label_38, 2, 0, 1, 1)
         self.verticalLayout_15.addLayout(self.gridLayout_10)
+
         self.line_309 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_309.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_309.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_309.setObjectName("line_309")
         self.verticalLayout_15.addWidget(self.line_309)
+
         self.gaussianFit_2 = QtWidgets.QPushButton(self.gridLayoutWidget_7)
         font = QtGui.QFont()
         font.setPointSize(12)
@@ -2580,33 +2688,39 @@ class Ui_MainWindow(object):
         self.gaussianFit_2.setObjectName("gaussianFit_2")
         self.verticalLayout_15.addWidget(self.gaussianFit_2)
         self.gridLayout_20.addLayout(self.verticalLayout_15, 4, 8, 1, 1)
+
         self.browseFitButton_2 = QtWidgets.QPushButton(self.gridLayoutWidget_7)
         font = QtGui.QFont()
         font.setPointSize(12)
         self.browseFitButton_2.setFont(font)
         self.browseFitButton_2.setObjectName("browseFitButton_2")
         self.gridLayout_20.addWidget(self.browseFitButton_2, 4, 0, 1, 1)
+
         self.verticalLayout_13 = QtWidgets.QVBoxLayout()
         self.verticalLayout_13.setObjectName("verticalLayout_13")
         self.gridLayout_9 = QtWidgets.QGridLayout()
         self.gridLayout_9.setObjectName("gridLayout_9")
+
         self.label_32 = QtWidgets.QLabel(self.gridLayoutWidget_7)
         font = QtGui.QFont()
         font.setPointSize(12)
         self.label_32.setFont(font)
         self.label_32.setObjectName("label_32")
         self.gridLayout_9.addWidget(self.label_32, 1, 0, 1, 1)
+
         self.label_31 = QtWidgets.QLabel(self.gridLayoutWidget_7)
         font = QtGui.QFont()
         font.setPointSize(12)
         self.label_31.setFont(font)
         self.label_31.setObjectName("label_31")
         self.gridLayout_9.addWidget(self.label_31, 0, 0, 1, 1)
+
         self.line_81 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_81.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_81.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_81.setObjectName("line_81")
         self.gridLayout_9.addWidget(self.line_81, 0, 3, 1, 1)
+
         self.startFit_1 = QtWidgets.QDoubleSpinBox(self.gridLayoutWidget_7)
         self.startFit_1.setDecimals(3)
         self.startFit_1.setMinimum(0.6)
@@ -2614,6 +2728,7 @@ class Ui_MainWindow(object):
         self.startFit_1.setProperty("value", 1.0)
         self.startFit_1.setObjectName("startFit_1")
         self.gridLayout_9.addWidget(self.startFit_1, 1, 2, 1, 1)
+
         self.stopFit_1 = QtWidgets.QDoubleSpinBox(self.gridLayoutWidget_7)
         self.stopFit_1.setSuffix("")
         self.stopFit_1.setDecimals(3)
@@ -2622,16 +2737,19 @@ class Ui_MainWindow(object):
         self.stopFit_1.setProperty("value", 3.6)
         self.stopFit_1.setObjectName("stopFit_1")
         self.gridLayout_9.addWidget(self.stopFit_1, 1, 4, 1, 1)
+
         self.line_225 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_225.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_225.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_225.setObjectName("line_225")
         self.gridLayout_9.addWidget(self.line_225, 0, 1, 1, 1)
+
         self.line_221 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_221.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_221.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_221.setObjectName("line_221")
         self.gridLayout_9.addWidget(self.line_221, 1, 3, 1, 1)
+
         self.startPlot_1 = QtWidgets.QDoubleSpinBox(self.gridLayoutWidget_7)
         self.startPlot_1.setDecimals(3)
         self.startPlot_1.setMinimum(0.6)
@@ -2639,11 +2757,13 @@ class Ui_MainWindow(object):
         self.startPlot_1.setProperty("value", 1.0)
         self.startPlot_1.setObjectName("startPlot_1")
         self.gridLayout_9.addWidget(self.startPlot_1, 0, 2, 1, 1)
+
         self.line_226 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_226.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_226.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_226.setObjectName("line_226")
         self.gridLayout_9.addWidget(self.line_226, 1, 1, 1, 1)
+
         self.stopPlot_1 = QtWidgets.QDoubleSpinBox(self.gridLayoutWidget_7)
         self.stopPlot_1.setSuffix("")
         self.stopPlot_1.setDecimals(3)
@@ -2652,6 +2772,7 @@ class Ui_MainWindow(object):
         self.stopPlot_1.setProperty("value", 3.6)
         self.stopPlot_1.setObjectName("stopPlot_1")
         self.gridLayout_9.addWidget(self.stopPlot_1, 0, 4, 1, 1)
+
         self.startFitPlot_1 = QtWidgets.QDoubleSpinBox(self.gridLayoutWidget_7)
         self.startFitPlot_1.setDecimals(3)
         self.startFitPlot_1.setMinimum(0.6)
@@ -2659,6 +2780,7 @@ class Ui_MainWindow(object):
         self.startFitPlot_1.setProperty("value", 1.0)
         self.startFitPlot_1.setObjectName("startFitPlot_1")
         self.gridLayout_9.addWidget(self.startFitPlot_1, 2, 2, 1, 1)
+
         self.stopFitPlot_1 = QtWidgets.QDoubleSpinBox(self.gridLayoutWidget_7)
         self.stopFitPlot_1.setSuffix("")
         self.stopFitPlot_1.setDecimals(3)
@@ -2667,28 +2789,33 @@ class Ui_MainWindow(object):
         self.stopFitPlot_1.setProperty("value", 2.0)
         self.stopFitPlot_1.setObjectName("stopFitPlot_1")
         self.gridLayout_9.addWidget(self.stopFitPlot_1, 2, 4, 1, 1)
+
         self.label_37 = QtWidgets.QLabel(self.gridLayoutWidget_7)
         font = QtGui.QFont()
         font.setPointSize(12)
         self.label_37.setFont(font)
         self.label_37.setObjectName("label_37")
         self.gridLayout_9.addWidget(self.label_37, 2, 0, 1, 1)
+
         self.line_359 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_359.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_359.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_359.setObjectName("line_359")
         self.gridLayout_9.addWidget(self.line_359, 2, 1, 1, 1)
+
         self.line_360 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_360.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_360.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_360.setObjectName("line_360")
         self.gridLayout_9.addWidget(self.line_360, 2, 3, 1, 1)
+
         self.verticalLayout_13.addLayout(self.gridLayout_9)
         self.line_299 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_299.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_299.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_299.setObjectName("line_299")
         self.verticalLayout_13.addWidget(self.line_299)
+
         self.gaussianFit_1 = QtWidgets.QPushButton(self.gridLayoutWidget_7)
         font = QtGui.QFont()
         font.setPointSize(12)
@@ -2698,12 +2825,14 @@ class Ui_MainWindow(object):
         self.gaussianFit_1.setObjectName("gaussianFit_1")
         self.verticalLayout_13.addWidget(self.gaussianFit_1)
         self.gridLayout_20.addLayout(self.verticalLayout_13, 2, 8, 1, 1)
+
         self.verticalLayout_22 = QtWidgets.QVBoxLayout()
         self.verticalLayout_22.setObjectName("verticalLayout_22")
         self.gridLayout_8 = QtWidgets.QGridLayout()
         self.gridLayout_8.setObjectName("gridLayout_8")
         self.horizontalLayout_37 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_37.setObjectName("horizontalLayout_37")
+
         self.guessStartSig_1 = QtWidgets.QDoubleSpinBox(self.gridLayoutWidget_7)
         self.guessStartSig_1.setDecimals(2)
         self.guessStartSig_1.setMinimum(0.0)
@@ -2711,11 +2840,13 @@ class Ui_MainWindow(object):
         self.guessStartSig_1.setProperty("value", 0.01)
         self.guessStartSig_1.setObjectName("guessStartSig_1")
         self.horizontalLayout_37.addWidget(self.guessStartSig_1)
+
         self.line_250 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_250.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_250.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_250.setObjectName("line_250")
         self.horizontalLayout_37.addWidget(self.line_250)
+
         self.guessStopSig_1 = QtWidgets.QDoubleSpinBox(self.gridLayoutWidget_7)
         self.guessStopSig_1.setDecimals(2)
         self.guessStopSig_1.setMinimum(0.0)
@@ -2723,6 +2854,7 @@ class Ui_MainWindow(object):
         self.guessStopSig_1.setProperty("value", 0.1)
         self.guessStopSig_1.setObjectName("guessStopSig_1")
         self.horizontalLayout_37.addWidget(self.guessStopSig_1)
+
         self.gridLayout_8.addLayout(self.horizontalLayout_37, 3, 2, 1, 1)
         self.label_142 = QtWidgets.QLabel(self.gridLayoutWidget_7)
         font = QtGui.QFont()
@@ -2730,14 +2862,17 @@ class Ui_MainWindow(object):
         self.label_142.setFont(font)
         self.label_142.setObjectName("label_142")
         self.gridLayout_8.addWidget(self.label_142, 2, 0, 1, 1)
+
         self.label_59 = QtWidgets.QLabel(self.gridLayoutWidget_7)
         font = QtGui.QFont()
         font.setPointSize(12)
         self.label_59.setFont(font)
         self.label_59.setObjectName("label_59")
         self.gridLayout_8.addWidget(self.label_59, 0, 0, 1, 1)
+
         self.horizontalLayout_38 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_38.setObjectName("horizontalLayout_38")
+
         self.guessStart_1 = QtWidgets.QDoubleSpinBox(self.gridLayoutWidget_7)
         self.guessStart_1.setSuffix("")
         self.guessStart_1.setDecimals(2)
@@ -2746,11 +2881,13 @@ class Ui_MainWindow(object):
         self.guessStart_1.setProperty("value", 1.2)
         self.guessStart_1.setObjectName("guessStart_1")
         self.horizontalLayout_38.addWidget(self.guessStart_1)
+
         self.line_249 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_249.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_249.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_249.setObjectName("line_249")
         self.horizontalLayout_38.addWidget(self.line_249)
+
         self.guessStop_1 = QtWidgets.QDoubleSpinBox(self.gridLayoutWidget_7)
         self.guessStop_1.setSuffix("")
         self.guessStop_1.setDecimals(2)
@@ -2759,28 +2896,34 @@ class Ui_MainWindow(object):
         self.guessStop_1.setProperty("value", 1.5)
         self.guessStop_1.setObjectName("guessStop_1")
         self.horizontalLayout_38.addWidget(self.guessStop_1)
+
         self.gridLayout_8.addLayout(self.horizontalLayout_38, 2, 2, 1, 1)
+
         self.line_244 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_244.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_244.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_244.setObjectName("line_244")
         self.gridLayout_8.addWidget(self.line_244, 0, 1, 1, 1)
+
         self.line_247 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_247.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_247.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_247.setObjectName("line_247")
         self.gridLayout_8.addWidget(self.line_247, 3, 1, 1, 1)
+
         self.line_248 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_248.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_248.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_248.setObjectName("line_248")
         self.gridLayout_8.addWidget(self.line_248, 2, 1, 1, 1)
+
         self.label_141 = QtWidgets.QLabel(self.gridLayoutWidget_7)
         font = QtGui.QFont()
         font.setPointSize(12)
         self.label_141.setFont(font)
         self.label_141.setObjectName("label_141")
         self.gridLayout_8.addWidget(self.label_141, 3, 0, 1, 1)
+
         self.Temperature_1 = QtWidgets.QDoubleSpinBox(self.gridLayoutWidget_7)
         self.Temperature_1.setSuffix("")
         self.Temperature_1.setDecimals(1)
@@ -2789,24 +2932,29 @@ class Ui_MainWindow(object):
         self.Temperature_1.setProperty("value", 295.0)
         self.Temperature_1.setObjectName("Temperature_1")
         self.gridLayout_8.addWidget(self.Temperature_1, 0, 2, 1, 1)
+
         self.line_207 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_207.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_207.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_207.setObjectName("line_207")
         self.gridLayout_8.addWidget(self.line_207, 1, 0, 1, 1)
+
         self.line_243 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_243.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_243.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_243.setObjectName("line_243")
         self.gridLayout_8.addWidget(self.line_243, 1, 2, 1, 1)
+
         self.verticalLayout_22.addLayout(self.gridLayout_8)
         self.line_84 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_84.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_84.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_84.setObjectName("line_84")
         self.verticalLayout_22.addWidget(self.line_84)
+
         self.horizontalLayout_39 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_39.setObjectName("horizontalLayout_39")
+
         self.OptButton_1 = QtWidgets.QRadioButton(self.gridLayoutWidget_7)
         font = QtGui.QFont()
         font.setPointSize(12)
@@ -2814,6 +2962,7 @@ class Ui_MainWindow(object):
         self.OptButton_1.setAutoExclusive(False)
         self.OptButton_1.setObjectName("OptButton_1")
         self.horizontalLayout_39.addWidget(self.OptButton_1)
+
         self.CTButton_1 = QtWidgets.QRadioButton(self.gridLayoutWidget_7)
         font = QtGui.QFont()
         font.setPointSize(12)
@@ -2822,12 +2971,14 @@ class Ui_MainWindow(object):
         self.CTButton_1.setAutoExclusive(False)
         self.CTButton_1.setObjectName("CTButton_1")
         self.horizontalLayout_39.addWidget(self.CTButton_1)
+
         self.verticalLayout_22.addLayout(self.horizontalLayout_39)
         self.line_203 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_203.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_203.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_203.setObjectName("line_203")
         self.verticalLayout_22.addWidget(self.line_203)
+
         self.disorder_1 = QtWidgets.QCheckBox(self.gridLayoutWidget_7)
         font = QtGui.QFont()
         font.setPointSize(12)
@@ -2835,24 +2986,29 @@ class Ui_MainWindow(object):
         self.disorder_1.setObjectName("disorder_1")
         self.verticalLayout_22.addWidget(self.disorder_1)
         self.gridLayout_20.addLayout(self.verticalLayout_22, 2, 12, 1, 1)
+
         self.verticalLayout_23 = QtWidgets.QVBoxLayout()
         self.verticalLayout_23.setObjectName("verticalLayout_23")
         self.gridLayout_28 = QtWidgets.QGridLayout()
         self.gridLayout_28.setObjectName("gridLayout_28")
+
         self.label_143 = QtWidgets.QLabel(self.gridLayoutWidget_7)
         font = QtGui.QFont()
         font.setPointSize(12)
         self.label_143.setFont(font)
         self.label_143.setObjectName("label_143")
         self.gridLayout_28.addWidget(self.label_143, 2, 0, 1, 1)
+
         self.label_61 = QtWidgets.QLabel(self.gridLayoutWidget_7)
         font = QtGui.QFont()
         font.setPointSize(12)
         self.label_61.setFont(font)
         self.label_61.setObjectName("label_61")
         self.gridLayout_28.addWidget(self.label_61, 0, 0, 1, 1)
+
         self.horizontalLayout_40 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_40.setObjectName("horizontalLayout_40")
+
         self.guessStart_2 = QtWidgets.QDoubleSpinBox(self.gridLayoutWidget_7)
         self.guessStart_2.setSuffix("")
         self.guessStart_2.setDecimals(2)
@@ -2861,11 +3017,13 @@ class Ui_MainWindow(object):
         self.guessStart_2.setProperty("value", 1.2)
         self.guessStart_2.setObjectName("guessStart_2")
         self.horizontalLayout_40.addWidget(self.guessStart_2)
+
         self.line_254 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_254.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_254.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_254.setObjectName("line_254")
         self.horizontalLayout_40.addWidget(self.line_254)
+
         self.guessStop_2 = QtWidgets.QDoubleSpinBox(self.gridLayoutWidget_7)
         self.guessStop_2.setSuffix("")
         self.guessStop_2.setDecimals(2)
@@ -2875,11 +3033,13 @@ class Ui_MainWindow(object):
         self.guessStop_2.setObjectName("guessStop_2")
         self.horizontalLayout_40.addWidget(self.guessStop_2)
         self.gridLayout_28.addLayout(self.horizontalLayout_40, 2, 2, 1, 1)
+
         self.line_257 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_257.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_257.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_257.setObjectName("line_257")
         self.gridLayout_28.addWidget(self.line_257, 0, 1, 1, 1)
+
         self.horizontalLayout_41 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_41.setObjectName("horizontalLayout_41")
         self.guessStartSig_2 = QtWidgets.QDoubleSpinBox(self.gridLayoutWidget_7)
@@ -2889,11 +3049,13 @@ class Ui_MainWindow(object):
         self.guessStartSig_2.setProperty("value", 0.01)
         self.guessStartSig_2.setObjectName("guessStartSig_2")
         self.horizontalLayout_41.addWidget(self.guessStartSig_2)
+
         self.line_258 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_258.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_258.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_258.setObjectName("line_258")
         self.horizontalLayout_41.addWidget(self.line_258)
+
         self.guessStopSig_2 = QtWidgets.QDoubleSpinBox(self.gridLayoutWidget_7)
         self.guessStopSig_2.setDecimals(2)
         self.guessStopSig_2.setMinimum(0.0)
@@ -2902,32 +3064,38 @@ class Ui_MainWindow(object):
         self.guessStopSig_2.setObjectName("guessStopSig_2")
         self.horizontalLayout_41.addWidget(self.guessStopSig_2)
         self.gridLayout_28.addLayout(self.horizontalLayout_41, 3, 2, 1, 1)
+
         self.line_259 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_259.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_259.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_259.setObjectName("line_259")
         self.gridLayout_28.addWidget(self.line_259, 3, 1, 1, 1)
+
         self.line_260 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_260.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_260.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_260.setObjectName("line_260")
         self.gridLayout_28.addWidget(self.line_260, 2, 1, 1, 1)
+
         self.label_144 = QtWidgets.QLabel(self.gridLayoutWidget_7)
         font = QtGui.QFont()
         font.setPointSize(12)
         self.label_144.setFont(font)
         self.label_144.setObjectName("label_144")
         self.gridLayout_28.addWidget(self.label_144, 3, 0, 1, 1)
+
         self.line_261 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_261.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_261.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_261.setObjectName("line_261")
         self.gridLayout_28.addWidget(self.line_261, 1, 0, 1, 1)
+
         self.line_262 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_262.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_262.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_262.setObjectName("line_262")
         self.gridLayout_28.addWidget(self.line_262, 1, 2, 1, 1)
+
         self.Temperature_2 = QtWidgets.QDoubleSpinBox(self.gridLayoutWidget_7)
         self.Temperature_2.setSuffix("")
         self.Temperature_2.setDecimals(1)
@@ -2936,14 +3104,17 @@ class Ui_MainWindow(object):
         self.Temperature_2.setProperty("value", 295.0)
         self.Temperature_2.setObjectName("Temperature_2")
         self.gridLayout_28.addWidget(self.Temperature_2, 0, 2, 1, 1)
+
         self.verticalLayout_23.addLayout(self.gridLayout_28)
         self.line_263 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_263.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_263.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_263.setObjectName("line_263")
         self.verticalLayout_23.addWidget(self.line_263)
+
         self.horizontalLayout_42 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_42.setObjectName("horizontalLayout_42")
+
         self.OptButton_2 = QtWidgets.QRadioButton(self.gridLayoutWidget_7)
         font = QtGui.QFont()
         font.setPointSize(12)
@@ -2951,6 +3122,7 @@ class Ui_MainWindow(object):
         self.OptButton_2.setAutoExclusive(False)
         self.OptButton_2.setObjectName("OptButton_2")
         self.horizontalLayout_42.addWidget(self.OptButton_2)
+
         self.CTButton_2 = QtWidgets.QRadioButton(self.gridLayoutWidget_7)
         font = QtGui.QFont()
         font.setPointSize(12)
@@ -2960,11 +3132,13 @@ class Ui_MainWindow(object):
         self.CTButton_2.setObjectName("CTButton_2")
         self.horizontalLayout_42.addWidget(self.CTButton_2)
         self.verticalLayout_23.addLayout(self.horizontalLayout_42)
+
         self.line_264 = QtWidgets.QFrame(self.gridLayoutWidget_7)
         self.line_264.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_264.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_264.setObjectName("line_264")
         self.verticalLayout_23.addWidget(self.line_264)
+
         self.disorder_2 = QtWidgets.QCheckBox(self.gridLayoutWidget_7)
         font = QtGui.QFont()
         font.setPointSize(12)
@@ -2972,6 +3146,7 @@ class Ui_MainWindow(object):
         self.disorder_2.setObjectName("disorder_2")
         self.verticalLayout_23.addWidget(self.disorder_2)
         self.gridLayout_20.addLayout(self.verticalLayout_23, 4, 12, 1, 1)
+
         self.save_gaussianFit = QtWidgets.QCheckBox(self.tab_3)
         self.save_gaussianFit.setGeometry(QtCore.QRect(840, 590, 101, 31))
         font = QtGui.QFont()
@@ -2981,6 +3156,8 @@ class Ui_MainWindow(object):
         font.setWeight(75)
         self.save_gaussianFit.setFont(font)
         self.save_gaussianFit.setObjectName("save_gaussianFit")
+
+
         self.line_436 = QtWidgets.QFrame(self.tab_3)
         self.line_436.setGeometry(QtCore.QRect(830, 570, 121, 20))
         self.line_436.setFrameShape(QtWidgets.QFrame.HLine)
@@ -3017,6 +3194,8 @@ class Ui_MainWindow(object):
         self.label_146.setFont(font)
         self.label_146.setObjectName("label_146")
         self.tabWidget.addTab(self.tab_3, "")
+
+        #set up tab 7
         self.tab_7 = QtWidgets.QWidget()
         self.tab_7.setObjectName("tab_7")
         self.label_147 = QtWidgets.QLabel(self.tab_7)
@@ -4342,6 +4521,8 @@ class Ui_MainWindow(object):
         self.line_542.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_542.setObjectName("line_542")
         self.tabWidget.addTab(self.tab_7, "")
+
+
         self.tab_4 = QtWidgets.QWidget()
         self.tab_4.setObjectName("tab_4")
         self.line_292 = QtWidgets.QFrame(self.tab_4)
@@ -5637,6 +5818,8 @@ class Ui_MainWindow(object):
         self.line_544.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_544.setObjectName("line_544")
         self.tabWidget.addTab(self.tab_4, "")
+
+
         self.tab_5 = QtWidgets.QWidget()
         self.tab_5.setObjectName("tab_5")
         self.line_369 = QtWidgets.QFrame(self.tab_5)
@@ -6351,6 +6534,8 @@ class Ui_MainWindow(object):
         self.gridLayout.addWidget(self.EL_Huang_Rhys, 4, 2, 1, 1)
         self.verticalLayout_27.addLayout(self.gridLayout)
         self.tabWidget.addTab(self.tab_5, "")
+
+
         self.tab_6 = QtWidgets.QWidget()
         self.tab_6.setObjectName("tab_6")
         self.line_449 = QtWidgets.QFrame(self.tab_6)
