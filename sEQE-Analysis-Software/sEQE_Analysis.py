@@ -1921,10 +1921,10 @@ class MainWindow(QtWidgets.QMainWindow):
                 print("")
 
                 # Pivot dataFrame: x-value = Stop, y-value = Start, value = f
-                f_df = parameter_df.pivot('Stop', 'Start', 'f')
-                l_df = parameter_df.pivot('Stop', 'Start', 'l')
-                Ect_df = parameter_df.pivot('Stop', 'Start', 'Ect')
-                R_df = parameter_df.pivot('Stop', 'Start', 'R_Squared')
+                f_df = parameter_df.pivot(index='Stop', columns='Start', values='f')
+                l_df = parameter_df.pivot(index='Stop', columns='Start', values='l')
+                Ect_df = parameter_df.pivot(index='Stop', columns='Start', values='Ect')
+                R_df = parameter_df.pivot(index='Stop', columns='Start', values='R_Squared')
 
                 plt.ion()
                 plt.figure(figsize=(11, 9))  # Create a new figure
@@ -1983,7 +1983,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 plt.show()
 
                 if include_Disorder:
-                    Sig_df = parameter_df.pivot('Stop', 'Start', 'Sig')
+                    Sig_df = parameter_df.pivot(index='Stop', columns='Start', values='Sig')
                     plt.ion()
                     plt.figure(figsize=(11, 9))
                     self.heatmap_5 = seaborn.heatmap(Sig_df, xticklabels=3, yticklabels=3)
