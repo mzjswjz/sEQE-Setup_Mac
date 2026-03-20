@@ -1,74 +1,64 @@
-# sEQE Setup (Mac)
+# sEQE Setup for Mac
 
-Setup and analysis scripts for spectral external quantum efficiency (sEQE) measurements on macOS.
+Complete software suite for controlling and analyzing sensitive EQE (sEQE) measurements on macOS (also supports Linux and Windows).
 
-## Overview
-
-sEQE (spectral external quantum efficiency) measurements characterize how efficiently a solar cell converts photons of different wavelengths into electrical current. This repository provides:
-
-- Measurement setup scripts
-- Data acquisition utilities
-- Analysis tools for sEQE data
-
-## What is sEQE?
-
-External quantum efficiency (EQE) measures the ratio of collected charge carriers to incident photons at each wavelength:
+## Repository Structure
 
 ```
-EQE(λ) = J_SC(λ) / (q × φ_ph(λ))
+├── sEQE-Control-Software/      # Hardware control software
+├── sEQE-Analysis-Software/     # Data analysis software
+├── docs/                        # Documentation
+├── requirements_Mac.txt         # macOS Python dependencies
+├── requirements_linux.txt       # Linux Python dependencies
+└── requirements_windows.txt     # Windows Python dependencies
 ```
 
-Where:
-- J_SC(λ) = Short-circuit current at wavelength λ
-- q = Elementary charge
-- φ_ph(λ) = Incident photon flux
+## sEQE-Control-Software
 
-The "s" prefix typically indicates "spectral" - measuring EQE across the solar spectrum.
+Files for controlling sEQE measurement hardware:
 
-## Setup Components
+| File | Description |
+|------|-------------|
+| `sEQE.py` | Main control script — orchestrates measurements, handles data acquisition |
+| `monochromator.py` | Monochromator control functions (wavelength selection, grating control) |
+| `lockin.py` | Lock-in amplifier interface for signal detection |
+| `GUI_V3.ui` | Qt UI layout file for the control interface |
+| `GUI_template.py` | Generated Python GUI code from UI file |
+| `FDS100-CAL.xlsx` | Calibration data for FDS100 photodiode |
+| `FGA21-CAL.xlsx` | Calibration data for FGA21 photodiode |
+| `Button_on.png` / `Button_off.png` | UI button graphics |
 
-### Hardware
-- Monochromator
-- Light source (tungsten/halogen or xenon)
-- Current amplifier
-- Lock-in amplifier
-- Reference detector
+## sEQE-Analysis-Software
 
-### Software
-- Data acquisition (National Instruments/Thorlabs)
-- Python-based analysis pipeline
-- Plotting and reporting tools
+Files for analyzing sEQE measurement data:
 
-## Measurement Procedure
+| File | Description |
+|------|-------------|
+| `sEQE_Analysis.py` | Main analysis script with GUI — processes raw sEQE data, applies calibrations, calculates EQE |
+| `sEQE_Analysis_template.py` | Template/analysis version with extended functionality |
+| `GUI.ui` | Qt UI layout file for the analysis interface |
+| `calibration_files/` | Directory containing detector and system calibration files |
+| `source/` | Source data directory |
 
-1. **Calibration** - Measure reference detector response
-2. **Sample Measurement** - Measure device under test
-3. **Dark Measurement** - Subtract background
-4. **Calculate EQE** - Compute spectral response
+## Requirements
 
-## Data Analysis
+Install dependencies for your platform:
 
-The analysis includes:
-- Wavelength-dependent response
-- Integration with AM1.5G spectrum
-- J_SC calculation
-- Comparison with device simulations
+```bash
+# macOS
+pip install -r requirements_Mac.txt
+
+# Linux
+pip install -r requirements_linux.txt
+
+# Windows
+pip install -r requirements_windows.txt
+```
 
 ## Usage
 
-```python
-python seqe_measure.py --config config.yaml
-python seqe_analyze.py --input data.csv
-```
+1. **Control Software**: Run `sEQE.py` to start the measurement control GUI
+2. **Analysis Software**: Run `sEQE_Analysis.py` to process and analyze measurement data
 
-## Dependencies
-
-- NumPy
-- SciPy
-- Matplotlib
-- pandas
-- PyDAQmx (if using NI hardware)
-
-## Author
-
-mzjswjz
+---
+*Author: mzjswjz*
